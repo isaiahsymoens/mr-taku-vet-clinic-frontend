@@ -1,6 +1,8 @@
+import Header from "../../components/Header";
+
 const HomePage: React.FC = () => {
     return <div>
-        HomePage!
+        <Header />
     </div>
 }
 

@@ -8,7 +8,7 @@ const MainLayout: React.FC = () => {
         <Box sx={{ display: "flex" }}>
             <Header />
             <Navbar />
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box component="main" sx={{ flexGrow: 1 }}>
                 <Outlet />
             </Box>
         </Box>

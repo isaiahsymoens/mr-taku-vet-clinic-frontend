@@ -1,39 +1,11 @@
 import React from "react";
-import {Box, Paper, InputBase, IconButton, Typography, Button} from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
+import {Box, Typography} from "@mui/material";
+import SubHeader from "../../components/SubHeader";
 
 const UsersPage: React.FC = () => {
     return (
         <React.Fragment>
-            <Box sx={{ 
-                background: "#F5F5F5",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingX: "20px",
-                paddingY: "10px",
-                marginTop: "48px" 
-            }}>
-                <Typography variant="h6">Users</Typography>
-                <Box sx={{ display: "flex", gap: "10px" }}>
-                    <Paper component="form" 
-                        sx={{  
-                            display: "flex", 
-                            alignItems: "center", 
-                            width: 300,
-                            height: 40 
-                        }}
-                    >
-                        <InputBase
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder="Search.."/>
-                        <IconButton type="button">
-                            <SearchIcon />
-                        </IconButton>
-                    </Paper>
-                    <Button variant="contained">Add User</Button>
-                </Box>
-            </Box>
+            <SubHeader text="Users" showSearchbar={true} btnText="Add User" />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <Typography paragraph>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

@@ -1,15 +1,18 @@
 import Header from "../components/Header";
-import {Outlet} from "react-router-dom";
 import Navbar from "../components/Navbar";
+import {Outlet} from "react-router-dom";
+import Box from "@mui/material/Box";
 
 const MainLayout: React.FC = () => {
-    return <div>
-        <Header />
-        <Navbar />
-        <main>
-            <Outlet />
-        </main>
-    </div>
+    return (
+        <Box sx={{ display: "flex" }}>
+            <Header />
+            <Navbar />
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                <Outlet />
+            </Box>
+        </Box>
+    );
 }
 
 export default MainLayout;

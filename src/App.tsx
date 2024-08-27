@@ -1,16 +1,38 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/Login/LoginPage";
-import HomePage from "./pages/Home/HomePage";
+import MainLayout from "./layouts/MainLayout";
+import UsersPage from "./pages/Users/UsersPage";
+import VisitsPage from "./pages/Visits/VisitsPage";
+import Test from "./pages/Test/TestPage";
+import Profile from "./pages/Profile/Profile";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "login",
       element: <LoginPage />
     },
     {
-      path: "/home",
-      element: <HomePage />
+      path: "",
+      element: <MainLayout />,
+      children: [
+        {
+          path: "users",
+          element: <UsersPage />
+        },
+        {
+          path: "visits",
+          element: <VisitsPage />
+        },
+      ]
+    },
+    {
+      path: "profile",
+      element: <Profile />
+    },
+    {
+      path: "test",
+      element: <Test />
     }
   ]);
   

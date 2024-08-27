@@ -1,6 +1,9 @@
 import {Box, Typography, TextField, Button} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage: React.FC = () => {
+    const navigate = useNavigate();
+
     return <Box sx={{width: "100vw", height: "100vh", background: "#ebebeb"}}>
         <Box sx={{
             display: "flex",
@@ -40,7 +43,9 @@ const LoginPage: React.FC = () => {
                 }}>
                     <TextField label="Username" variant="outlined" size="small" />
                     <TextField label="Password" variant="outlined" size="small"/>
-                    <Button variant="contained">Login</Button>
+                    <Button variant="contained"
+                        onClick={() => navigate("/users")}
+                    >Login</Button>
                 </form>
             </Box>
         </Box>

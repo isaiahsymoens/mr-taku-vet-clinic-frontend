@@ -44,7 +44,7 @@ const LoginPage: React.FC = () => {
                     <TextField label="Username" variant="outlined" size="small" />
                     <TextField label="Password" variant="outlined" size="small"/>
                     <Button variant="contained"
-                        onClick={() => navigate("home")}
+                        onClick={() => navigate("/users")}
                     >Login</Button>
                 </form>
             </Box>

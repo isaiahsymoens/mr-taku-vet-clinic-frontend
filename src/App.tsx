@@ -1,6 +1,6 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/Login/LoginPage";
-import HomePage from "./pages/Home/HomePage";
+import MainLayout from "./layouts/MainLayout";
 import UsersPage from "./pages/Users/UsersPage";
 import VisitsPage from "./pages/Visits/VisitsPage";
 
@@ -12,7 +12,7 @@ const App: React.FC = () => {
     },
     {
       path: "",
-      element: <HomePage />,
+      element: <MainLayout />,
       children: [
         {
           path: "users",

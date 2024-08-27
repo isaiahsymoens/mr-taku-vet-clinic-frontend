@@ -4,7 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import UsersPage from "./pages/Users/UsersPage";
 import VisitsPage from "./pages/Visits/VisitsPage";
 import Test from "./pages/Test/TestPage";
-import OwnAccount from "./pages/OwnAccount/OwnAccount";
+import Profile from "./pages/Profile/Profile";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
@@ -24,11 +24,11 @@ const App: React.FC = () => {
           path: "visits",
           element: <VisitsPage />
         },
-        {
-          path: "profile",
-          element: <OwnAccount />
-        }
       ]
+    },
+    {
+      path: "profile",
+      element: <Profile />
     },
     {
       path: "test",

@@ -3,6 +3,7 @@ import LoginPage from "./pages/Login/LoginPage";
 import MainLayout from "./layouts/MainLayout";
 import UsersPage from "./pages/Users/UsersPage";
 import VisitsPage from "./pages/Visits/VisitsPage";
+import Test from "./pages/Test/TestPage";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
@@ -23,6 +24,10 @@ const App: React.FC = () => {
           element: <VisitsPage />
         }
       ]
+    },
+    {
+      path: "test",
+      element: <Test />
     }
   ]);
   

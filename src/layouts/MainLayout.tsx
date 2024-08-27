@@ -1,13 +1,11 @@
 import Header from "../components/Header";
-import {Outlet, Link} from "react-router-dom";
+import {Outlet} from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const MainLayout: React.FC = () => {
     return <div>
         <Header />
-        <nav>
-            <li><Link to="/users">Users</Link></li>
-            <li><Link to="/visits">Visits</Link></li>
-        </nav>
+        <Navbar />
         <main>
             <Outlet />
         </main>

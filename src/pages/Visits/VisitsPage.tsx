@@ -1,26 +1,110 @@
-import { Box, Typography } from "@mui/material";
+import {useState, useEffect} from "react";
 import SubHeader from "../../components/SubHeader";
+import CustomTable from "../../components/CustomTable";
+import {Box, TextField} from "@mui/material";
+import CustomDrawer from "../../components/CustomDrawer";
+
+const tableData = {
+    tableHeaders: [
+        {label: "Owner", field: "owner"},
+        {label: "Pet", field: "pet"},
+        {label: "VisitType", field: "visitType"},
+        {label: "VisitDate", field: "visitDate"}
+        
+    ],
+    tableBody: [
+        {owner: "Saitama Sy 1", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 2", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 3", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 4", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 5", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 6", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+    ]
+}
+
+interface VisitData {
+    owner: string;
+    pet: string;
+    visitType: string;
+    visitDate: string;
+    notes: string;
+}
+
+const initialState: VisitData = {
+    owner: "",
+    pet: "",
+    visitType: "",
+    visitDate: "",
+    notes: "" 
+}
 
 const VisitsPage: React.FC = () => {
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [visitData, setVisitData] = useState<VisitData>(initialState);
+
+    useEffect(() => {
+        // TODO: use api
+        // setVisitDate();
+    }, []);
+
+    const toggleDrawer = () => {
+        setIsDrawerOpen(prev => !prev);
+    }
+
+    const handleSave = () => {
+    }
+
     return (
         <Box>
-            <SubHeader text="Visits" btnText="Add Visit" />
+            <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <Typography paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                sapien faucibus et molestie ac.
-                </Typography>
+                <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
             </Box>
+            <CustomDrawer 
+                open={isDrawerOpen} 
+                onClose={toggleDrawer} 
+                onCancel={toggleDrawer} 
+                onSave={handleSave} 
+                drawerHeader="Add Visit"
+            >
+                <TextField 
+                    label="Owner" 
+                    variant="outlined" 
+                    value={visitData.owner} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Pet" 
+                    variant="outlined" 
+                    value={visitData.pet} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Visit Type" 
+                    variant="outlined" 
+                    value={visitData.visitType} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Visit Date" 
+                    variant="outlined" 
+                    value={visitData.visitDate} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Notes"
+                    variant="outlined" 
+                    value={visitData.notes} 
+                    size="small" 
+                    multiline
+                    rows={4}
+                    fullWidth 
+                />
+            </CustomDrawer>
         </Box>
     );
 }

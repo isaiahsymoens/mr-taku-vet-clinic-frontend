@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Paper, 
     TableCell, 
@@ -6,55 +7,59 @@ import {
     TableBody, 
     TableHead, 
     TableRow,
-    IconButton,
-    Box
 } from "@mui/material";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CustomTableRowMenu from "./CustomTableRowMenu";
 
-const tableData = {
-    tableHeaders: [
-        {label: "Name", field: "name"},
-        {label: "Email", field: "email"},
-        {label: "Pet Owned", field: "petOwned"},
-        {label: "", field: ""}
-    ],
-    tableRows: [
-        {email: "test@gmail.com", name: "Test test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", petOwned: 2},
-    ],
+export type CustomTableProps = {
+    tableHeaders: any[];
+    tableBody: any[];
 }
 
-const CustomTable: React.FC = () => {
+const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody }) => {
+    const onEditRow = (data: any) => {
+        console.log("edit :", data);
+    }
+
+    const onViewRow = (data: any) => {
+        console.log("view :", data);
+    }
+
+    const onDeleteRow = (data: any) => {
+        console.log("delete :", data);
+    }
+
     return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        {tableData.tableHeaders.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {tableData.tableHeaders.map((e, index) => 
-                        <TableRow key={index}>
-                            {/* {tableData.tableRows.map((tblRow, index) => )} */}
+        <React.Fragment>
+            <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            {tableHeaders.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
+                            <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />
                         </TableRow>
-                    )}
-                    {/* <TableRow>
-                        {tableData.tableRows.map((e, index) =>
-                            <TableCell key={index}>
-                                {}
+                    </TableHead>
+                    <TableBody>
+                        {tableBody.map((tBody, rowIndex) => (
+                            <TableRow key={rowIndex}>
+                            {tableHeaders.map((tHeader: any, colIndex) => (
+                                <TableCell key={colIndex}>
+                                {tBody[tHeader.field]}
+                                </TableCell>
+                            ))}
+                            <TableCell>
+                                <CustomTableRowMenu 
+                                    onEditRow={onEditRow}
+                                    onViewRow={onViewRow}
+                                    onDeleteRow={onDeleteRow}
+                                    test={tBody}
+                                />
                             </TableCell>
-                        )}
-                        <TableCell>
-                            <IconButton size="small">
-                                <MoreVertIcon />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow> */}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </React.Fragment>
     );
 }
 

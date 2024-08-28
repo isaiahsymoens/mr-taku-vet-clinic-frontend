@@ -24,11 +24,11 @@ const App: React.FC = () => {
           path: "visits",
           element: <VisitsPage />
         },
+        {
+          path: ":username",
+          element: <Profile />
+        },
       ]
-    },
-    {
-      path: "profile",
-      element: <Profile />
     },
     {
       path: "test",

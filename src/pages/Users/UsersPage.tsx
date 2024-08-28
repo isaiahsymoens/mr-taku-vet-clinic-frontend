@@ -9,7 +9,6 @@ const UsersPage: React.FC = () => {
             {label: "Name", field: "name"},
             {label: "Email", field: "email"},
             {label: "Pet Owned", field: "petOwned"},
-            {label: "", field: ""}
         ],
         tableBody: [
             {email: "test@gmail.com", name: "Test test", petOwned: 0},

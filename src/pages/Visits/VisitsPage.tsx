@@ -13,12 +13,12 @@ const tableData = {
         
     ],
     tableBody: [
-        {owner: "Saitama Sy", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 1", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 2", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 3", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 4", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 5", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
+        {owner: "Saitama Sy 6", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
     ]
 }
 

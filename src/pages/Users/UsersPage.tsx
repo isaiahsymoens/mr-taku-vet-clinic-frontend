@@ -62,6 +62,10 @@ const UsersPage: React.FC = () => {
         setIsDrawerOpen(prev => !prev);
     }
 
+    const handleFormChange = (key: keyof UserData, value: any) => {
+        setUserData((prevData) => ({...prevData, [key]: value}));
+    }
+
     const handleSave = () => {
     }
     
@@ -81,14 +85,16 @@ const UsersPage: React.FC = () => {
                 <TextField 
                     label="First Name" 
                     variant="outlined" 
-                    value={userData.firstName} 
+                    value={userData.firstName}
+                    onChange={(e) => handleFormChange("firstName", e.target.value)} 
                     size="small" 
                     fullWidth 
                 />
                 <TextField 
                     label="Middle Name" 
                     variant="outlined" 
-                    value={userData.middleName} 
+                    value={userData.middleName}
+                    onChange={(e) => handleFormChange("middleName", e.target.value)}  
                     size="small" 
                     fullWidth 
                 />
@@ -96,13 +102,15 @@ const UsersPage: React.FC = () => {
                     label="Last Name" 
                     variant="outlined" 
                     value={userData.lastName} 
+                    onChange={(e) => handleFormChange("lastName", e.target.value)} 
                     size="small" 
                     fullWidth 
                 />
                 <TextField 
                     label="Email" 
                     variant="outlined" 
-                    value={userData.email} 
+                    value={userData.email}
+                    onChange={(e) => handleFormChange("email", e.target.value)}  
                     size="small" 
                     fullWidth 
                 />
@@ -110,6 +118,7 @@ const UsersPage: React.FC = () => {
                     label="Username" 
                     variant="outlined" 
                     value={userData.username} 
+                    onChange={(e) => handleFormChange("username", e.target.value)}  
                     size="small" 
                     fullWidth 
                 />
@@ -117,6 +126,7 @@ const UsersPage: React.FC = () => {
                     label="Password" 
                     variant="outlined" 
                     value={userData.password} 
+                    onChange={(e) => handleFormChange("password", e.target.value)}  
                     size="small" 
                     fullWidth 
                 />
@@ -124,6 +134,7 @@ const UsersPage: React.FC = () => {
                     label="Confirm Password" 
                     variant="outlined" 
                     value={userData.confirmPassword} 
+                    onChange={(e) => handleFormChange("confirmPassword", e.target.value)}  
                     size="small" 
                     fullWidth 
                 />

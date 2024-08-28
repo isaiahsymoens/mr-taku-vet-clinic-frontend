@@ -4,8 +4,8 @@ import { Box, Button, Drawer, TextField, Typography } from '@mui/material';
 type CustomDrawerProps = {
     open: boolean;
     onClose: () => void;
-    onCancel?: () => void;
-    onSave?: () => void;
+    onCancel: () => void;
+    onSave: () => void;
     drawerHeader?: string;
     children: React.ReactNode;
 }

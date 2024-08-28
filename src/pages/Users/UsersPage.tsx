@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
-import {Box, TextField, Typography} from "@mui/material";
 import CustomDrawer from "../../components/CustomDrawer";
+import {Box, TextField} from "@mui/material";
 
 const tableData = {
     tableHeaders: [
@@ -53,17 +53,31 @@ const UsersPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>(initialState);
 
+    useEffect(() => {
+        // TODO: use api
+        // setUserData();
+    }, []);
+
     const toggleDrawer = () => {
         setIsDrawerOpen(prev => !prev);
+    }
+
+    const handleSave = () => {
     }
     
     return (
         <React.Fragment>
-            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer}/>
+            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
             </Box>
-            <CustomDrawer open={isDrawerOpen} onClose={toggleDrawer} drawerHeader="Add User">
+            <CustomDrawer 
+                open={isDrawerOpen} 
+                onClose={toggleDrawer} 
+                onCancel={toggleDrawer} 
+                onSave={handleSave} 
+                drawerHeader="Add User"
+            >
                 <TextField 
                     label="First Name" 
                     variant="outlined" 

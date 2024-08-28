@@ -1,19 +1,51 @@
-import React from "react";
-import {Box, Grid, Typography, Button} from "@mui/material";
-import CustomTable from "../../components/CustomTable";
+import React, {useState, useEffect} from "react";
 import SubHeader from "../../components/SubHeader";
+import CustomTable from "../../components/CustomTable";
+import CustomDrawer from "../../components/CustomDrawer";
+import {Box, Typography, Button, TextField} from "@mui/material";
+
+const tableData = {
+    tableHeaders: [
+        {label: "Name", field: "name"},
+        {label: "Email", field: "email"},
+        {label: "Pet Owned", field: "petOwned"},
+    ],
+    tableBody: [
+        {email: "test@gmail.com", name: "Test test", petOwned: 0},
+        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
+    ],
+}
+
+interface PetData {
+    name: string;
+    petType: string;
+    breed: string;
+    birthDate: string;
+}
+
+const initialState: PetData = {
+    name: "",
+    petType: "",
+    breed: "",
+    birthDate: "", 
+}
 
 const Profile = () => {
-    const tableData = {
-        tableHeaders: [
-            {label: "Name", field: "name"},
-            {label: "Email", field: "email"},
-            {label: "Pet Owned", field: "petOwned"},
-        ],
-        tableBody: [
-            {email: "test@gmail.com", name: "Test test", petOwned: 0},
-            {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
-        ],
+    
+
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [visitData, setVisitData] = useState<PetData>(initialState);
+
+    useEffect(() => {
+        // TODO: use api
+        // setVisitDate();
+    }, []);
+
+    const toggleDrawer = () => {
+        setIsDrawerOpen(prev => !prev);
+    }
+
+    const handleSave = () => {
     }
 
     return (
@@ -47,7 +79,7 @@ const Profile = () => {
                                 borderRadius: "10em"
                             }}
                         />
-                        <Box sx={{ paddingY: 2 }}>
+                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
                             <Typography variant="subtitle2">Monkey D. Luffy</Typography>
                             <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>monkeydluffy@gmail.com</Typography>
                             <Button variant="contained">Edit Profile</Button>
@@ -62,12 +94,48 @@ const Profile = () => {
                         boxShadow: 3 
                     }}>
                         <Box sx={{ marginTop: "-48px" }}>
-                            <SubHeader text="Pets" btnText="Add Pet"/>
+                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={toggleDrawer} />
                         </Box>
                         <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
                     </Box>
                 </Box>
             </Box>
+            <CustomDrawer 
+                open={isDrawerOpen} 
+                onClose={toggleDrawer} 
+                onCancel={toggleDrawer} 
+                onSave={handleSave} 
+                drawerHeader="Add Pet"
+            >
+                <TextField 
+                    label="Name" 
+                    variant="outlined" 
+                    value={visitData.name} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Pet Type" 
+                    variant="outlined" 
+                    value={visitData.petType} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Breed" 
+                    variant="outlined" 
+                    value={visitData.breed} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Birth Date" 
+                    variant="outlined" 
+                    value={visitData.birthDate} 
+                    size="small" 
+                    fullWidth 
+                />
+            </CustomDrawer>
         </React.Fragment>
     );
 }

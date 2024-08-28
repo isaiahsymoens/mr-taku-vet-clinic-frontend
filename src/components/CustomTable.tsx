@@ -17,7 +17,7 @@ export type CustomTableProps = {
 
 const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody }) => {
     return (
-        <TableContainer component={Paper} sx={{ maxHeight: "70vh", overflow: "auto" }}>
+        <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
             <Table stickyHeader>
                 <TableHead>
                     <TableRow>
@@ -26,11 +26,11 @@ const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody }) =>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tableBody.map((row, rowIndex) => (
+                    {tableBody.map((tBody, rowIndex) => (
                         <TableRow key={rowIndex}>
-                        {tableHeaders.map((column: any, colIndex) => (
+                        {tableHeaders.map((tHeader: any, colIndex) => (
                             <TableCell key={colIndex}>
-                            {row[column.field]}
+                            {tBody[tHeader.field]}
                             </TableCell>
                         ))}
                         <TableCell>

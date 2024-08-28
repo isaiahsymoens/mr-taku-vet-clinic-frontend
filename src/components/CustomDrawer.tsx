@@ -1,44 +1,29 @@
 import { useState } from 'react';
 import { Box, Button, Drawer, TextField, Typography } from '@mui/material';
 
+type CustomDrawerProps = {
+    open: boolean;
+    onClose: () => void;
+    onCancel?: () => void;
+    onSave?: () => void;
+    drawerHeader?: string;
+    children: React.ReactNode;
+}
 
-const CustomDrawer: React.FC = () => {
-    const [state, setState] = useState(false);
 
-    const toggleDrawer = (open: boolean) => 
-        (event: React.KeyboardEvent | React.MouseEvent) => {
-        if (event.type === 'keydown' &&
-            ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) return;
-        setState(open);
-    };
-
-    const list = () => (
-        <Box sx={{ width: 350 }}
-            role="presentation"
-            >
-            <form  style={{ display: "flex", flexDirection: "column", margin: "auto", gap: "10px", marginTop: "10px", padding: "10px" }}>
-            <Typography variant="subtitle1">Add User</Typography>
-            <TextField label="First Name" variant="outlined" size="small" fullWidth />
-            <TextField label="Middle Name" variant="outlined" size="small" fullWidth />
-            <TextField label="Last Name" variant="outlined" size="small" fullWidth />
-            <TextField label="Email" variant="outlined" size="small" fullWidth />
-
-            <TextField label="Username" variant="outlined" size="small" fullWidth />
-            <TextField label="Password" variant="outlined" size="small" fullWidth />
-            <TextField label="Confirm Password" variant="outlined" size="small" fullWidth />
-
-            <Button variant="contained">Cancel</Button>
-            <Button variant="contained">Save</Button>
-            </form>
-        </Box>
-    );
-
+const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, onCancel, onSave, drawerHeader, children}) => {
+   
     return (
-        <div>
-
-        </div>
+        <Drawer anchor="right" open={open} onClose={onClose}>
+            <Box sx={{ width: 350, display: "flex", flexDirection: "column", gap: 2, padding: 3, marginTop: "48px" }}>
+                <Typography variant="subtitle1">{drawerHeader}</Typography>
+                {children}
+                <Box>
+                    <Button variant="outlined" onClick={onCancel}>Cancel</Button>
+                    <Button variant="contained" onClick={onSave}>Save</Button>
+                </Box>
+            </Box>
+        </Drawer>
     );
 }
 

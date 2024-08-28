@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import {Box} from "@mui/material";
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
+import {Box, TextField, Typography} from "@mui/material";
+import CustomDrawer from "../../components/CustomDrawer";
 
 const tableData = {
     tableHeaders: [
@@ -22,19 +23,97 @@ const tableData = {
     ],
 }
 
+interface UserData {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    email: string;
+    petOwned: number;
+    username: string;
+    password: string;
+    confirmPassword: string;
+    userType: string;
+    active: boolean;
+}
+
+const initialState: UserData = {
+    firstName: "", 
+    middleName: "", 
+    lastName: "", 
+    email: "", 
+    petOwned: 0, 
+    username: "",
+    password: "",
+    confirmPassword: "",
+    userType: "",
+    active: false,
+}
+
 const UsersPage: React.FC = () => {
-    const [addUser, setAddUser] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [userData, setUserData] = useState<UserData>(initialState);
 
-    const handleAddUser = () => {
-        setAddUser(prev => !prev);
+    const toggleDrawer = () => {
+        setIsDrawerOpen(prev => !prev);
     }
-
+    
     return (
         <React.Fragment>
-            <SubHeader text="Users" showSearchbar={true} btnText="Add User" onAddUser={handleAddUser} />
+            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer}/>
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
             </Box>
+            <CustomDrawer open={isDrawerOpen} onClose={toggleDrawer} drawerHeader="Add User">
+                <TextField 
+                    label="First Name" 
+                    variant="outlined" 
+                    value={userData.firstName} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Middle Name" 
+                    variant="outlined" 
+                    value={userData.middleName} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Last Name" 
+                    variant="outlined" 
+                    value={userData.lastName} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Email" 
+                    variant="outlined" 
+                    value={userData.email} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Username" 
+                    variant="outlined" 
+                    value={userData.username} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Password" 
+                    variant="outlined" 
+                    value={userData.password} 
+                    size="small" 
+                    fullWidth 
+                />
+                <TextField 
+                    label="Confirm Password" 
+                    variant="outlined" 
+                    value={userData.confirmPassword} 
+                    size="small" 
+                    fullWidth 
+                />
+            </CustomDrawer>
         </React.Fragment>
     );
 }

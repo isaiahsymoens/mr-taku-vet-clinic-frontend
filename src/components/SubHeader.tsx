@@ -5,10 +5,10 @@ type SubHeaderProps = {
     text: string;
     showSearchbar?: boolean;
     btnText: string;
-    onAddUser?: () => void;
+    toggleDrawer?: () => void;
 }
 
-const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, onAddUser}) => {
+const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, toggleDrawer}) => {
     return (
         <Box sx={{ 
             background: "#F5F5F5",
@@ -39,8 +39,8 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                     </Paper>
                 }
                 <Button 
-                    variant="contained" 
-                    onClick={onAddUser}
+                    variant="contained"
+                    onClick={toggleDrawer} 
                     sx={{ minWidth: "108px" }}>{btnText}</Button>
             </Box>
         </Box>

@@ -25,7 +25,7 @@ const App: React.FC = () => {
           element: <VisitsPage />
         },
         {
-          path: "profile",
+          path: ":username",
           element: <Profile />
         },
       ]

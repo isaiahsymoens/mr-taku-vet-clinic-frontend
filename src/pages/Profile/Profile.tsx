@@ -61,12 +61,8 @@ const Profile = () => {
                         overflow: "hidden",
                         boxShadow: 3 
                     }}>
-                        <Box sx={{
-                            background: "red"
-                        }}>
-                            <Box sx={{ marginTop: "-48px" }}>
-                                <SubHeader text="Pets" btnText="Add Pet"/>
-                            </Box>
+                        <Box sx={{ marginTop: "-48px" }}>
+                            <SubHeader text="Pets" btnText="Add Pet"/>
                         </Box>
                         <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
                     </Box>

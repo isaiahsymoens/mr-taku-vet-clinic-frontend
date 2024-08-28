@@ -7,51 +7,39 @@ import {
     TableHead, 
     TableRow,
     IconButton,
-    Box
 } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const tableData = {
-    tableHeaders: [
-        {label: "Name", field: "name"},
-        {label: "Email", field: "email"},
-        {label: "Pet Owned", field: "petOwned"},
-        {label: "", field: ""}
-    ],
-    tableRows: [
-        {email: "test@gmail.com", name: "Test test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", petOwned: 2},
-    ],
+export type CustomTableProps = {
+    tableHeaders: any[];
+    tableBody: any[];
 }
 
-const CustomTable: React.FC = () => {
+const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody }) => {
     return (
-        <TableContainer component={Paper}>
-            <Table>
+        <TableContainer component={Paper} sx={{ maxHeight: "70vh", overflow: "auto" }}>
+            <Table stickyHeader>
                 <TableHead>
                     <TableRow>
-                        {tableData.tableHeaders.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
+                        {tableHeaders.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
+                        <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tableData.tableHeaders.map((e, index) => 
-                        <TableRow key={index}>
-                            {/* {tableData.tableRows.map((tblRow, index) => )} */}
-                        </TableRow>
-                    )}
-                    {/* <TableRow>
-                        {tableData.tableRows.map((e, index) =>
-                            <TableCell key={index}>
-                                {}
+                    {tableBody.map((row, rowIndex) => (
+                        <TableRow key={rowIndex}>
+                        {tableHeaders.map((column: any, colIndex) => (
+                            <TableCell key={colIndex}>
+                            {row[column.field]}
                             </TableCell>
-                        )}
+                        ))}
                         <TableCell>
-                            <IconButton size="small">
-                                <MoreVertIcon />
+                            <IconButton aria-label="delete" size="small">
+                            <MoreVertIcon />
                             </IconButton>
                         </TableCell>
-                    </TableRow> */}
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>

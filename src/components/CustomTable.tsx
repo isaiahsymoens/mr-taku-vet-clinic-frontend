@@ -42,7 +42,7 @@ const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody, menu
                                     <TableCell>
                                         <CustomTableRowMenu 
                                             menu={menu}
-                                            test={tBody}
+                                            data={tBody}
                                         />
                                     </TableCell>
                                 }

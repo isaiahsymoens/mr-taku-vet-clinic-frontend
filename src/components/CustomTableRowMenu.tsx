@@ -4,10 +4,10 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 type CustomTableRowMenuProps = {
     menu: any;
-    test: any[] | any | Object;
+    data: any[] | any | Object;
 }
 
-const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, test}) => {
+const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, data}) => {
     const [anchorE1, setAchorE1] = useState<null | HTMLElement>(null);
 
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -35,16 +35,15 @@ const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, test}) => 
                 open={Boolean(anchorE1)}
                 onClose={handelOnClose}
             >
-                {menu.map((e: any, index: number) => 
+                {menu(data).map((item: any) => 
                     <MenuItem 
-                        key={index}
-                        onClick={
-                            () => {
-                            e.execute(test); 
+                        key={item.username}
+                        onClick={() => {
+                            item.onClick(data); 
                             handelOnClose()}
                         }
                     >
-                        {e.name}
+                        {item.name}
                     </MenuItem>
                 )}
             </Menu>

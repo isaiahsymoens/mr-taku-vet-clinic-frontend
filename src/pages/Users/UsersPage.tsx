@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import {Box} from "@mui/material";
 import UserForm, {UserData} from "./UserForm";
 import {useNavigate} from "react-router-dom";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const tableData = {
     tableHeaders: [
@@ -37,13 +38,9 @@ const initialState: UserData = {
 
 const UsersPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isConfirmDlgOpen, setIsConfirmDlgOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>(initialState);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // TODO: use api
-        // setUserData();
-    }, []);
 
     const toggleDrawer = () => {
         setIsDrawerOpen(prev => !prev);
@@ -56,33 +53,42 @@ const UsersPage: React.FC = () => {
     const handleSave = () => {
     }
 
-    const menu = [
+    const handleEdit = (data: any) => {
+        
+    }
+
+    const handleView = (data: any) => {
+        navigate(`/${data.username}`);
+    }
+
+    const handleDelete = (data: any) => {
+
+    }
+
+    const menu = (user: any) => [
         {
             name: "Edit",
-            execute: (data: any) => {
-                console.log("edit");
-            }
+            onClick: () => handleEdit(user),
         },
         {
             name: "View",
-            execute: (data: any) => {
-                console.log("view");
-                navigate(`/${data.username}`);
-            }
+            onClick: () => handleView(user),
         },
         {
             name: "Delete",
-            execute: (data: any) => {
-                console.log("delete");
-            }
+            onClick: () => handleDelete(user),
         }
-    ]
+    ];
     
     return (
         <React.Fragment>
             <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody} menu={menu} />
+                <CustomTable 
+                    tableHeaders={tableData.tableHeaders} 
+                    tableBody={tableData.tableBody} 
+                    menu={menu} 
+                />
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 

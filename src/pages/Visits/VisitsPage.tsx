@@ -4,6 +4,7 @@ import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
 import {Box} from "@mui/material";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const tableData = {
     tableHeaders: [
@@ -34,8 +35,9 @@ const initialState: VisitData = {
 const VisitsPage: React.FC = () => {
     const [visitData, setVisitData] = useState<VisitData>(initialState);
     const [selectedVisit, setSelectedVisit] = useState<VisitData>({});
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
     const menuActions = (data: VisitData) => [
         {
@@ -67,6 +69,7 @@ const VisitsPage: React.FC = () => {
     const handleDelete = (data: VisitData) => {
         setSelectedVisit(data);
         setVisitDrawerType(VisitTypes.Delete);
+        toggleConfirmationDialog();
     }
 
     const handleFormChange = (key: keyof VisitData, value: any) => {
@@ -82,8 +85,18 @@ const VisitsPage: React.FC = () => {
         setVisitDrawerType("");
     }
 
+    const toggleConfirmationDialog = () => {
+        setIsConfirmationDialog(prev => !prev);
+    }
+
+    const handleSaveConfirmDlg = () => {
+        console.log("selectedVisit :", selectedVisit);
+    }
+
     const handleSave = () => {
     }
+
+
 
     return (
         <Box>
@@ -108,6 +121,13 @@ const VisitsPage: React.FC = () => {
                     handleFormChange={handleFormChange}
                 />
             </CustomDrawer>
+            <ConfirmationDialog
+                title="Are you sure you want to delete this user record?"
+                description="This will delete permanently, You cannot undo this action."
+                isOpen={isConfirmationDialog}
+                onSave={handleSaveConfirmDlg}
+                onCancel={toggleConfirmationDialog}
+            />
         </Box>
     );
 }

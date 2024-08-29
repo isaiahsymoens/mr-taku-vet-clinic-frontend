@@ -17,9 +17,9 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onCancel, onSave, draw
             <Box sx={{ width: 350, display: "flex", flexDirection: "column", gap: 2, padding: 3, marginTop: "48px" }}>
                 <Typography variant="subtitle1">{drawerHeader}</Typography>
                 {children}
-                <Box>
-                    <Button variant="outlined" onClick={onCancel}>Cancel</Button>
-                    <Button variant="contained" onClick={onSave}>Save</Button>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                    <Button variant="outlined" onClick={onCancel} fullWidth>Cancel</Button>
+                    <Button variant="contained" onClick={onSave} fullWidth>Save</Button>
                 </Box>
             </Box>
         </Drawer>

@@ -4,6 +4,7 @@ import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import {Box, Typography, Button, TextField} from "@mui/material";
 import PetForm, { PetData } from "./PetForm";
+import UserForm, { UserData } from "../Users/UserForm";
 
 const tableData = {
     tableHeaders: [
@@ -18,9 +19,7 @@ const tableData = {
     ],
 }
 
-
-
-const initialState: PetData = {
+const initialStatePet: PetData = {
     name: "",
     petType: "",
     breed: "",
@@ -28,8 +27,10 @@ const initialState: PetData = {
 }
 
 const Profile = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [petData, setPetData] = useState<PetData>(initialState);
+    const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
+    const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
+    const [userData, setUserData] = useState<UserData>({});
+    const [petData, setPetData] = useState<PetData>(initialStatePet);
 
     const menuActions = (data: PetData) => [
         {
@@ -55,15 +56,23 @@ const Profile = () => {
     const handleDelete = (data: PetData) => {
     }
 
-    const toggleDrawer = () => {
-        setIsDrawerOpen(prev => !prev);
+    const toggleUserDrawer = () => {
+        setIsUserDrawerOpen(prev => !prev);
     }
 
-    const handleFormChange = (key: keyof PetData, value: any) => {
+    const togglePetDrawer = () => {
+        setIsPetDrawerOpen(prev => !prev);
+    }
+
+    const handleFormChange = (key: keyof PetData | keyof UserData, value: any) => {
         setPetData((prevData) => ({...prevData, [key]: value}));
     }
 
-    const handleSave = () => {
+    const handleUserSave = () => {
+
+    }
+
+    const handlePetSave = () => {
     }
 
     return (
@@ -100,7 +109,7 @@ const Profile = () => {
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
                             <Typography variant="subtitle2">Monkey D. Luffy</Typography>
                             <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>monkeydluffy@gmail.com</Typography>
-                            <Button variant="contained">Edit Profile</Button>
+                            <Button variant="contained" onClick={toggleUserDrawer}>Edit Profile</Button>
                         </Box>
                     </Box>
                     <Box sx={{ 
@@ -112,7 +121,7 @@ const Profile = () => {
                         boxShadow: 3 
                     }}>
                         <Box sx={{ marginTop: "-48px" }}>
-                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={toggleDrawer} />
+                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={togglePetDrawer} />
                         </Box>
                         <CustomTable 
                             tableHeaders={tableData.tableHeaders} 
@@ -123,9 +132,21 @@ const Profile = () => {
                 </Box>
             </Box>
             <CustomDrawer 
-                open={isDrawerOpen} 
-                onCancel={toggleDrawer} 
-                onSave={handleSave} 
+                open={isUserDrawerOpen} 
+                onCancel={toggleUserDrawer} 
+                onSave={handleUserSave} 
+                drawerHeader="Edit User"
+            >
+                <UserForm
+                    type="Edit" 
+                    userData={userData} 
+                    handleFormChange={handleFormChange} 
+                />
+            </CustomDrawer>
+            <CustomDrawer 
+                open={isPetDrawerOpen} 
+                onCancel={togglePetDrawer} 
+                onSave={handlePetSave} 
                 drawerHeader="Add Pet"
             >
                 <PetForm

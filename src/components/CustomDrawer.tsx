@@ -3,7 +3,6 @@ import { Box, Button, Drawer, TextField, Typography } from '@mui/material';
 
 type CustomDrawerProps = {
     open: boolean;
-    onClose: () => void;
     onCancel: () => void;
     onSave: () => void;
     drawerHeader?: string;
@@ -11,10 +10,10 @@ type CustomDrawerProps = {
 }
 
 
-const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, onCancel, onSave, drawerHeader, children}) => {
+const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onCancel, onSave, drawerHeader, children}) => {
    
     return (
-        <Drawer anchor="right" open={open} onClose={onClose}>
+        <Drawer anchor="right" open={open}>
             <Box sx={{ width: 350, display: "flex", flexDirection: "column", gap: 2, padding: 3, marginTop: "48px" }}>
                 <Typography variant="subtitle1">{drawerHeader}</Typography>
                 {children}

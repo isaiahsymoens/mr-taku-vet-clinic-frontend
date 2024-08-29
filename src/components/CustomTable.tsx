@@ -1,4 +1,5 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 import {
     Paper, 
     TableCell, 
@@ -16,12 +17,16 @@ export type CustomTableProps = {
 }
 
 const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody }) => {
+    const navigate = useNavigate();
+
     const onEditRow = (data: any) => {
         console.log("edit :", data);
     }
 
     const onViewRow = (data: any) => {
         console.log("view :", data);
+        console.log("username :", data.username);
+        navigate(`/${data.username}`);
     }
 
     const onDeleteRow = (data: any) => {

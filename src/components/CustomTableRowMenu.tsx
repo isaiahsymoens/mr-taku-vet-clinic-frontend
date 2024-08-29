@@ -9,7 +9,6 @@ type CustomTableRowMenuProps = {
     test: any[] | any | Object;
 }
 
-
 const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({onEditRow, onViewRow, onDeleteRow, test}) => {
     const [anchorE1, setAchorE1] = useState<null | HTMLElement>(null);
 
@@ -39,8 +38,8 @@ const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({onEditRow, onVie
                 onClose={handelOnClose}
             >
                 <MenuItem onClick={() => {onEditRow(test); handelOnClose()}}>Edit</MenuItem>
-                <MenuItem onClick={() => onViewRow(test)}>View</MenuItem>
-                <MenuItem onClick={() => onDeleteRow(test)}>Delete</MenuItem>
+                <MenuItem onClick={() => {onViewRow(test); handelOnClose()}}>View</MenuItem>
+                <MenuItem onClick={() => {onDeleteRow(test); handelOnClose()}}>Delete</MenuItem>
             </Menu>
         </React.Fragment>
     );

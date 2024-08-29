@@ -62,7 +62,6 @@ const VisitsPage: React.FC = () => {
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 
-                onClose={toggleDrawer} 
                 onCancel={toggleDrawer} 
                 onSave={handleSave} 
                 drawerHeader="Add Visit"

@@ -102,7 +102,6 @@ const Profile = () => {
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 
-                onClose={toggleDrawer} 
                 onCancel={toggleDrawer} 
                 onSave={handleSave} 
                 drawerHeader="Add Pet"

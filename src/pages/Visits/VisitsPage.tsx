@@ -58,6 +58,7 @@ const VisitsPage: React.FC = () => {
         console.log("data :", data);
         setSelectedVisit(data);
         setVisitDrawerType(VisitTypes.Edit);
+        toggleDrawer();
     }
 
     const handleView = (data: VisitData) => {

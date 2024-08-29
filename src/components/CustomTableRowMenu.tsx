@@ -35,9 +35,9 @@ const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, data}) => 
                 open={Boolean(anchorE1)}
                 onClose={handelOnClose}
             >
-                {menu(data).map((item: any) => 
+                {menu(data).map((item: any, index: number) => 
                     <MenuItem 
-                        key={item.username}
+                        key={index}
                         onClick={() => {
                             item.onClick(data); 
                             handelOnClose()}

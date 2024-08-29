@@ -6,7 +6,7 @@ export interface UserData {
     middleName: string;
     lastName: string;
     email: string;
-    petOwned: number;
+    petOwned?: number;
     username: string;
     password: string;
     confirmPassword: string;
@@ -21,6 +21,7 @@ type UserFormProps = {
 }
 
 const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) => {
+    console.log("userData :", userData);
     return (
         <React.Fragment>
             <TextField 

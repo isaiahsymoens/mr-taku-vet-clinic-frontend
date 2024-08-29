@@ -1,25 +1,14 @@
 import React from "react";
-import {useNavigate} from "react-router-dom";
-import {
-    Paper, 
-    TableCell, 
-    TableContainer, 
-    Table, 
-    TableBody, 
-    TableHead, 
-    TableRow,
-} from "@mui/material";
 import CustomTableRowMenu from "./CustomTableRowMenu";
+import {Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow} from "@mui/material";
 
 export type CustomTableProps = {
     tableHeaders: any[];
     tableBody: any[];
-    menu: any;
+    menuActions: any;
 }
 
-const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody, menu }) => {
-    const navigate = useNavigate();
-
+const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody, menuActions }) => {
     return (
         <React.Fragment>
             <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
@@ -27,7 +16,7 @@ const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody, menu
                     <TableHead>
                         <TableRow>
                             {tableHeaders.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
-                            {menu && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
+                            {menuActions && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -38,10 +27,10 @@ const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody, menu
                                     {tBody[tHeader.field]}
                                     </TableCell>
                                 ))}
-                                {menu && 
+                                {menuActions && 
                                     <TableCell>
                                         <CustomTableRowMenu 
-                                            menu={menu}
+                                            menu={menuActions}
                                             data={tBody}
                                         />
                                     </TableCell>

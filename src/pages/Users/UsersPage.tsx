@@ -38,7 +38,7 @@ const initialStateUserData: UserData = {
 
 const UsersPage: React.FC = () => {
     const [userData, setUserData] = useState<UserData>(initialStateUserData);
-    const [selectedUser, setSelectedUser] = useState({});
+    const [selectedUser, setSelectedUser] = useState<UserData>({});
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
@@ -109,7 +109,7 @@ const UsersPage: React.FC = () => {
                 open={isDrawerOpen} 
                 onCancel={toggleDrawer} 
                 onSave={handleSave} 
-                drawerHeader="Add User"
+                drawerHeader={selectedUser ? "Add User" : "Edit User"}
             >
                 <UserForm 
                     type={selectedUser == null ? "Add" : "Edit"} 

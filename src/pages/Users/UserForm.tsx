@@ -2,16 +2,16 @@ import React from "react";
 import {TextField} from "@mui/material";
 
 export interface UserData {
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    email: string;
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    email?: string;
     petOwned?: number;
-    username: string;
-    password: string;
-    confirmPassword: string;
-    userType: string;
-    active: boolean;
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+    userType?: string;
+    active?: boolean;
 }
 
 type UserFormProps = {

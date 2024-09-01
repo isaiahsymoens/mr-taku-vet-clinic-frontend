@@ -3,14 +3,11 @@ import {IconButton, Menu, MenuItem} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 type CustomTableRowMenuProps = {
-    onEditRow: (e: any[]) => void;
-    onViewRow: (e: any) => void;
-    onDeleteRow: (e: any) => void;
-    test: any[] | any | Object;
+    menu: any;
+    data: any[] | any | Object;
 }
 
-
-const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({onEditRow, onViewRow, onDeleteRow, test}) => {
+const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, data}) => {
     const [anchorE1, setAchorE1] = useState<null | HTMLElement>(null);
 
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -38,9 +35,17 @@ const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({onEditRow, onVie
                 open={Boolean(anchorE1)}
                 onClose={handelOnClose}
             >
-                <MenuItem onClick={() => {onEditRow(test); handelOnClose()}}>Edit</MenuItem>
-                <MenuItem onClick={() => onViewRow(test)}>View</MenuItem>
-                <MenuItem onClick={() => onDeleteRow(test)}>Delete</MenuItem>
+                {menu(data).map((item: any, index: number) => 
+                    <MenuItem 
+                        key={index}
+                        onClick={() => {
+                            item.onClick(data); 
+                            handelOnClose()}
+                        }
+                    >
+                        {item.name}
+                    </MenuItem>
+                )}
             </Menu>
         </React.Fragment>
     );

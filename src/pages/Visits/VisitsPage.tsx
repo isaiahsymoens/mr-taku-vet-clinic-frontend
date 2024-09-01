@@ -1,8 +1,10 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
-import {Box, TextField} from "@mui/material";
 import CustomDrawer from "../../components/CustomDrawer";
+import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
+import {Box} from "@mui/material";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const tableData = {
     tableHeaders: [
@@ -22,89 +24,111 @@ const tableData = {
     ]
 }
 
-interface VisitData {
-    owner: string;
-    pet: string;
-    visitType: string;
-    visitDate: string;
-    notes: string;
-}
-
 const initialState: VisitData = {
     owner: "",
     pet: "",
     visitType: "",
     visitDate: "",
-    notes: "" 
+    notes: ""
 }
 
 const VisitsPage: React.FC = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [visitData, setVisitData] = useState<VisitData>(initialState);
+    const [selectedVisit, setSelectedVisit] = useState<VisitData>({});
+    const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
-    useEffect(() => {
-        // TODO: use api
-        // setVisitDate();
-    }, []);
+    const menuActions = (data: VisitData) => [
+        {
+            name: "Edit",
+            onClick: () => handleEdit(data),
+        },
+        {
+            name: "View",
+            onClick: () => handleView(data),
+        },
+        {
+            name: "Delete",
+            onClick: () => handleDelete(data),
+        }
+    ];
+
+    const handleEdit = (data: VisitData) => {
+        console.log("data :", data);
+        setSelectedVisit(data);
+        setVisitDrawerType(VisitTypes.Edit);
+        toggleDrawer();
+    }
+
+    const handleView = (data: VisitData) => {
+        setSelectedVisit(data); 
+        setVisitDrawerType(VisitTypes.View);
+        toggleDrawer();
+    }
+
+    const handleDelete = (data: VisitData) => {
+        setSelectedVisit(data);
+        setVisitDrawerType(VisitTypes.Delete);
+        toggleConfirmationDialog();
+    }
+
+    const handleFormChange = (key: keyof VisitData, value: any) => {
+        setVisitData((prevData) => ({...prevData, [key]: value}));
+    }
 
     const toggleDrawer = () => {
         setIsDrawerOpen(prev => !prev);
     }
 
+    const toggleCancelDrawer = () => {
+        setIsDrawerOpen(prev => !prev);
+        setVisitDrawerType("");
+    }
+
+    const toggleConfirmationDialog = () => {
+        setIsConfirmationDialog(prev => !prev);
+    }
+
+    const handleSaveConfirmDlg = () => {
+        console.log("selectedVisit :", selectedVisit);
+    }
+
     const handleSave = () => {
     }
+
+
 
     return (
         <Box>
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
+                <CustomTable 
+                    tableHeaders={tableData.tableHeaders} 
+                    tableBody={tableData.tableBody}
+                    menuActions={menuActions}
+                />
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 
-                onClose={toggleDrawer} 
-                onCancel={toggleDrawer} 
+                onCancel={toggleCancelDrawer} 
                 onSave={handleSave} 
                 drawerHeader="Add Visit"
+                showBtn={visitDrawerType !== VisitTypes.View}
             >
-                <TextField 
-                    label="Owner" 
-                    variant="outlined" 
-                    value={visitData.owner} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Pet" 
-                    variant="outlined" 
-                    value={visitData.pet} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Visit Type" 
-                    variant="outlined" 
-                    value={visitData.visitType} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Visit Date" 
-                    variant="outlined" 
-                    value={visitData.visitDate} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Notes"
-                    variant="outlined" 
-                    value={visitData.notes} 
-                    size="small" 
-                    multiline
-                    rows={4}
-                    fullWidth 
+                <VisitForm 
+                    type={visitDrawerType}
+                    visitData={visitData}
+                    handleFormChange={handleFormChange}
                 />
             </CustomDrawer>
+            <ConfirmationDialog
+                title="Are you sure you want to delete this user record?"
+                description="This will delete permanently, You cannot undo this action."
+                isOpen={isConfirmationDialog}
+                onSave={handleSaveConfirmDlg}
+                onCancel={toggleConfirmationDialog}
+            />
         </Box>
     );
 }

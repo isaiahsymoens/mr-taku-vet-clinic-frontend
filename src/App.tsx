@@ -31,7 +31,7 @@ const App: React.FC = () => {
       ]
     },
     {
-      path: "test",
+      path: "testpage",
       element: <Test />
     }
   ]);

@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
-import {Box, TextField} from "@mui/material";
+import {Box} from "@mui/material";
+import UserForm, {UserData} from "./UserForm";
+import {useNavigate} from "react-router-dom";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const tableData = {
     tableHeaders: [
@@ -11,32 +14,16 @@ const tableData = {
         {label: "Pet Owned", field: "petOwned"},
     ],
     tableBody: [
-        {email: "test@gmail.com", name: "Test test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", petOwned: 2},
-        {email: "test@gmail.com", name: "Test test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", petOwned: 2},
-        {email: "test@gmail.com", name: "Test test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", petOwned: 2},
+        {email: "test@gmail.com", name: "Test test", username: "test", petOwned: 0},
+        {email: "test1@gmail.com", name: "Test test 1", username: "test1", petOwned: 1},
+        {email: "test2@gmail.com", name: "Test test 2", username: "test2", petOwned: 2},
+        {email: "test3@gmail.com", name: "Test test 3", username: "test3", petOwned: 0},
+        {email: "test4@gmail.com", name: "Test test 4", username: "test4", petOwned: 1},
+        {email: "test5@gmail.com", name: "Test test 5", username: "test5", petOwned: 2},
     ],
 }
 
-interface UserData {
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    email: string;
-    petOwned: number;
-    username: string;
-    password: string;
-    confirmPassword: string;
-    userType: string;
-    active: boolean;
-}
-
-const initialState: UserData = {
+const initialStateUserData: UserData = {
     firstName: "", 
     middleName: "", 
     lastName: "", 
@@ -50,16 +37,55 @@ const initialState: UserData = {
 }
 
 const UsersPage: React.FC = () => {
+    const [userData, setUserData] = useState<UserData>(initialStateUserData);
+    const [selectedUser, setSelectedUser] = useState<UserData>({});
+    
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [userData, setUserData] = useState<UserData>(initialState);
+    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
-    useEffect(() => {
-        // TODO: use api
-        // setUserData();
-    }, []);
+    const navigate = useNavigate();
+
+    const menuActions = (user: any) => [
+        {
+            name: "Edit",
+            onClick: () => handleEdit(user),
+        },
+        {
+            name: "View",
+            onClick: () => handleView(user),
+        },
+        {
+            name: "Delete",
+            onClick: () => handleDelete(user),
+        }
+    ];
+
+    const handleEdit = (data: any) => {
+        console.log("data :", data);
+        setSelectedUser(data);
+        toggleDrawer();
+    }
+
+    const handleView = (data: any) => {
+        setSelectedUser(data);
+        navigate(`/${data.username}`);
+    }
+
+    const handleDelete = (data: any) => {
+        setSelectedUser(data);
+        toggleConfirmationDialog();
+    }
 
     const toggleDrawer = () => {
         setIsDrawerOpen(prev => !prev);
+    }
+
+    const toggleConfirmationDialog = () => {
+        setIsConfirmationDialog(prev => !prev);
+    }
+
+    const handleSaveConfirmDlg = () => {
+        console.log("username :", selectedUser?.username);
     }
 
     const handleFormChange = (key: keyof UserData, value: any) => {
@@ -68,77 +94,36 @@ const UsersPage: React.FC = () => {
 
     const handleSave = () => {
     }
-    
+
     return (
         <React.Fragment>
             <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
+                <CustomTable 
+                    tableHeaders={tableData.tableHeaders} 
+                    tableBody={tableData.tableBody} 
+                    menuActions={menuActions} 
+                />
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 
-                onClose={toggleDrawer} 
                 onCancel={toggleDrawer} 
                 onSave={handleSave} 
-                drawerHeader="Add User"
+                drawerHeader={selectedUser ? "Add User" : "Edit User"}
             >
-                <TextField 
-                    label="First Name" 
-                    variant="outlined" 
-                    value={userData.firstName}
-                    onChange={(e) => handleFormChange("firstName", e.target.value)} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Middle Name" 
-                    variant="outlined" 
-                    value={userData.middleName}
-                    onChange={(e) => handleFormChange("middleName", e.target.value)}  
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Last Name" 
-                    variant="outlined" 
-                    value={userData.lastName} 
-                    onChange={(e) => handleFormChange("lastName", e.target.value)} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Email" 
-                    variant="outlined" 
-                    value={userData.email}
-                    onChange={(e) => handleFormChange("email", e.target.value)}  
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Username" 
-                    variant="outlined" 
-                    value={userData.username} 
-                    onChange={(e) => handleFormChange("username", e.target.value)}  
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Password" 
-                    variant="outlined" 
-                    value={userData.password} 
-                    onChange={(e) => handleFormChange("password", e.target.value)}  
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Confirm Password" 
-                    variant="outlined" 
-                    value={userData.confirmPassword} 
-                    onChange={(e) => handleFormChange("confirmPassword", e.target.value)}  
-                    size="small" 
-                    fullWidth 
+                <UserForm 
+                    type={selectedUser == null ? "Add" : "Edit"} 
+                    userData={selectedUser == null ? userData : selectedUser} 
+                    handleFormChange={handleFormChange} 
                 />
             </CustomDrawer>
+            <ConfirmationDialog
+                title="Are you sure you want to delete this user record?"
+                description="This will delete permanently, You cannot undo this action."
+                isOpen={isConfirmationDialog}
+                onSave={handleSaveConfirmDlg}
+                onCancel={toggleConfirmationDialog}
+            />
         </React.Fragment>
     );
 }

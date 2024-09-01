@@ -1,29 +1,25 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import {Box, Typography, Button, TextField} from "@mui/material";
+import PetForm, { PetData } from "./PetForm";
+import UserForm, { UserData } from "../Users/UserForm";
 
 const tableData = {
     tableHeaders: [
         {label: "Name", field: "name"},
-        {label: "Email", field: "email"},
-        {label: "Pet Owned", field: "petOwned"},
+        {label: "Pet Type", field: "petType"},
+        {label: "Breed", field: "breed"},
+        {label: "Birth Date", field: "birthDate"},
     ],
     tableBody: [
-        {email: "test@gmail.com", name: "Test test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", petOwned: 1},
+        {name: "Brownie", petType: "Dog", breed: "Golden Retriever", birthDate: "01/01/2024"},
+        {name: "Blacky", petType: "Dog", breed: "Golden Retriever", birthDate: "01/02/2024"},
     ],
 }
 
-interface PetData {
-    name: string;
-    petType: string;
-    breed: string;
-    birthDate: string;
-}
-
-const initialState: PetData = {
+const initialStatePet: PetData = {
     name: "",
     petType: "",
     breed: "",
@@ -31,21 +27,52 @@ const initialState: PetData = {
 }
 
 const Profile = () => {
-    
+    const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
+    const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
+    const [userData, setUserData] = useState<UserData>({});
+    const [petData, setPetData] = useState<PetData>(initialStatePet);
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [visitData, setVisitData] = useState<PetData>(initialState);
+    const menuActions = (data: PetData) => [
+        {
+            name: "Edit",
+            onClick: () => handleEdit(data),
+        },
+        {
+            name: "View",
+            onClick: () => handleView(data),
+        },
+        {
+            name: "Delete",
+            onClick: () => handleDelete(data),
+        }
+    ];
 
-    useEffect(() => {
-        // TODO: use api
-        // setVisitDate();
-    }, []);
-
-    const toggleDrawer = () => {
-        setIsDrawerOpen(prev => !prev);
+    const handleEdit = (data: PetData) => {
     }
 
-    const handleSave = () => {
+    const handleView = (data: PetData) => {
+    }
+
+    const handleDelete = (data: PetData) => {
+    }
+
+    const toggleUserDrawer = () => {
+        setIsUserDrawerOpen(prev => !prev);
+    }
+
+    const togglePetDrawer = () => {
+        setIsPetDrawerOpen(prev => !prev);
+    }
+
+    const handleFormChange = (key: keyof PetData | keyof UserData, value: any) => {
+        setPetData((prevData) => ({...prevData, [key]: value}));
+    }
+
+    const handleUserSave = () => {
+
+    }
+
+    const handlePetSave = () => {
     }
 
     return (
@@ -82,7 +109,7 @@ const Profile = () => {
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
                             <Typography variant="subtitle2">Monkey D. Luffy</Typography>
                             <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>monkeydluffy@gmail.com</Typography>
-                            <Button variant="contained">Edit Profile</Button>
+                            <Button variant="contained" onClick={toggleUserDrawer}>Edit Profile</Button>
                         </Box>
                     </Box>
                     <Box sx={{ 
@@ -94,47 +121,39 @@ const Profile = () => {
                         boxShadow: 3 
                     }}>
                         <Box sx={{ marginTop: "-48px" }}>
-                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={toggleDrawer} />
+                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={togglePetDrawer} />
                         </Box>
-                        <CustomTable tableHeaders={tableData.tableHeaders} tableBody={tableData.tableBody}/>
+                        <CustomTable 
+                            tableHeaders={tableData.tableHeaders} 
+                            tableBody={tableData.tableBody}
+                            menuActions={menuActions}
+                        />
                     </Box>
                 </Box>
             </Box>
             <CustomDrawer 
-                open={isDrawerOpen} 
-                onClose={toggleDrawer} 
-                onCancel={toggleDrawer} 
-                onSave={handleSave} 
+                open={isUserDrawerOpen} 
+                onCancel={toggleUserDrawer} 
+                onSave={handleUserSave} 
+                drawerHeader="Edit User"
+            >
+                <UserForm
+                    type="Edit" 
+                    userData={userData} 
+                    handleFormChange={handleFormChange} 
+                />
+            </CustomDrawer>
+            <CustomDrawer 
+                open={isPetDrawerOpen} 
+                onCancel={togglePetDrawer} 
+                onSave={handlePetSave} 
                 drawerHeader="Add Pet"
             >
-                <TextField 
-                    label="Name" 
-                    variant="outlined" 
-                    value={visitData.name} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Pet Type" 
-                    variant="outlined" 
-                    value={visitData.petType} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Breed" 
-                    variant="outlined" 
-                    value={visitData.breed} 
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Birth Date" 
-                    variant="outlined" 
-                    value={visitData.birthDate} 
-                    size="small" 
-                    fullWidth 
-                />
+                <PetForm
+                    type="Add"
+                    petData={petData}
+                    handleFormChange={handleFormChange}
+                />     
             </CustomDrawer>
         </React.Fragment>
     );

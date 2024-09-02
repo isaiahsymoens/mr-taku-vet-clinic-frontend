@@ -1,23 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
-import { User } from "../../models/user";
+import {User} from "../../models/user";
 
 interface UserState {
     users: User[];
 }
 
 const initialState: UserState = {
-    users: [
-        {
-            email: "monkeydluffy@gmail.com", 
-            firstName: "Luffy", 
-            username: "monkeydluffy", 
-            petOwned: 0,
-            middleName: "D.",
-            lastName: "Monkey",
-            userTypeId: 0,
-            active: false
-        }
-    ]
+    users: []
 }
 
 const userSlice = createSlice({
@@ -28,13 +17,11 @@ const userSlice = createSlice({
             // state.users.push(action.payload);
         },
         removeUser: (state, action) => {
-
         },
         updateUser: (state, action) => {
-
         },
-        fetchUsers: (state, action) => {
-
+        setUsers: (state, action) => {
+            state.users = action.payload;
         }
     }
 });

@@ -1,7 +1,7 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/Login/LoginPage";
 import MainLayout from "./layouts/MainLayout";
-import UsersPage from "./pages/Users/UsersPage";
+import UsersPage, {loader as usersPageLoader} from "./pages/Users/UsersPage";
 import VisitsPage from "./pages/Visits/VisitsPage";
 import Test from "./pages/Test/TestPage";
 import Profile from "./pages/Profile/Profile";
@@ -18,7 +18,8 @@ const App: React.FC = () => {
       children: [
         {
           path: "users",
-          element: <UsersPage />
+          element: <UsersPage />,
+          loader: usersPageLoader,
         },
         {
           path: "visits",

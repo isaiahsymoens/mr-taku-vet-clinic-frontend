@@ -3,12 +3,12 @@ import {JSONObject} from "../utils/json";
 
 export type AddUser = Omit<User, "petOwned">;
 
-export const fetchUsers = async () => {
+export const fetchUsers = async() => {
     const response = await fetch("https://localhost:5001/api/users", {
         method: "GET"
     });
     return User.fromJSONArray((await response.json()).data as JSONObject[]);
-}
+};
 
 export const addUser = async (data: AddUser) => {
     console.log("addUser :", data);

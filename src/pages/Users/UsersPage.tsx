@@ -121,9 +121,12 @@ const UsersPage: React.FC = () => {
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 
-                onCancel={toggleDrawer} 
+                onCancel={() => {
+                    toggleDrawer();
+                    setSelectedUser(null!);
+                }} 
                 onSave={selectedUser ? handleEditUser : handleAddUser} 
-                drawerHeader={selectedUser ? "Add User" : "Edit User"}
+                drawerHeader={selectedUser ? "Edit User" : "Add User"}
             >
                 <UserForm 
                     type={selectedUser == null ? UserTypes.Add : UserTypes.Edit} 

@@ -46,5 +46,6 @@ export const deleteUser = async (username: string) => {
     const response = await fetch(`https://localhost:5001/api/users/${username}`, {
         method: "DELETE"
     });
-    console.log("delete response :", response);
+    if (!response.ok)
+        console.log("error response :", await response.json());
 }

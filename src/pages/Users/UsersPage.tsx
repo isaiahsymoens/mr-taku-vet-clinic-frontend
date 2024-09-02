@@ -9,7 +9,7 @@ import UserForm, {UserData, UserTypes} from "./UserForm";
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {AddUser, addUser, fetchUsers} from "../../api/users";
+import {AddUser, addUser, deleteUser, fetchUsers} from "../../api/users";
 import {User} from "../../models/user";
 
 import {Box} from "@mui/material";
@@ -94,8 +94,15 @@ const UsersPage: React.FC = () => {
         setIsConfirmationDialog(prev => !prev);
     }
 
-    const handleSaveConfirmDlg = () => {
-        console.log("username :", selectedUser?.username);
+    const handleSaveConfirmDlg = async () => {
+        try {
+            await deleteUser(selectedUser.username as string);
+            dispatch(userActions.removeUser(selectedUser.username as string));
+            setSelectedUser(null!);
+            toggleConfirmationDialog();
+        } catch (err) {
+            // TODO: handle error message
+        }
     }
 
     const handleFormChange = (key: keyof UserData, value: any) => {

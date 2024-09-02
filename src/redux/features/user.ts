@@ -17,6 +17,7 @@ const userSlice = createSlice({
             // state.users.push(action.payload);
         },
         removeUser: (state, action) => {
+            state.users = state.users.filter(user => user.username !== action.payload);
         },
         updateUser: (state, action) => {
         },

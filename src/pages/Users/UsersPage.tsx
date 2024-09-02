@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
-import {Box} from "@mui/material";
-import UserForm, {UserData} from "./UserForm";
-import {useNavigate} from "react-router-dom";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+import UserForm, {UserData} from "./UserForm";
+
+import {Box} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import { fetchUsers } from "../../api/users";
 
 const tableData = {
     tableHeaders: [
@@ -23,6 +27,17 @@ const tableData = {
     ],
 }
 
+type TableHeaders = {
+    label: string;
+    field: string;
+}
+
+const tableHeaders: TableHeaders[] = [
+    {label: "Name", field: "name"},
+    {label: "Email", field: "email"},
+    {label: "Pet Owned", field: "petOwned"},
+]
+
 const initialStateUserData: UserData = {
     firstName: "", 
     middleName: "", 
@@ -31,7 +46,6 @@ const initialStateUserData: UserData = {
     petOwned: 0, 
     username: "",
     password: "",
-    confirmPassword: "",
     userType: "",
     active: false,
 }
@@ -44,6 +58,15 @@ const UsersPage: React.FC = () => {
     const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const loadData = async () => {
+            const response = await fetchUsers();
+        }
+
+        loadData();
+    }, []);
 
     const menuActions = (user: any) => [
         {
@@ -61,7 +84,6 @@ const UsersPage: React.FC = () => {
     ];
 
     const handleEdit = (data: any) => {
-        console.log("data :", data);
         setSelectedUser(data);
         toggleDrawer();
     }
@@ -100,7 +122,7 @@ const UsersPage: React.FC = () => {
             <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <CustomTable 
-                    tableHeaders={tableData.tableHeaders} 
+                    tableHeaders={tableHeaders} 
                     tableBody={tableData.tableBody} 
                     menuActions={menuActions} 
                 />

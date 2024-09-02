@@ -6,7 +6,7 @@ export class User {
     lastName: string;
     email: string;
     username: string;
-    password: string;
+    password?: string;
     userTypeId: number;
     active: boolean;
 
@@ -41,5 +41,9 @@ export class User {
             json["userTypeId"] as number,
             json["active"] as boolean,
         );
+    }
+
+    static fromJSONArray(jsonArray: JSONObject[]): User[] {
+        return jsonArray.map((user: JSONObject) => User.fromJSON(user));
     }
 }

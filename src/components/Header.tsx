@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar variant="dense">
-          <IconButton
+          {/* <IconButton
             size="small"
             edge="start"
             color="inherit"
@@ -30,7 +30,7 @@ const Header: React.FC = () => {
             sx={{ mr: 1 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6" component="div" sx={{flexGrow: 1, fontSize: "1.3rem", color: "#FFF", fontWeight: "700"}}>
             <span style={{ fontWeight: "100" }}>Mr. Taku</span>VET Clinic
           </Typography>

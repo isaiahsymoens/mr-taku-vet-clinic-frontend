@@ -1,7 +1,24 @@
 import {createSlice} from "@reduxjs/toolkit";
+import { User } from "../../models/user";
 
-const initialState = {
-    users: []
+interface UserState {
+    users: User[];
+}
+
+const initialState: UserState = {
+    users: [
+        {
+            name: "Luffy D. Monkey",
+            email: "monkeydluffy@gmail.com", 
+            firstName: "Luffy", 
+            username: "monkeydluffy", 
+            petOwned: 0,
+            middleName: "D.",
+            lastName: "Monkey",
+            userTypeId: 0,
+            active: false
+        }
+    ]
 }
 
 const userSlice = createSlice({

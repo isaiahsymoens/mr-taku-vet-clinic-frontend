@@ -6,26 +6,12 @@ import CustomDrawer from "../../components/CustomDrawer";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import UserForm, {UserData} from "./UserForm";
 
+import {RootState} from "../../redux";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers} from "../../api/users";
+
 import {Box} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import { fetchUsers } from "../../api/users";
-
-const tableData = {
-    tableHeaders: [
-        {label: "Name", field: "name"},
-        {label: "Email", field: "email"},
-        {label: "Pet Owned", field: "petOwned"},
-    ],
-    tableBody: [
-        {email: "test@gmail.com", name: "Test test", username: "test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", username: "test1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", username: "test2", petOwned: 2},
-        {email: "test3@gmail.com", name: "Test test 3", username: "test3", petOwned: 0},
-        {email: "test4@gmail.com", name: "Test test 4", username: "test4", petOwned: 1},
-        {email: "test5@gmail.com", name: "Test test 5", username: "test5", petOwned: 2},
-    ],
-}
 
 type TableHeaders = {
     label: string;
@@ -56,6 +42,10 @@ const UsersPage: React.FC = () => {
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
+
+    const users = useSelector((state: RootState) => state.user.users);
+
+    console.log("users :", users);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -123,7 +113,7 @@ const UsersPage: React.FC = () => {
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <CustomTable 
                     tableHeaders={tableHeaders} 
-                    tableBody={tableData.tableBody} 
+                    tableBody={users} 
                     menuActions={menuActions} 
                 />
             </Box>

@@ -4,11 +4,11 @@ import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import UserForm, {UserData} from "./UserForm";
+import UserForm, {UserData, UserTypes} from "./UserForm";
 
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchUsers} from "../../api/users";
+import {AddUser, addUser, fetchUsers} from "../../api/users";
 
 import {Box} from "@mui/material";
 import {useNavigate} from "react-router-dom";
@@ -22,30 +22,27 @@ const tableHeaders: TableHeaders[] = [
     {label: "Name", field: "name"},
     {label: "Email", field: "email"},
     {label: "Pet Owned", field: "petOwned"},
-]
+];
 
-const initialStateUserData: UserData = {
+const initialStateUserData: AddUser = {
     firstName: "", 
     middleName: "", 
     lastName: "", 
     email: "", 
-    petOwned: 0, 
     username: "",
     password: "",
-    userType: "",
+    userTypeId: 0,
     active: false,
 }
 
 const UsersPage: React.FC = () => {
-    const [userData, setUserData] = useState<UserData>(initialStateUserData);
-    const [selectedUser, setSelectedUser] = useState<UserData>({});
+    const [userData, setUserData] = useState<AddUser>(initialStateUserData);
+    const [selectedUser, setSelectedUser] = useState<UserData>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
     const users = useSelector((state: RootState) => state.user.users);
-
-    console.log("users :", users);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -104,7 +101,12 @@ const UsersPage: React.FC = () => {
         setUserData((prevData) => ({...prevData, [key]: value}));
     }
 
-    const handleSave = () => {
+    const handleAddUser = () => {
+        const response = addUser(userData)
+    }
+
+    const handleEditUser = () => {
+        console.log("Edit User!");
     }
 
     return (
@@ -120,11 +122,11 @@ const UsersPage: React.FC = () => {
             <CustomDrawer 
                 open={isDrawerOpen} 
                 onCancel={toggleDrawer} 
-                onSave={handleSave} 
+                onSave={selectedUser ? handleEditUser : handleAddUser} 
                 drawerHeader={selectedUser ? "Add User" : "Edit User"}
             >
                 <UserForm 
-                    type={selectedUser == null ? "Add" : "Edit"} 
+                    type={selectedUser == null ? UserTypes.Add : UserTypes.Edit} 
                     userData={selectedUser == null ? userData : selectedUser} 
                     handleFormChange={handleFormChange} 
                 />

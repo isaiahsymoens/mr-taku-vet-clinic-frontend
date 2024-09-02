@@ -13,8 +13,15 @@ export interface UserData {
     active?: boolean;
 }
 
+export enum UserTypes {
+    Add = "Add",
+    Edit = "Edit",
+    View = "View",
+    Delete = "Delete"
+}
+
 type UserFormProps = {
-    type: "Add" | "Edit";
+    type: UserTypes;
     userData: UserData;
     handleFormChange: (key: keyof UserData, value: any) => void;
 }
@@ -46,7 +53,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                     size="small" 
                     fullWidth 
                 />
-                {type == "Add" && 
+                {type == UserTypes.Add && 
                     <React.Fragment>
                         <TextField 
                             label="Email" 
@@ -64,7 +71,8 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                             size="small" 
                             fullWidth 
                         />
-                    </React.Fragment>}
+                    </React.Fragment>
+                }
                 <TextField 
                     label="Password" 
                     variant="outlined" 

@@ -1,7 +1,6 @@
 import {JSONObject} from "../utils/json";
 
 export class User {
-    name: string;
     firstName: string;
     middleName: string;
     lastName: string;
@@ -13,7 +12,6 @@ export class User {
     petOwned: number;
 
     constructor(
-        name: string,
         firstName: string, 
         middleName: string, 
         lastName: string, 
@@ -24,7 +22,6 @@ export class User {
         active: boolean,
         petOwned: number
     ) {
-        this.name = name,
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -38,7 +35,6 @@ export class User {
 
     static fromJSON(json: JSONObject): User{
         return new User(
-            json["name"] as string,
             json["firstName"] as string,
             json["middleName"] as string,
             json["lastName"] as string,

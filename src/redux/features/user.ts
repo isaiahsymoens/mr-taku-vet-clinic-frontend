@@ -8,7 +8,6 @@ interface UserState {
 const initialState: UserState = {
     users: [
         {
-            name: "Luffy D. Monkey",
             email: "monkeydluffy@gmail.com", 
             firstName: "Luffy", 
             username: "monkeydluffy", 

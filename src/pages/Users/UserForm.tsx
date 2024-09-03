@@ -9,19 +9,24 @@ export interface UserData {
     petOwned?: number;
     username?: string;
     password?: string;
-    confirmPassword?: string;
     userType?: string;
     active?: boolean;
 }
 
+export enum UserTypes {
+    Add = "Add",
+    Edit = "Edit",
+    View = "View",
+    Delete = "Delete"
+}
+
 type UserFormProps = {
-    type: "Add" | "Edit";
+    type: UserTypes;
     userData: UserData;
     handleFormChange: (key: keyof UserData, value: any) => void;
 }
 
 const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) => {
-    console.log("userData :", userData);
     return (
         <React.Fragment>
             <TextField 
@@ -48,7 +53,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                     size="small" 
                     fullWidth 
                 />
-                {type == "Add" && 
+                {type == UserTypes.Add && 
                     <React.Fragment>
                         <TextField 
                             label="Email" 
@@ -66,20 +71,13 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                             size="small" 
                             fullWidth 
                         />
-                    </React.Fragment>}
+                    </React.Fragment>
+                }
                 <TextField 
                     label="Password" 
                     variant="outlined" 
                     value={userData.password} 
                     onChange={(e) => handleFormChange("password", e.target.value)}  
-                    size="small" 
-                    fullWidth 
-                />
-                <TextField 
-                    label="Confirm Password" 
-                    variant="outlined" 
-                    value={userData.confirmPassword} 
-                    onChange={(e) => handleFormChange("confirmPassword", e.target.value)}  
                     size="small" 
                     fullWidth 
                 />

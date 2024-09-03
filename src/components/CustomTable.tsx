@@ -8,7 +8,7 @@ export type CustomTableProps = {
     menuActions: any;
 }
 
-const CustomTable: React.FC<CustomTableProps> = ({ tableHeaders, tableBody, menuActions }) => {
+const CustomTable: React.FC<CustomTableProps> = ({tableHeaders, tableBody, menuActions}) => {
     return (
         <React.Fragment>
             <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>

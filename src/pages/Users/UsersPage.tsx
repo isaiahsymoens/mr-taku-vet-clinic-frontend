@@ -1,49 +1,60 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+
 import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
-import {Box} from "@mui/material";
-import UserForm, {UserData} from "./UserForm";
-import {useNavigate} from "react-router-dom";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+import UserForm, {UserData, UserTypes} from "./UserForm";
 
-const tableData = {
-    tableHeaders: [
-        {label: "Name", field: "name"},
-        {label: "Email", field: "email"},
-        {label: "Pet Owned", field: "petOwned"},
-    ],
-    tableBody: [
-        {email: "test@gmail.com", name: "Test test", username: "test", petOwned: 0},
-        {email: "test1@gmail.com", name: "Test test 1", username: "test1", petOwned: 1},
-        {email: "test2@gmail.com", name: "Test test 2", username: "test2", petOwned: 2},
-        {email: "test3@gmail.com", name: "Test test 3", username: "test3", petOwned: 0},
-        {email: "test4@gmail.com", name: "Test test 4", username: "test4", petOwned: 1},
-        {email: "test5@gmail.com", name: "Test test 5", username: "test5", petOwned: 2},
-    ],
+import {userActions} from "../../redux/features/user";
+import {RootState} from "../../redux";
+import {useDispatch, useSelector} from "react-redux";
+import {AddUser, addUser, deleteUser, fetchUsers} from "../../api/users";
+import {User} from "../../models/user";
+
+import {Box} from "@mui/material";
+import {useLoaderData, useNavigate} from "react-router-dom";
+
+type TableHeaders = {
+    label: string;
+    field: string;
 }
 
-const initialStateUserData: UserData = {
+const tableHeaders: TableHeaders[] = [
+    {label: "Name", field: "name"},
+    {label: "Email", field: "email"},
+    {label: "Pet Owned", field: "petOwned"},
+];
+
+const initialStateUserData: AddUser = {
     firstName: "", 
     middleName: "", 
     lastName: "", 
     email: "", 
-    petOwned: 0, 
     username: "",
     password: "",
-    confirmPassword: "",
-    userType: "",
+    userTypeId: 0,
     active: false,
 }
 
 const UsersPage: React.FC = () => {
-    const [userData, setUserData] = useState<UserData>(initialStateUserData);
-    const [selectedUser, setSelectedUser] = useState<UserData>({});
+    const [userData, setUserData] = useState<AddUser>(initialStateUserData);
+    const [selectedUser, setSelectedUser] = useState<UserData>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
+    const loaderData = useLoaderData() as User;
+    const users = useSelector((state: RootState) => state.user.users);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        console.log("loaderData :", loaderData);
+        if (loaderData) {
+            dispatch(userActions.setUsers(loaderData));
+        }
+    }, [dispatch]);
 
     const menuActions = (user: any) => [
         {
@@ -61,7 +72,6 @@ const UsersPage: React.FC = () => {
     ];
 
     const handleEdit = (data: any) => {
-        console.log("data :", data);
         setSelectedUser(data);
         toggleDrawer();
     }
@@ -84,15 +94,27 @@ const UsersPage: React.FC = () => {
         setIsConfirmationDialog(prev => !prev);
     }
 
-    const handleSaveConfirmDlg = () => {
-        console.log("username :", selectedUser?.username);
+    const handleSaveConfirmDlg = async () => {
+        try {
+            await deleteUser(selectedUser.username as string);
+            dispatch(userActions.removeUser(selectedUser.username as string));
+            setSelectedUser(null!);
+            toggleConfirmationDialog();
+        } catch (err) {
+            // TODO: handle error message
+        }
     }
 
     const handleFormChange = (key: keyof UserData, value: any) => {
         setUserData((prevData) => ({...prevData, [key]: value}));
     }
 
-    const handleSave = () => {
+    const handleAddUser = () => {
+        const response = addUser(userData)
+    }
+
+    const handleEditUser = () => {
+        console.log("Edit User!");
     }
 
     return (
@@ -100,19 +122,22 @@ const UsersPage: React.FC = () => {
             <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <CustomTable 
-                    tableHeaders={tableData.tableHeaders} 
-                    tableBody={tableData.tableBody} 
+                    tableHeaders={tableHeaders} 
+                    tableBody={users} 
                     menuActions={menuActions} 
                 />
             </Box>
             <CustomDrawer 
                 open={isDrawerOpen} 
-                onCancel={toggleDrawer} 
-                onSave={handleSave} 
-                drawerHeader={selectedUser ? "Add User" : "Edit User"}
+                onCancel={() => {
+                    toggleDrawer();
+                    setSelectedUser(null!);
+                }} 
+                onSave={selectedUser ? handleEditUser : handleAddUser} 
+                drawerHeader={selectedUser ? "Edit User" : "Add User"}
             >
                 <UserForm 
-                    type={selectedUser == null ? "Add" : "Edit"} 
+                    type={selectedUser == null ? UserTypes.Add : UserTypes.Edit} 
                     userData={selectedUser == null ? userData : selectedUser} 
                     handleFormChange={handleFormChange} 
                 />
@@ -129,3 +154,7 @@ const UsersPage: React.FC = () => {
 }
 
 export default UsersPage;
+
+export const loader = async () => {
+    return await fetchUsers();
+}

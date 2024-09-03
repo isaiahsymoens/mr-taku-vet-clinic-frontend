@@ -1,23 +1,32 @@
 import React, {useState} from "react";
+
 import SubHeader from "../../components/SubHeader";
-import CustomTable from "../../components/CustomTable";
+import CustomTable, {TableHeaders} from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
-import {Box, Typography, Button, TextField} from "@mui/material";
-import PetForm, { PetData } from "./PetForm";
-import UserForm, { UserData } from "../Users/UserForm";
+import PetForm, {PetData} from "./PetForm";
+import UserForm, {UserData, UserTypes} from "../Users/UserForm";
+
+import {RootState} from "../../redux";
+import {useSelector} from "react-redux";
+import {LoaderFunctionArgs, useParams} from "react-router-dom";
+import {Box, Typography, Button} from "@mui/material";
+import ProfileCard from "../../components/ProfileCard";
+import { getUserByUsername } from "../../api/users";
+import { getUserPetsByUsername } from "../../api/pets";
 
 const tableData = {
-    tableHeaders: [
-        {label: "Name", field: "name"},
-        {label: "Pet Type", field: "petType"},
-        {label: "Breed", field: "breed"},
-        {label: "Birth Date", field: "birthDate"},
-    ],
     tableBody: [
         {name: "Brownie", petType: "Dog", breed: "Golden Retriever", birthDate: "01/01/2024"},
         {name: "Blacky", petType: "Dog", breed: "Golden Retriever", birthDate: "01/02/2024"},
     ],
 }
+
+const tableHeaders: TableHeaders[] = [
+    {label: "Name", field: "name"},
+    {label: "Pet Type", field: "petType"},
+    {label: "Breed", field: "breed"},
+    {label: "Birth Date", field: "birthDate"},
+];
 
 const initialStatePet: PetData = {
     name: "",
@@ -31,6 +40,8 @@ const Profile = () => {
     const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>({});
     const [petData, setPetData] = useState<PetData>(initialStatePet);
+
+    const pets = useSelector((state: RootState) => state.pet.pets);
 
     const menuActions = (data: PetData) => [
         {
@@ -87,31 +98,7 @@ const Profile = () => {
                     },
                     gap: 3
                 }}>
-                    <Box sx={{ 
-                        width: {
-                            xs: "100%",
-                            md: "30%",
-                        }, 
-                        boxShadow: 3,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center" 
-                    }}>
-                        <img src="https://cdn.pixabay.com/photo/2024/03/16/20/35/ai-generated-8637800_1280.jpg"
-                            height={150}
-                            style={{
-                                width: "100%",
-                                maxWidth: "150px",
-                                borderRadius: "10em"
-                            }}
-                        />
-                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
-                            <Typography variant="subtitle2">Monkey D. Luffy</Typography>
-                            <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>monkeydluffy@gmail.com</Typography>
-                            <Button variant="contained" onClick={toggleUserDrawer}>Edit Profile</Button>
-                        </Box>
-                    </Box>
+                    <ProfileCard toggleUserDrawer={toggleUserDrawer}/>
                     <Box sx={{ 
                         width: {
                             xs: "100%",
@@ -124,7 +111,7 @@ const Profile = () => {
                             <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={togglePetDrawer} />
                         </Box>
                         <CustomTable 
-                            tableHeaders={tableData.tableHeaders} 
+                            tableHeaders={tableHeaders} 
                             tableBody={tableData.tableBody}
                             menuActions={menuActions}
                         />
@@ -138,7 +125,7 @@ const Profile = () => {
                 drawerHeader="Edit User"
             >
                 <UserForm
-                    type="Edit" 
+                    type={UserTypes.Edit} 
                     userData={userData} 
                     handleFormChange={handleFormChange} 
                 />
@@ -160,3 +147,16 @@ const Profile = () => {
 }
 
 export default Profile;
+
+export const loader = async ({params}: LoaderFunctionArgs<{username: string}>) => {
+    const {username} = params;
+    console.log("username :", username);
+
+    const userResponse = await getUserByUsername(username as string);
+    console.log("profile userResponse response :", userResponse);
+
+    const userPetsResponse = await getUserPetsByUsername(username as string);
+    console.log("profile userPetsResponse response :", userPetsResponse);
+
+    return null;
+}

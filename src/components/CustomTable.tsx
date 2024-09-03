@@ -2,6 +2,11 @@ import React from "react";
 import CustomTableRowMenu from "./CustomTableRowMenu";
 import {Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow} from "@mui/material";
 
+export type TableHeaders = {
+    label: string;
+    field: string;
+}
+
 export type CustomTableProps = {
     tableHeaders: any[];
     tableBody: any[];

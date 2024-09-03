@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
-import CustomTable from "../../components/CustomTable";
+import CustomTable, {TableHeaders} from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import UserForm, {UserData, UserTypes} from "./UserForm";
@@ -14,11 +14,6 @@ import {User} from "../../models/user";
 
 import {Box} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
-
-type TableHeaders = {
-    label: string;
-    field: string;
-}
 
 const tableHeaders: TableHeaders[] = [
     {label: "Name", field: "name"},

@@ -1,5 +1,5 @@
 import React from "react";
-import {TextField} from "@mui/material";
+import {Box, Divider, Switch, TextField, Typography} from "@mui/material";
 
 export interface UserData {
     firstName?: string;
@@ -63,6 +63,11 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                             size="small" 
                             fullWidth 
                         />
+                        <Box sx={{display: "flex", alignItems: "center"}}>
+                            <Switch defaultChecked/>
+                            <Typography variant="body2">Active</Typography>
+                        </Box>
+                        <Divider />
                         <TextField 
                             label="Username" 
                             variant="outlined" 

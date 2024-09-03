@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Box, Button, Drawer, TextField, Typography } from '@mui/material';
+import {Box, Button, Drawer, Typography} from '@mui/material';
 
 type CustomDrawerProps = {
     open: boolean;
@@ -9,7 +8,6 @@ type CustomDrawerProps = {
     children: React.ReactNode;
     showBtn?: boolean;
 }
-
 
 const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onCancel, onSave, drawerHeader, children, showBtn=true}) => {
     return (

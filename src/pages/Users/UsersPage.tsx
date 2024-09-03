@@ -85,7 +85,12 @@ const UsersPage: React.FC = () => {
     }
 
     const handleFormChange = (key: keyof UserData, value: any) => {
-        setUserData((prevData) => ({...prevData, [key]: value}));
+        if (key === "email") {
+            setUserData((prevData) => ({...prevData, [key]: value}));
+            setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
+        } else {
+            setUserData((prevData) => ({...prevData, [key]: value}));
+        }
     }
 
     const handleAddUser = async () => {

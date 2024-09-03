@@ -65,9 +65,9 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                         <TextField 
                             label="Username" 
                             variant="outlined" 
-                            value={userData.username} 
-                            onChange={(e) => handleFormChange("username", e.target.value)}  
+                            value={userData.email?.split("@")[0]}   
                             size="small" 
+                            disabled
                             fullWidth 
                         />
                     </React.Fragment>

@@ -1,10 +1,12 @@
 import {useState} from "react";
 import SubHeader from "../../components/SubHeader";
-import CustomTable from "../../components/CustomTable";
-import CustomDrawer from "../../components/CustomDrawer";
+import DataTable from "../../components/DataTable";
+import DrawerPanel from "../../components/DrawerPanel";
 import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
+import ActionDialog from "../../components/ActionDialog";
+
+import {fetchVisits} from "../../api/visits";
 import {Box} from "@mui/material";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const tableData = {
     tableHeaders: [
@@ -37,7 +39,7 @@ const VisitsPage: React.FC = () => {
     const [selectedVisit, setSelectedVisit] = useState<VisitData>({});
     const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
+    const [isActionDialog, setIsActionDialog] = useState(false);
 
     const menuActions = (data: VisitData) => [
         {
@@ -55,7 +57,6 @@ const VisitsPage: React.FC = () => {
     ];
 
     const handleEdit = (data: VisitData) => {
-        console.log("data :", data);
         setSelectedVisit(data);
         setVisitDrawerType(VisitTypes.Edit);
         toggleDrawer();
@@ -70,7 +71,7 @@ const VisitsPage: React.FC = () => {
     const handleDelete = (data: VisitData) => {
         setSelectedVisit(data);
         setVisitDrawerType(VisitTypes.Delete);
-        toggleConfirmationDialog();
+        toggleActionDialog();
     }
 
     const handleFormChange = (key: keyof VisitData, value: any) => {
@@ -86,8 +87,8 @@ const VisitsPage: React.FC = () => {
         setVisitDrawerType("");
     }
 
-    const toggleConfirmationDialog = () => {
-        setIsConfirmationDialog(prev => !prev);
+    const toggleActionDialog = () => {
+        setIsActionDialog(prev => !prev);
     }
 
     const handleSaveConfirmDlg = () => {
@@ -97,19 +98,17 @@ const VisitsPage: React.FC = () => {
     const handleSave = () => {
     }
 
-
-
     return (
         <Box>
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable 
+                <DataTable 
                     tableHeaders={tableData.tableHeaders} 
                     tableBody={tableData.tableBody}
                     menuActions={menuActions}
                 />
             </Box>
-            <CustomDrawer 
+            <DrawerPanel 
                 open={isDrawerOpen} 
                 onCancel={toggleCancelDrawer} 
                 onSave={handleSave} 
@@ -121,16 +120,21 @@ const VisitsPage: React.FC = () => {
                     visitData={visitData}
                     handleFormChange={handleFormChange}
                 />
-            </CustomDrawer>
-            <ConfirmationDialog
+            </DrawerPanel>
+            <ActionDialog
                 title="Are you sure you want to delete this user record?"
                 description="This will delete permanently, You cannot undo this action."
-                isOpen={isConfirmationDialog}
+                isOpen={isActionDialog}
                 onSave={handleSaveConfirmDlg}
-                onCancel={toggleConfirmationDialog}
+                onCancel={toggleActionDialog}
             />
         </Box>
     );
 }
 
 export default VisitsPage;
+
+export const loader = async () => {
+    const response = await fetchVisits();
+    return response;
+}

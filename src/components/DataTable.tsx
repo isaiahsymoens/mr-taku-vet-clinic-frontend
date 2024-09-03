@@ -1,14 +1,19 @@
 import React from "react";
-import CustomTableRowMenu from "./CustomTableRowMenu";
+import DataTableRowMenu from "./DataTableRowMenu";
 import {Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow} from "@mui/material";
 
-export type CustomTableProps = {
+export type DataTableHeaders = {
+    label: string;
+    field: string;
+}
+
+export type DataTableProps = {
     tableHeaders: any[];
     tableBody: any[];
     menuActions: any;
 }
 
-const CustomTable: React.FC<CustomTableProps> = ({tableHeaders, tableBody, menuActions}) => {
+const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActions}) => {
     return (
         <React.Fragment>
             <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
@@ -29,7 +34,7 @@ const CustomTable: React.FC<CustomTableProps> = ({tableHeaders, tableBody, menuA
                                 ))}
                                 {menuActions && 
                                     <TableCell>
-                                        <CustomTableRowMenu 
+                                        <DataTableRowMenu 
                                             menu={menuActions}
                                             data={tBody}
                                         />
@@ -44,4 +49,4 @@ const CustomTable: React.FC<CustomTableProps> = ({tableHeaders, tableBody, menuA
     );
 }
 
-export default CustomTable;
+export default DataTable;

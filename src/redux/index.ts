@@ -4,6 +4,10 @@ import userReducer from "./features/user";
 import visitReducer from "./features/visit";
 
 const store = configureStore({
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
+          serializableCheck: false,
+    }),
     reducer: {
         pet: petReducer,
         user: userReducer,

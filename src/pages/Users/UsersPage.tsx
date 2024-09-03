@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
-import CustomTable from "../../components/CustomTable";
-import CustomDrawer from "../../components/CustomDrawer";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
-import UserForm, {UserData, UserTypes} from "./UserForm";
+import DataTable, {DataTableHeaders} from "../../components/DataTable";
+import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
+import ActionDialog from "../../components/ActionDialog";
+import UserForm, {UserData} from "./UserForm";
 
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
@@ -15,12 +15,7 @@ import {User} from "../../models/user";
 import {Box} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
 
-type TableHeaders = {
-    label: string;
-    field: string;
-}
-
-const tableHeaders: TableHeaders[] = [
+const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "name"},
     {label: "Email", field: "email"},
     {label: "Pet Owned", field: "petOwned"},
@@ -31,10 +26,9 @@ const initialStateUserData: AddUser = {
     middleName: "", 
     lastName: "", 
     email: "", 
-    username: "",
-    password: "",
-    userTypeId: 0,
-    active: false,
+    username: "", 
+    password: "", 
+    active: true
 }
 
 const UsersPage: React.FC = () => {
@@ -42,7 +36,7 @@ const UsersPage: React.FC = () => {
     const [selectedUser, setSelectedUser] = useState<UserData>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
+    const [isActionDialog, setIsActionDialog] = useState(false);
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
@@ -56,21 +50,6 @@ const UsersPage: React.FC = () => {
         }
     }, [dispatch]);
 
-    const menuActions = (user: any) => [
-        {
-            name: "Edit",
-            onClick: () => handleEdit(user),
-        },
-        {
-            name: "View",
-            onClick: () => handleView(user),
-        },
-        {
-            name: "Delete",
-            onClick: () => handleDelete(user),
-        }
-    ];
-
     const handleEdit = (data: any) => {
         setSelectedUser(data);
         toggleDrawer();
@@ -83,15 +62,15 @@ const UsersPage: React.FC = () => {
 
     const handleDelete = (data: any) => {
         setSelectedUser(data);
-        toggleConfirmationDialog();
+        toggleActionDialog();
     }
 
     const toggleDrawer = () => {
         setIsDrawerOpen(prev => !prev);
     }
 
-    const toggleConfirmationDialog = () => {
-        setIsConfirmationDialog(prev => !prev);
+    const toggleActionDialog = () => {
+        setIsActionDialog(prev => !prev);
     }
 
     const handleSaveConfirmDlg = async () => {
@@ -99,18 +78,28 @@ const UsersPage: React.FC = () => {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
             setSelectedUser(null!);
-            toggleConfirmationDialog();
+            toggleActionDialog();
         } catch (err) {
             // TODO: handle error message
         }
     }
 
     const handleFormChange = (key: keyof UserData, value: any) => {
-        setUserData((prevData) => ({...prevData, [key]: value}));
+        if (key === "email") {
+            setUserData((prevData) => ({...prevData, [key]: value}));
+            setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
+        } else {
+            setUserData((prevData) => ({...prevData, [key]: value}));
+        }
     }
 
-    const handleAddUser = () => {
-        const response = addUser(userData)
+    const handleAddUser = async () => {
+        try {
+            const response = await addUser(userData);
+            dispatch(userActions.addUser(response.data));
+            setUserData(initialStateUserData);
+            toggleDrawer();
+        } catch (err) {}
     }
 
     const handleEditUser = () => {
@@ -121,13 +110,26 @@ const UsersPage: React.FC = () => {
         <React.Fragment>
             <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable 
+                <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={users} 
-                    menuActions={menuActions} 
+                    menuActions={(user: any) => [
+                        {
+                            name: "Edit",
+                            onClick: () => handleEdit(user),
+                        },
+                        {
+                            name: "View",
+                            onClick: () => handleView(user),
+                        },
+                        {
+                            name: "Delete",
+                            onClick: () => handleDelete(user),
+                        }
+                    ]} 
                 />
             </Box>
-            <CustomDrawer 
+            <DrawerPanel 
                 open={isDrawerOpen} 
                 onCancel={() => {
                     toggleDrawer();
@@ -137,17 +139,17 @@ const UsersPage: React.FC = () => {
                 drawerHeader={selectedUser ? "Edit User" : "Add User"}
             >
                 <UserForm 
-                    type={selectedUser == null ? UserTypes.Add : UserTypes.Edit} 
+                    type={selectedUser == null ? DrawerPanelActions.Add : DrawerPanelActions.Edit} 
                     userData={selectedUser == null ? userData : selectedUser} 
                     handleFormChange={handleFormChange} 
                 />
-            </CustomDrawer>
-            <ConfirmationDialog
+            </DrawerPanel>
+            <ActionDialog
                 title="Are you sure you want to delete this user record?"
                 description="This will delete permanently, You cannot undo this action."
-                isOpen={isConfirmationDialog}
+                isOpen={isActionDialog}
                 onSave={handleSaveConfirmDlg}
-                onCancel={toggleConfirmationDialog}
+                onCancel={toggleActionDialog}
             />
         </React.Fragment>
     );

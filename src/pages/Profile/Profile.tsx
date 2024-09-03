@@ -1,29 +1,41 @@
-import React, {useState} from "react";
-import SubHeader from "../../components/SubHeader";
-import CustomTable from "../../components/CustomTable";
-import CustomDrawer from "../../components/CustomDrawer";
-import {Box, Typography, Button, TextField} from "@mui/material";
-import PetForm, { PetData } from "./PetForm";
-import UserForm, { UserData } from "../Users/UserForm";
+import React, {useEffect, useState} from "react";
 
-const tableData = {
-    tableHeaders: [
-        {label: "Name", field: "name"},
-        {label: "Pet Type", field: "petType"},
-        {label: "Breed", field: "breed"},
-        {label: "Birth Date", field: "birthDate"},
-    ],
-    tableBody: [
-        {name: "Brownie", petType: "Dog", breed: "Golden Retriever", birthDate: "01/01/2024"},
-        {name: "Blacky", petType: "Dog", breed: "Golden Retriever", birthDate: "01/02/2024"},
-    ],
-}
+import SubHeader from "../../components/SubHeader";
+import DataTable, {DataTableHeaders} from "../../components/DataTable";
+import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
+import PetForm, {PetData} from "./PetForm";
+import UserForm, {UserData} from "../Users/UserForm";
+import ProfileCard from "../../components/ProfileCard";
+
+import {getUserByUsername} from "../../api/users";
+import {getUserPetsByUsername} from "../../api/pets";
+import {petActions} from "../../redux/features/pet";
+import {User} from "../../models/user";
+import {Pet} from "../../models/pet";
+
+import {RootState} from "../../redux";
+import {useDispatch, useSelector} from "react-redux";
+import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
+import {Box} from "@mui/material";
+import ActionDialog from "../../components/ActionDialog";
+
+const tableHeaders: DataTableHeaders[] = [
+    {label: "Name", field: "petName"},
+    {label: "Pet Type", field: "petType"},
+    {label: "Breed", field: "breed"},
+    {label: "Birth Date", field: "birthDate"},
+];
 
 const initialStatePet: PetData = {
-    name: "",
+    petName: "",
     petType: "",
     breed: "",
     birthDate: "", 
+}
+
+type LoaderData = {
+    loaderUser: User;
+    loaderUserPets: Pet[];
 }
 
 const Profile = () => {
@@ -31,6 +43,17 @@ const Profile = () => {
     const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>({});
     const [petData, setPetData] = useState<PetData>(initialStatePet);
+    const [selectedPet, setSelectedPet] = useState<PetData>(null!);
+    const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
+    const [isActionDialog, setIsActionDialog] = useState(false);
+
+    const dispatch = useDispatch();
+    const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
+    const pets = useSelector((state: RootState) => state.pet.pets);
+
+    useEffect(() => {
+        dispatch(petActions.storePets(loaderUserPets));
+    }, [dispatch]);
 
     const menuActions = (data: PetData) => [
         {
@@ -48,12 +71,21 @@ const Profile = () => {
     ];
 
     const handleEdit = (data: PetData) => {
+        setSelectedPet(data);
+        setPetDrawerType(DrawerPanelActions.Edit);
+        togglePetDrawer();
     }
 
     const handleView = (data: PetData) => {
+        setSelectedPet(data);
+        setPetDrawerType(DrawerPanelActions.View);
+        togglePetDrawer();
     }
 
     const handleDelete = (data: PetData) => {
+        setSelectedPet(data);
+        setPetDrawerType(DrawerPanelActions.View);
+        toggleActionDialog();
     }
 
     const toggleUserDrawer = () => {
@@ -62,6 +94,13 @@ const Profile = () => {
 
     const togglePetDrawer = () => {
         setIsPetDrawerOpen(prev => !prev);
+    }
+
+    const toggleActionDialog = () => {
+        setIsActionDialog(prev => !prev);
+    }
+
+    const handleSaveConfirmDlg = () => {
     }
 
     const handleFormChange = (key: keyof PetData | keyof UserData, value: any) => {
@@ -87,31 +126,7 @@ const Profile = () => {
                     },
                     gap: 3
                 }}>
-                    <Box sx={{ 
-                        width: {
-                            xs: "100%",
-                            md: "30%",
-                        }, 
-                        boxShadow: 3,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center" 
-                    }}>
-                        <img src="https://cdn.pixabay.com/photo/2024/03/16/20/35/ai-generated-8637800_1280.jpg"
-                            height={150}
-                            style={{
-                                width: "100%",
-                                maxWidth: "150px",
-                                borderRadius: "10em"
-                            }}
-                        />
-                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
-                            <Typography variant="subtitle2">Monkey D. Luffy</Typography>
-                            <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>monkeydluffy@gmail.com</Typography>
-                            <Button variant="contained" onClick={toggleUserDrawer}>Edit Profile</Button>
-                        </Box>
-                    </Box>
+                    <ProfileCard toggleUserDrawer={toggleUserDrawer}/>
                     <Box sx={{ 
                         width: {
                             xs: "100%",
@@ -123,40 +138,58 @@ const Profile = () => {
                         <Box sx={{ marginTop: "-48px" }}>
                             <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={togglePetDrawer} />
                         </Box>
-                        <CustomTable 
-                            tableHeaders={tableData.tableHeaders} 
-                            tableBody={tableData.tableBody}
+                        <DataTable 
+                            tableHeaders={tableHeaders} 
+                            tableBody={pets}
                             menuActions={menuActions}
                         />
                     </Box>
                 </Box>
             </Box>
-            <CustomDrawer 
+            <DrawerPanel 
                 open={isUserDrawerOpen} 
                 onCancel={toggleUserDrawer} 
                 onSave={handleUserSave} 
                 drawerHeader="Edit User"
             >
                 <UserForm
-                    type="Edit" 
+                    type={DrawerPanelActions.Edit} 
                     userData={userData} 
                     handleFormChange={handleFormChange} 
                 />
-            </CustomDrawer>
-            <CustomDrawer 
+            </DrawerPanel>
+            <DrawerPanel 
                 open={isPetDrawerOpen} 
-                onCancel={togglePetDrawer} 
+                onCancel={() => {
+                    togglePetDrawer();
+                    setSelectedPet(null!);
+                    setPetData(initialStatePet);
+                }} 
                 onSave={handlePetSave} 
-                drawerHeader="Add Pet"
+                drawerHeader={selectedPet === null ? "Add Pet" : "Edit Pet"}
             >
                 <PetForm
-                    type="Add"
-                    petData={petData}
+                    type={selectedPet === null ? DrawerPanelActions.Add : DrawerPanelActions.Edit}
+                    petData={selectedPet === null ? petData : selectedPet}
                     handleFormChange={handleFormChange}
                 />     
-            </CustomDrawer>
+            </DrawerPanel>
+            <ActionDialog
+                title="Are you sure you want to delete this pet record?"
+                description="This will delete permanently, You cannot undo this action."
+                isOpen={isActionDialog}
+                onSave={handleSaveConfirmDlg}
+                onCancel={toggleActionDialog}
+            />
         </React.Fragment>
     );
 }
 
 export default Profile;
+
+export const loader = async ({params}: LoaderFunctionArgs<{username: string}>) => {
+    const {username} = params;
+    const loaderUser = await getUserByUsername(username as string);
+    const loaderUserPets = await getUserPetsByUsername(username as string);
+    return {loaderUser, loaderUserPets};
+}

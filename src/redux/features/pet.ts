@@ -17,8 +17,8 @@ const petSlice = createSlice({
         updatePet: (state, action) => {
 
         },
-        fetchPets: (state, action) => {
-
+        storePets: (state, action) => {
+            state.pets = action.payload;
         }
     }
 });

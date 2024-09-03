@@ -2,12 +2,12 @@ import React, {useState} from "react";
 import {IconButton, Menu, MenuItem} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-type CustomTableRowMenuProps = {
+type DataTableRowMenuProps = {
     menu: any;
     data: any[] | any | Object;
 }
 
-const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, data}) => {
+const DataTableRowMenu: React.FC<DataTableRowMenuProps> = ({menu, data}) => {
     const [anchorE1, setAchorE1] = useState<null | HTMLElement>(null);
 
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -51,4 +51,4 @@ const CustomTableRowMenu: React.FC<CustomTableRowMenuProps> = ({menu, data}) => 
     );
 }
 
-export default CustomTableRowMenu;
+export default DataTableRowMenu;

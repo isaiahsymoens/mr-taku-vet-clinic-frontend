@@ -1,6 +1,6 @@
 import {useState} from "react";
 import SubHeader from "../../components/SubHeader";
-import CustomTable from "../../components/CustomTable";
+import DataTable from "../../components/DataTable";
 import DrawerPanel from "../../components/DrawerPanel";
 import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
@@ -102,7 +102,7 @@ const VisitsPage: React.FC = () => {
         <Box>
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable 
+                <DataTable 
                     tableHeaders={tableData.tableHeaders} 
                     tableBody={tableData.tableBody}
                     menuActions={menuActions}

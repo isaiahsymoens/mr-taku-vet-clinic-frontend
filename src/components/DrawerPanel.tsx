@@ -16,7 +16,7 @@ type DrawerPanelProps = {
     showBtn?: boolean;
 }
 
-const CustomDrawer: React.FC<DrawerPanelProps> = ({open, onCancel, onSave, drawerHeader, children, showBtn=true}) => {
+const DrawerPanel: React.FC<DrawerPanelProps> = ({open, onCancel, onSave, drawerHeader, children, showBtn=true}) => {
     return (
         <Drawer anchor="right" open={open}>
             <Box sx={{ width: 350, display: "flex", flexDirection: "column", gap: 2, padding: 3, marginTop: "48px" }}>
@@ -33,4 +33,4 @@ const CustomDrawer: React.FC<DrawerPanelProps> = ({open, onCancel, onSave, drawe
     );
 }
 
-export default CustomDrawer;
+export default DrawerPanel;

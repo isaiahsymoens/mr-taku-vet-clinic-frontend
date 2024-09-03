@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
-import CustomTable, {TableHeaders} from "../../components/CustomTable";
+import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel from "../../components/DrawerPanel";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import UserForm, {UserData, UserTypes} from "./UserForm";
@@ -15,7 +15,7 @@ import {User} from "../../models/user";
 import {Box} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
 
-const tableHeaders: TableHeaders[] = [
+const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "name"},
     {label: "Email", field: "email"},
     {label: "Pet Owned", field: "petOwned"},
@@ -120,7 +120,7 @@ const UsersPage: React.FC = () => {
         <React.Fragment>
             <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
-                <CustomTable 
+                <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={users} 
                     menuActions={menuActions} 

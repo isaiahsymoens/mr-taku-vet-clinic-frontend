@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
-import CustomTable, {TableHeaders} from "../../components/CustomTable";
-import CustomDrawer, {DrawerPanelActions} from "../../components/DrawerPanel";
+import DataTable, {DataTableHeaders} from "../../components/DataTable";
+import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import PetForm, {PetData} from "./PetForm";
 import UserForm, {UserData, UserTypes} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
@@ -19,7 +19,7 @@ import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 import {Box} from "@mui/material";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 
-const tableHeaders: TableHeaders[] = [
+const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
     {label: "Pet Type", field: "petType"},
     {label: "Breed", field: "breed"},
@@ -138,7 +138,7 @@ const Profile = () => {
                         <Box sx={{ marginTop: "-48px" }}>
                             <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={togglePetDrawer} />
                         </Box>
-                        <CustomTable 
+                        <DataTable 
                             tableHeaders={tableHeaders} 
                             tableBody={pets}
                             menuActions={menuActions}
@@ -146,7 +146,7 @@ const Profile = () => {
                     </Box>
                 </Box>
             </Box>
-            <CustomDrawer 
+            <DrawerPanel 
                 open={isUserDrawerOpen} 
                 onCancel={toggleUserDrawer} 
                 onSave={handleUserSave} 
@@ -157,8 +157,8 @@ const Profile = () => {
                     userData={userData} 
                     handleFormChange={handleFormChange} 
                 />
-            </CustomDrawer>
-            <CustomDrawer 
+            </DrawerPanel>
+            <DrawerPanel 
                 open={isPetDrawerOpen} 
                 onCancel={() => {
                     togglePetDrawer();
@@ -173,7 +173,7 @@ const Profile = () => {
                     petData={selectedPet === null ? petData : selectedPet}
                     handleFormChange={handleFormChange}
                 />     
-            </CustomDrawer>
+            </DrawerPanel>
             <ConfirmationDialog
                 title="Are you sure you want to delete this pet record?"
                 description="This will delete permanently, You cannot undo this action."

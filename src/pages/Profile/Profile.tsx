@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
 import CustomTable, {TableHeaders} from "../../components/CustomTable";
-import CustomDrawer from "../../components/CustomDrawer";
+import CustomDrawer, {DrawerActions} from "../../components/CustomDrawer";
 import PetForm, {PetData} from "./PetForm";
 import UserForm, {UserData, UserTypes} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
@@ -17,6 +17,7 @@ import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 import {Box} from "@mui/material";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const tableHeaders: TableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -33,8 +34,8 @@ const initialStatePet: PetData = {
 }
 
 type LoaderData = {
-    user: User;
-    userPets: Pet[];
+    loaderUser: User;
+    loaderUserPets: Pet[];
 }
 
 const Profile = () => {
@@ -42,15 +43,16 @@ const Profile = () => {
     const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>({});
     const [petData, setPetData] = useState<PetData>(initialStatePet);
+    const [selectedPet, setSelectedPet] = useState<PetData>(null!);
+    const [petDrawerType, setPetDrawerType] = useState<DrawerActions | string>("");
+    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
     const dispatch = useDispatch();
-    const {user, userPets} = useLoaderData() as LoaderData;
+    const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
     const pets = useSelector((state: RootState) => state.pet.pets);
 
     useEffect(() => {
-        console.log("user :", user);
-        console.log("userPets :", userPets);
-        dispatch(petActions.storePets(userPets));
+        dispatch(petActions.storePets(loaderUserPets));
     }, [dispatch]);
 
     const menuActions = (data: PetData) => [
@@ -69,12 +71,21 @@ const Profile = () => {
     ];
 
     const handleEdit = (data: PetData) => {
+        setSelectedPet(data);
+        setPetDrawerType(DrawerActions.Edit);
+        togglePetDrawer();
     }
 
     const handleView = (data: PetData) => {
+        setSelectedPet(data);
+        setPetDrawerType(DrawerActions.View);
+        togglePetDrawer();
     }
 
     const handleDelete = (data: PetData) => {
+        setSelectedPet(data);
+        setPetDrawerType(DrawerActions.View);
+        toggleConfirmationDialog();
     }
 
     const toggleUserDrawer = () => {
@@ -83,6 +94,13 @@ const Profile = () => {
 
     const togglePetDrawer = () => {
         setIsPetDrawerOpen(prev => !prev);
+    }
+
+    const toggleConfirmationDialog = () => {
+        setIsConfirmationDialog(prev => !prev);
+    }
+
+    const handleSaveConfirmDlg = () => {
     }
 
     const handleFormChange = (key: keyof PetData | keyof UserData, value: any) => {
@@ -142,16 +160,27 @@ const Profile = () => {
             </CustomDrawer>
             <CustomDrawer 
                 open={isPetDrawerOpen} 
-                onCancel={togglePetDrawer} 
+                onCancel={() => {
+                    togglePetDrawer();
+                    setSelectedPet(null!);
+                    setPetData(initialStatePet);
+                }} 
                 onSave={handlePetSave} 
-                drawerHeader="Add Pet"
+                drawerHeader={selectedPet === null ? "Add Pet" : "Edit Pet"}
             >
                 <PetForm
-                    type="Add"
-                    petData={petData}
+                    type={selectedPet === null ? DrawerActions.Add : DrawerActions.Edit}
+                    petData={selectedPet === null ? petData : selectedPet}
                     handleFormChange={handleFormChange}
                 />     
             </CustomDrawer>
+            <ConfirmationDialog
+                title="Are you sure you want to delete this pet record?"
+                description="This will delete permanently, You cannot undo this action."
+                isOpen={isConfirmationDialog}
+                onSave={handleSaveConfirmDlg}
+                onCancel={toggleConfirmationDialog}
+            />
         </React.Fragment>
     );
 }
@@ -160,8 +189,7 @@ export default Profile;
 
 export const loader = async ({params}: LoaderFunctionArgs<{username: string}>) => {
     const {username} = params;
-    const user = await getUserByUsername(username as string);
-    const userPets = await getUserPetsByUsername(username as string);
-
-    return {user, userPets};
+    const loaderUser = await getUserByUsername(username as string);
+    const loaderUserPets = await getUserPetsByUsername(username as string);
+    return {loaderUser, loaderUserPets};
 }

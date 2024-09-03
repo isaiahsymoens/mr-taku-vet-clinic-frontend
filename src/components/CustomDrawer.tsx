@@ -1,5 +1,12 @@
 import {Box, Button, Drawer, Typography} from '@mui/material';
 
+export enum DrawerActions {
+    Add = "Add",
+    Edit = "Edit",
+    View = "View",
+    Delete = "Delete"
+}
+
 type CustomDrawerProps = {
     open: boolean;
     onCancel: () => void;

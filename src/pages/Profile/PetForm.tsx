@@ -27,8 +27,8 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, handleFormChange}) => {
             <TextField 
                 label="Name" 
                 variant="outlined" 
-                value={petData.name} 
-                onChange={(e) => handleFormChange("name", e.target.value)} 
+                value={petData.petName} 
+                onChange={(e) => handleFormChange("petName", e.target.value)} 
                 size="small" 
                 fullWidth 
             />

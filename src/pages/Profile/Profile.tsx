@@ -4,7 +4,7 @@ import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import PetForm, {PetData} from "./PetForm";
-import UserForm, {UserData, UserTypes} from "../Users/UserForm";
+import UserForm, {UserData} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
 
 import {getUserByUsername} from "../../api/users";
@@ -153,7 +153,7 @@ const Profile = () => {
                 drawerHeader="Edit User"
             >
                 <UserForm
-                    type={UserTypes.Edit} 
+                    type={DrawerPanelActions.Edit} 
                     userData={userData} 
                     handleFormChange={handleFormChange} 
                 />

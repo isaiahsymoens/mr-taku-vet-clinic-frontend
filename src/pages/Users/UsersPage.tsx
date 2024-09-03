@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
-import DrawerPanel from "../../components/DrawerPanel";
+import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import ActionDialog from "../../components/ActionDialog";
-import UserForm, {UserData, UserTypes} from "./UserForm";
+import UserForm, {UserData} from "./UserForm";
 
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
@@ -26,9 +26,9 @@ const initialStateUserData: AddUser = {
     middleName: "", 
     lastName: "", 
     email: "", 
-    username: "",
-    password: "",
-    active: true,
+    username: "", 
+    password: "", 
+    active: true
 }
 
 const UsersPage: React.FC = () => {
@@ -49,21 +49,6 @@ const UsersPage: React.FC = () => {
             dispatch(userActions.setUsers(loaderData));
         }
     }, [dispatch]);
-
-    const menuActions = (user: any) => [
-        {
-            name: "Edit",
-            onClick: () => handleEdit(user),
-        },
-        {
-            name: "View",
-            onClick: () => handleView(user),
-        },
-        {
-            name: "Delete",
-            onClick: () => handleDelete(user),
-        }
-    ];
 
     const handleEdit = (data: any) => {
         setSelectedUser(data);
@@ -123,7 +108,20 @@ const UsersPage: React.FC = () => {
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={users} 
-                    menuActions={menuActions} 
+                    menuActions={(user: any) => [
+                        {
+                            name: "Edit",
+                            onClick: () => handleEdit(user),
+                        },
+                        {
+                            name: "View",
+                            onClick: () => handleView(user),
+                        },
+                        {
+                            name: "Delete",
+                            onClick: () => handleDelete(user),
+                        }
+                    ]} 
                 />
             </Box>
             <DrawerPanel 
@@ -136,7 +134,7 @@ const UsersPage: React.FC = () => {
                 drawerHeader={selectedUser ? "Edit User" : "Add User"}
             >
                 <UserForm 
-                    type={selectedUser == null ? UserTypes.Add : UserTypes.Edit} 
+                    type={selectedUser == null ? DrawerPanelActions.Add : DrawerPanelActions.Edit} 
                     userData={selectedUser == null ? userData : selectedUser} 
                     handleFormChange={handleFormChange} 
                 />

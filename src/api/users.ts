@@ -10,6 +10,13 @@ export const fetchUsers = async() => {
     return User.fromJSONArray((await response.json()).data as JSONObject[]);
 };
 
+export const getUserByUsername = async (username: string) => {
+    const response = await fetch(`https://localhost:5001/api/users/${username}`, {
+        method: "GET"
+    });
+    return User.fromJSON((await response.json()).data as JSONObject);
+};
+
 export const addUser = async (data: AddUser) => {
     const response = await fetch("https://localhost:5001/api/users", {
         method: "POST",

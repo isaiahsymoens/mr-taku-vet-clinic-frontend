@@ -3,8 +3,10 @@ import SubHeader from "../../components/SubHeader";
 import CustomTable from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
-import {Box} from "@mui/material";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+
+import {fetchVisits} from "../../api/visits";
+import {Box} from "@mui/material";
 
 const tableData = {
     tableHeaders: [
@@ -96,8 +98,6 @@ const VisitsPage: React.FC = () => {
     const handleSave = () => {
     }
 
-
-
     return (
         <Box>
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
@@ -135,5 +135,6 @@ const VisitsPage: React.FC = () => {
 export default VisitsPage;
 
 export const loader = async () => {
-    return null;
+    const response = await fetchVisits();
+    return response;
 }

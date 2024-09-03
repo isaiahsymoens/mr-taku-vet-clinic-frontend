@@ -2,7 +2,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/Login/LoginPage";
 import MainLayout from "./layouts/MainLayout";
 import UsersPage, {loader as usersPageLoader} from "./pages/Users/UsersPage";
-import VisitsPage from "./pages/Visits/VisitsPage";
+import VisitsPage, {loader as visitPageLoader}  from "./pages/Visits/VisitsPage";
 import Test from "./pages/Test/TestPage";
 import Profile, {loader as profilePageLoader} from "./pages/Profile/Profile";
 
@@ -23,7 +23,8 @@ const App: React.FC = () => {
         },
         {
           path: "visits",
-          element: <VisitsPage />
+          element: <VisitsPage />,
+          loader: visitPageLoader,
         },
         {
           path: ":username",

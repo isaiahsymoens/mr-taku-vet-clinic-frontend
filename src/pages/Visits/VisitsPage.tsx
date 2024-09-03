@@ -133,3 +133,7 @@ const VisitsPage: React.FC = () => {
 }
 
 export default VisitsPage;
+
+export const loader = async () => {
+    return null;
+}

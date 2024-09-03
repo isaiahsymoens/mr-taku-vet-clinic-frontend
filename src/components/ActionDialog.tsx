@@ -1,7 +1,7 @@
 import React from "react";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button} from "@mui/material";
 
-type ConfirmationDialogProps = {
+type ActionDialogProps = {
     isOpen: boolean;
     title?: string;
     description?: string;
@@ -9,7 +9,7 @@ type ConfirmationDialogProps = {
     onCancel: () => void;
 }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({isOpen, title, description, onSave, onCancel}) => {
+const ActionDialog: React.FC<ActionDialogProps> = ({isOpen, title, description, onSave, onCancel}) => {
     return (
         <React.Fragment>
             <Dialog
@@ -37,4 +37,4 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({isOpen, title, d
     );
 }
 
-export default ConfirmationDialog;
+export default ActionDialog;

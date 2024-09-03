@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel from "../../components/DrawerPanel";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
+import ActionDialog from "../../components/ActionDialog";
 import UserForm, {UserData, UserTypes} from "./UserForm";
 
 import {userActions} from "../../redux/features/user";
@@ -36,7 +36,7 @@ const UsersPage: React.FC = () => {
     const [selectedUser, setSelectedUser] = useState<UserData>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
+    const [isActionDialog, setIsActionDialog] = useState(false);
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
@@ -77,15 +77,15 @@ const UsersPage: React.FC = () => {
 
     const handleDelete = (data: any) => {
         setSelectedUser(data);
-        toggleConfirmationDialog();
+        toggleActionDialog();
     }
 
     const toggleDrawer = () => {
         setIsDrawerOpen(prev => !prev);
     }
 
-    const toggleConfirmationDialog = () => {
-        setIsConfirmationDialog(prev => !prev);
+    const toggleActionDialog = () => {
+        setIsActionDialog(prev => !prev);
     }
 
     const handleSaveConfirmDlg = async () => {
@@ -93,7 +93,7 @@ const UsersPage: React.FC = () => {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
             setSelectedUser(null!);
-            toggleConfirmationDialog();
+            toggleActionDialog();
         } catch (err) {
             // TODO: handle error message
         }
@@ -141,12 +141,12 @@ const UsersPage: React.FC = () => {
                     handleFormChange={handleFormChange} 
                 />
             </DrawerPanel>
-            <ConfirmationDialog
+            <ActionDialog
                 title="Are you sure you want to delete this user record?"
                 description="This will delete permanently, You cannot undo this action."
-                isOpen={isConfirmationDialog}
+                isOpen={isActionDialog}
                 onSave={handleSaveConfirmDlg}
-                onCancel={toggleConfirmationDialog}
+                onCancel={toggleActionDialog}
             />
         </React.Fragment>
     );

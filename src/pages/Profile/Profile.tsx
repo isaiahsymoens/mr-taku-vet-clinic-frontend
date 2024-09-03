@@ -17,7 +17,7 @@ import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 import {Box} from "@mui/material";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
+import ActionDialog from "../../components/ActionDialog";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -45,7 +45,7 @@ const Profile = () => {
     const [petData, setPetData] = useState<PetData>(initialStatePet);
     const [selectedPet, setSelectedPet] = useState<PetData>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
-    const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
+    const [isActionDialog, setIsActionDialog] = useState(false);
 
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
@@ -85,7 +85,7 @@ const Profile = () => {
     const handleDelete = (data: PetData) => {
         setSelectedPet(data);
         setPetDrawerType(DrawerPanelActions.View);
-        toggleConfirmationDialog();
+        toggleActionDialog();
     }
 
     const toggleUserDrawer = () => {
@@ -96,8 +96,8 @@ const Profile = () => {
         setIsPetDrawerOpen(prev => !prev);
     }
 
-    const toggleConfirmationDialog = () => {
-        setIsConfirmationDialog(prev => !prev);
+    const toggleActionDialog = () => {
+        setIsActionDialog(prev => !prev);
     }
 
     const handleSaveConfirmDlg = () => {
@@ -174,12 +174,12 @@ const Profile = () => {
                     handleFormChange={handleFormChange}
                 />     
             </DrawerPanel>
-            <ConfirmationDialog
+            <ActionDialog
                 title="Are you sure you want to delete this pet record?"
                 description="This will delete permanently, You cannot undo this action."
-                isOpen={isConfirmationDialog}
+                isOpen={isActionDialog}
                 onSave={handleSaveConfirmDlg}
-                onCancel={toggleConfirmationDialog}
+                onCancel={toggleActionDialog}
             />
         </React.Fragment>
     );

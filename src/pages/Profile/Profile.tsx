@@ -1,38 +1,40 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
 import CustomTable, {TableHeaders} from "../../components/CustomTable";
 import CustomDrawer from "../../components/CustomDrawer";
 import PetForm, {PetData} from "./PetForm";
 import UserForm, {UserData, UserTypes} from "../Users/UserForm";
+import ProfileCard from "../../components/ProfileCard";
+
+import {getUserByUsername} from "../../api/users";
+import {getUserPetsByUsername} from "../../api/pets";
+import {petActions} from "../../redux/features/pet";
+import {User} from "../../models/user";
+import {Pet} from "../../models/pet";
 
 import {RootState} from "../../redux";
-import {useSelector} from "react-redux";
-import {LoaderFunctionArgs, useParams} from "react-router-dom";
-import {Box, Typography, Button} from "@mui/material";
-import ProfileCard from "../../components/ProfileCard";
-import { getUserByUsername } from "../../api/users";
-import { getUserPetsByUsername } from "../../api/pets";
-
-const tableData = {
-    tableBody: [
-        {name: "Brownie", petType: "Dog", breed: "Golden Retriever", birthDate: "01/01/2024"},
-        {name: "Blacky", petType: "Dog", breed: "Golden Retriever", birthDate: "01/02/2024"},
-    ],
-}
+import {useDispatch, useSelector} from "react-redux";
+import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
+import {Box} from "@mui/material";
 
 const tableHeaders: TableHeaders[] = [
-    {label: "Name", field: "name"},
+    {label: "Name", field: "petName"},
     {label: "Pet Type", field: "petType"},
     {label: "Breed", field: "breed"},
     {label: "Birth Date", field: "birthDate"},
 ];
 
 const initialStatePet: PetData = {
-    name: "",
+    petName: "",
     petType: "",
     breed: "",
     birthDate: "", 
+}
+
+type LoaderData = {
+    user: User;
+    userPets: Pet[];
 }
 
 const Profile = () => {
@@ -41,7 +43,15 @@ const Profile = () => {
     const [userData, setUserData] = useState<UserData>({});
     const [petData, setPetData] = useState<PetData>(initialStatePet);
 
+    const dispatch = useDispatch();
+    const {user, userPets} = useLoaderData() as LoaderData;
     const pets = useSelector((state: RootState) => state.pet.pets);
+
+    useEffect(() => {
+        console.log("user :", user);
+        console.log("userPets :", userPets);
+        dispatch(petActions.storePets(userPets));
+    }, [dispatch]);
 
     const menuActions = (data: PetData) => [
         {
@@ -112,7 +122,7 @@ const Profile = () => {
                         </Box>
                         <CustomTable 
                             tableHeaders={tableHeaders} 
-                            tableBody={tableData.tableBody}
+                            tableBody={pets}
                             menuActions={menuActions}
                         />
                     </Box>
@@ -150,13 +160,8 @@ export default Profile;
 
 export const loader = async ({params}: LoaderFunctionArgs<{username: string}>) => {
     const {username} = params;
-    console.log("username :", username);
+    const user = await getUserByUsername(username as string);
+    const userPets = await getUserPetsByUsername(username as string);
 
-    const userResponse = await getUserByUsername(username as string);
-    console.log("profile userResponse response :", userResponse);
-
-    const userPetsResponse = await getUserPetsByUsername(username as string);
-    console.log("profile userPetsResponse response :", userPetsResponse);
-
-    return null;
+    return {user, userPets};
 }

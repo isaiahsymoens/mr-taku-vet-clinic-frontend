@@ -2,8 +2,8 @@ import React from "react";
 import {TextField} from "@mui/material";
 
 export interface PetData {
-    name?: string;
-    petType?: string;
+    petName: string;
+    petType: string;
     breed?: string;
     birthDate?: string;
 }

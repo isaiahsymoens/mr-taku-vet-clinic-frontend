@@ -7,7 +7,6 @@ export class User {
     email: string;
     username: string;
     password?: string;
-    userTypeId: number;
     active: boolean;
     petOwned: number;
 
@@ -18,7 +17,6 @@ export class User {
         email: string, 
         username: string,
         password: string,
-        userTypeId: number,
         active: boolean,
         petOwned: number
     ) {
@@ -28,7 +26,6 @@ export class User {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.userTypeId = userTypeId;
         this.active = active;
         this.petOwned = petOwned;
     }
@@ -41,7 +38,6 @@ export class User {
             json["email"] as string,
             json["username"] as string,
             json["password"] as string,
-            json["userTypeId"] as number,
             json["active"] as boolean,
             json["petOwned"] as number,
         );

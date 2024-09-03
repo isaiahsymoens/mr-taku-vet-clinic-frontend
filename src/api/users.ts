@@ -11,24 +11,14 @@ export const fetchUsers = async() => {
 };
 
 export const addUser = async (data: AddUser) => {
-    console.log("addUser :", data);
     const response = await fetch("https://localhost:5001/api/users", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            "firstName": "AAAA",
-            "middleName": "",
-            "lastName": "Monkey",
-            "email": "aaaa@gmail.com",
-            "username": "aaaa",
-            "password": "password123",
-            "userTypeId": 5,
-            "active": true
-        })
+        body: JSON.stringify(data)
     });
-    console.log("add response :", await response.json());
+    return await response.json();
 }
 
 export const updateUser = async (data: User) => {

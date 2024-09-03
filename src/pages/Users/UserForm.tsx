@@ -63,10 +63,10 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                             size="small" 
                             fullWidth 
                         />
-                        <Box sx={{display: "flex", alignItems: "center"}}>
-                            <Switch defaultChecked/>
+                        {/* <Box sx={{display: "flex", alignItems: "center"}}>
+                            <Switch checked={userData.active} onChange={(e) => handleFormChange("active", e.target.value)} />
                             <Typography variant="body2">Active</Typography>
-                        </Box>
+                        </Box> */}
                         <Divider />
                         <TextField 
                             label="Username" 

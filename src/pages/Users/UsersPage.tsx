@@ -33,8 +33,7 @@ const initialStateUserData: AddUser = {
     email: "", 
     username: "",
     password: "",
-    userTypeId: 0,
-    active: false,
+    active: true,
 }
 
 const UsersPage: React.FC = () => {
@@ -109,8 +108,13 @@ const UsersPage: React.FC = () => {
         setUserData((prevData) => ({...prevData, [key]: value}));
     }
 
-    const handleAddUser = () => {
-        const response = addUser(userData)
+    const handleAddUser = async () => {
+        try {
+            const response = await addUser(userData);
+            dispatch(userActions.addUser(response.data));
+            setUserData(initialStateUserData);
+            toggleDrawer();
+        } catch (err) {}
     }
 
     const handleEditUser = () => {

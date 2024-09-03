@@ -1,13 +1,13 @@
 import {Box, Button, Drawer, Typography} from '@mui/material';
 
-export enum DrawerActions {
+export enum DrawerPanelActions {
     Add = "Add",
     Edit = "Edit",
     View = "View",
     Delete = "Delete"
 }
 
-type CustomDrawerProps = {
+type DrawerPanelProps = {
     open: boolean;
     onCancel: () => void;
     onSave: () => void;
@@ -16,7 +16,7 @@ type CustomDrawerProps = {
     showBtn?: boolean;
 }
 
-const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onCancel, onSave, drawerHeader, children, showBtn=true}) => {
+const CustomDrawer: React.FC<DrawerPanelProps> = ({open, onCancel, onSave, drawerHeader, children, showBtn=true}) => {
     return (
         <Drawer anchor="right" open={open}>
             <Box sx={{ width: 350, display: "flex", flexDirection: "column", gap: 2, padding: 3, marginTop: "48px" }}>

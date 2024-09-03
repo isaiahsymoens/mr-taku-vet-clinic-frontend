@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
 import CustomTable, {TableHeaders} from "../../components/CustomTable";
-import CustomDrawer, {DrawerActions} from "../../components/CustomDrawer";
+import CustomDrawer, {DrawerPanelActions} from "../../components/DrawerPanel";
 import PetForm, {PetData} from "./PetForm";
 import UserForm, {UserData, UserTypes} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
@@ -44,7 +44,7 @@ const Profile = () => {
     const [userData, setUserData] = useState<UserData>({});
     const [petData, setPetData] = useState<PetData>(initialStatePet);
     const [selectedPet, setSelectedPet] = useState<PetData>(null!);
-    const [petDrawerType, setPetDrawerType] = useState<DrawerActions | string>("");
+    const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isConfirmationDialog, setIsConfirmationDialog] = useState(false);
 
     const dispatch = useDispatch();
@@ -72,19 +72,19 @@ const Profile = () => {
 
     const handleEdit = (data: PetData) => {
         setSelectedPet(data);
-        setPetDrawerType(DrawerActions.Edit);
+        setPetDrawerType(DrawerPanelActions.Edit);
         togglePetDrawer();
     }
 
     const handleView = (data: PetData) => {
         setSelectedPet(data);
-        setPetDrawerType(DrawerActions.View);
+        setPetDrawerType(DrawerPanelActions.View);
         togglePetDrawer();
     }
 
     const handleDelete = (data: PetData) => {
         setSelectedPet(data);
-        setPetDrawerType(DrawerActions.View);
+        setPetDrawerType(DrawerPanelActions.View);
         toggleConfirmationDialog();
     }
 
@@ -169,7 +169,7 @@ const Profile = () => {
                 drawerHeader={selectedPet === null ? "Add Pet" : "Edit Pet"}
             >
                 <PetForm
-                    type={selectedPet === null ? DrawerActions.Add : DrawerActions.Edit}
+                    type={selectedPet === null ? DrawerPanelActions.Add : DrawerPanelActions.Edit}
                     petData={selectedPet === null ? petData : selectedPet}
                     handleFormChange={handleFormChange}
                 />     

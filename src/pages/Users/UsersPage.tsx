@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import SubHeader from "../../components/SubHeader";
 import CustomTable, {TableHeaders} from "../../components/CustomTable";
-import CustomDrawer from "../../components/CustomDrawer";
+import DrawerPanel from "../../components/DrawerPanel";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import UserForm, {UserData, UserTypes} from "./UserForm";
 
@@ -126,7 +126,7 @@ const UsersPage: React.FC = () => {
                     menuActions={menuActions} 
                 />
             </Box>
-            <CustomDrawer 
+            <DrawerPanel 
                 open={isDrawerOpen} 
                 onCancel={() => {
                     toggleDrawer();
@@ -140,7 +140,7 @@ const UsersPage: React.FC = () => {
                     userData={selectedUser == null ? userData : selectedUser} 
                     handleFormChange={handleFormChange} 
                 />
-            </CustomDrawer>
+            </DrawerPanel>
             <ConfirmationDialog
                 title="Are you sure you want to delete this user record?"
                 description="This will delete permanently, You cannot undo this action."

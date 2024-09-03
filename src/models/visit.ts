@@ -6,20 +6,17 @@ export class Visit {
     petId: number;
     date: string;
     notes: string;
-    user: User;
 
     constructor(
         visitTypeId: number,
         petId: number,
         date: string,
-        notes: string,
-        user: User
+        notes: string
     ) {
         this.visitTypeId = visitTypeId;
         this.petId = petId;
         this.date = date;
         this.notes = notes;
-        this.user = user;
     }
 
     static fromJSON(json: JSONObject): Visit {
@@ -27,8 +24,7 @@ export class Visit {
             json["visitTypeId"] as number,
             json["petId"] as number,
             json["date"] as string,
-            json["notes"] as string,
-            User.fromJSON(json["user"] as JSONObject)
+            json["notes"] as string
         );
     }
 

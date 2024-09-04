@@ -93,7 +93,8 @@ const UsersPage: React.FC = () => {
         }
     }
 
-    const handleAddUser = async () => {
+    const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
             const response = await addUser(userData);
             dispatch(userActions.addUser(response.data));

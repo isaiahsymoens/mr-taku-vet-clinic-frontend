@@ -1,6 +1,8 @@
 import React from "react";
-import {Divider, FormControlLabel, Switch, TextField} from "@mui/material";
+import {Divider, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch, TextField} from "@mui/material";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export interface UserData {
     firstName?: string;
@@ -21,18 +23,33 @@ type UserFormProps = {
 }
 
 const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) => {
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+    
+    const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
     return (
         <React.Fragment>
             <TextField 
                     label="First Name" 
+                    type="text"
                     variant="outlined" 
                     value={userData.firstName}
                     onChange={(e) => handleFormChange("firstName", e.target.value)} 
                     size="small" 
                     fullWidth 
+                    required
                 />
                 <TextField 
                     label="Middle Name" 
+                    type="text"
                     variant="outlined" 
                     value={userData.middleName}
                     onChange={(e) => handleFormChange("middleName", e.target.value)}  
@@ -41,19 +58,23 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 />
                 <TextField 
                     label="Last Name" 
+                    type="text"
                     variant="outlined" 
                     value={userData.lastName} 
                     onChange={(e) => handleFormChange("lastName", e.target.value)} 
                     size="small" 
                     fullWidth 
+                    required
                 />
                 <TextField 
                     label="Email" 
+                    type="email"
                     variant="outlined" 
                     value={userData.email}
                     onChange={(e) => handleFormChange("email", e.target.value)}  
                     size="small" 
                     fullWidth 
+                    required
                 />
                 <FormControlLabel
                     label="Active"
@@ -61,21 +82,39 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 />
                 <Divider />
                 <TextField 
-                    label="Username" 
+                    label="Username"
+                    type="text" 
                     variant="outlined" 
                     value={userData.email?.split("@")[0]}   
                     size="small" 
                     disabled
                     fullWidth 
+                    required
                 />
-                <TextField 
-                    label="Password" 
-                    variant="outlined" 
-                    value={userData.password} 
-                    onChange={(e) => handleFormChange("password", e.target.value)}  
-                    size="small" 
-                    fullWidth 
-                />
+                <FormControl variant="outlined" size="small">
+                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                    <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={showPassword ? "text" : "password"}
+                        value={userData.password} 
+                        onChange={(e) => handleFormChange("password", e.target.value)}  
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    onMouseUp={handleMouseUpPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Password"
+                        required
+                    />
+                </FormControl>
         </React.Fragment>
     );
 }

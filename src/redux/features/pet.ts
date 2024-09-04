@@ -1,6 +1,11 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {Pet} from "../../models/pet";
 
-const initialState = {
+type PetState = {
+    pets: Pet[]
+}
+
+const initialState: PetState = {
     pets: []
 }
 
@@ -9,10 +14,10 @@ const petSlice = createSlice({
     initialState,
     reducers: {
         addPet: (state, action) => {
-            
+            state.pets.push(action.payload);
         },
         removePet: (state, action) => {
-
+            state.pets = state.pets.filter(pet => pet.petId !== action.payload);
         },
         updatePet: (state, action) => {
 

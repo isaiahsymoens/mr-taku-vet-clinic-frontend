@@ -10,7 +10,7 @@ export enum DrawerPanelActions {
 type DrawerPanelProps = {
     open: boolean;
     onCancel: () => void;
-    onSave: () => void;
+    onSave: (e: React.FormEvent<HTMLFormElement>) => void;
     drawerHeader?: string;
     children: React.ReactNode;
     showBtn?: boolean;
@@ -19,15 +19,19 @@ type DrawerPanelProps = {
 const DrawerPanel: React.FC<DrawerPanelProps> = ({open, onCancel, onSave, drawerHeader, children, showBtn=true}) => {
     return (
         <Drawer anchor="right" open={open}>
-            <Box sx={{ width: 350, display: "flex", flexDirection: "column", gap: 2, padding: 3, marginTop: "48px" }}>
+            <Box sx={{width: 350, padding: 3, marginTop: "48px"}}>
                 <Typography variant="subtitle1">{drawerHeader}</Typography>
-                {children}
-                {showBtn ?
-                    <Box sx={{ display: "flex", gap: 2 }}>
-                        <Button variant="outlined" onClick={onCancel} fullWidth>Cancel</Button>
-                        <Button variant="contained" onClick={onSave} fullWidth>Save</Button>
+                <form onSubmit={onSave}>
+                    <Box sx={{display: "flex", flexDirection: "column", gap: 2, mt: 2}}>
+                        {children}
+                        {showBtn ?
+                            <Box sx={{ display: "flex", gap: 2 }}>
+                                <Button variant="outlined" onClick={onCancel} fullWidth>Cancel</Button>
+                                <Button type="submit" variant="contained" fullWidth>Save</Button>
+                            </Box>
+                        : <Button variant="outlined" onClick={onCancel} fullWidth>Close</Button>}
                     </Box>
-                : <Button variant="outlined" onClick={onCancel} fullWidth>Close</Button>}
+                </form>
             </Box>
         </Drawer>
     );

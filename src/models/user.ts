@@ -30,6 +30,10 @@ export class User {
         this.petOwned = petOwned;
     }
 
+    get name(): string {
+        return `${this.firstName} ${this.middleName} ${this.lastName}`;
+    }
+
     static fromJSON(json: JSONObject): User{
         return new User(
             json["firstName"] as string,

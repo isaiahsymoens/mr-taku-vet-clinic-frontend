@@ -11,6 +11,7 @@ import {DrawerPanelActions} from "../../components/DrawerPanel";
 
 
 export interface PetData {
+    petId?: number,
     username: string,
     petName: string;
     petType: string;

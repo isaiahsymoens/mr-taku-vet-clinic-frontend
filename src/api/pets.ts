@@ -25,3 +25,11 @@ export const addPet = async (data: any) => {
     console.log("response :",await response.json());
     // return Pet.fromJSONArray((await response.json()).data as JSONObject[]);
 }
+
+export const deletePet = async (petId: number) => {
+    const response = await fetch(`https://localhost:5001/api/pets/${petId}`, {
+        method: "DELETE"
+    });
+    if (!response.ok)
+        console.log("error response :", await response.json());
+}

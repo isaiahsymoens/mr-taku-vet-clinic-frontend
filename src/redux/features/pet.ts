@@ -12,7 +12,7 @@ const petSlice = createSlice({
             
         },
         removePet: (state, action) => {
-
+            state.pets = state.pets.filter(pet => pet.petId !== action.payload);
         },
         updatePet: (state, action) => {
 

@@ -8,7 +8,7 @@ import UserForm, {UserData} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
 
 import {getUserByUsername} from "../../api/users";
-import {addPet, getUserPetsByUsername} from "../../api/pets";
+import {addPet, deletePet, getUserPetsByUsername} from "../../api/pets";
 import {petActions} from "../../redux/features/pet";
 import {User} from "../../models/user";
 import {Pet} from "../../models/pet";
@@ -86,7 +86,14 @@ const Profile = () => {
         setIsActionDialog(prev => !prev);
     }
 
-    const handleSaveConfirmDlg = () => {
+    const handleSaveConfirmDlg = async () => {
+        try {
+            console.log("petId :", selectedPet.petId);
+            await deletePet(selectedPet!.petId as number);
+            dispatch(petActions.removePet(selectedPet!.petId as number));
+            setPetData(null!);
+            toggleActionDialog();
+        } catch(err) {}
     }
 
     const handleFormChange = (key: keyof PetData | keyof UserData, value: any) => {

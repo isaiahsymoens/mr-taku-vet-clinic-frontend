@@ -101,11 +101,15 @@ const Profile = () => {
     }
 
     const handleUserSave = () => {
-
     }
 
     const handlePetSave = async () => {
-        const response = await addPet({...petData, username: loaderUser.username});
+        try {
+            const response = await addPet({...petData, username: loaderUser.username});
+            dispatch(petActions.addPet(response));
+            setPetData(initialStatePet);
+            togglePetDrawer();
+        } catch (err) {} 
     }
 
     return (

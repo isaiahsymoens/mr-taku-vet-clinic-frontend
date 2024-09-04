@@ -21,9 +21,8 @@ export const addPet = async (data: any) => {
             breed: data.breed,
             birthdate: data.birthDate,
         })
-    });
-    console.log("response :",await response.json());
-    // return Pet.fromJSONArray((await response.json()).data as JSONObject[]);
+    });    
+    return Pet.fromJSON((await response.json()).data as JSONObject);
 }
 
 export const deletePet = async (petId: number) => {

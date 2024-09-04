@@ -8,7 +8,7 @@ export type DataTableHeaders = {
 }
 
 export type DataTableProps = {
-    tableHeaders: any[];
+    tableHeaders?: DataTableHeaders[];
     tableBody: any[];
     menuActions: any;
 }
@@ -18,16 +18,18 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
         <React.Fragment>
             <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
                 <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {tableHeaders.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
-                            {menuActions && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
-                        </TableRow>
-                    </TableHead>
+                    {tableHeaders &&
+                        <TableHead>
+                            <TableRow>
+                                {tableHeaders?.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
+                                {menuActions && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
+                            </TableRow>
+                        </TableHead>
+                    }
                     <TableBody>
                         {tableBody.map((tBody, rowIndex) => (
                             <TableRow key={rowIndex}>
-                                {tableHeaders.map((tHeader: any, colIndex) => (
+                                {tableHeaders?.map((tHeader: any, colIndex) => (
                                     <TableCell key={colIndex}>
                                     {tBody[tHeader.field]}
                                     </TableCell>

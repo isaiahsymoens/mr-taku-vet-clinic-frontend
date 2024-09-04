@@ -1,19 +1,21 @@
 import {JSONObject} from "../utils/json";
-import {User} from "./user";
 
 export class Visit {
     visitTypeId: number;
+    visitType?: string;
     petId: number;
     date: string;
     notes: string;
 
     constructor(
         visitTypeId: number,
+        visitType: string,
         petId: number,
         date: string,
         notes: string
     ) {
         this.visitTypeId = visitTypeId;
+        this.visitType = visitType;
         this.petId = petId;
         this.date = date;
         this.notes = notes;
@@ -22,6 +24,7 @@ export class Visit {
     static fromJSON(json: JSONObject): Visit {
         return new Visit (
             json["visitTypeId"] as number,
+            json["visitType"] as string,
             json["petId"] as number,
             json["date"] as string,
             json["notes"] as string

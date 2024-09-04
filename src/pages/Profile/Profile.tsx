@@ -18,6 +18,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 import {Box} from "@mui/material";
 import ActionDialog from "../../components/ActionDialog";
+import { getPetVisits } from "../../api/visits";
+import { Visit } from "../../models/visit";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -44,6 +46,7 @@ const Profile = () => {
     const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>({});
     const [petData, setPetData] = useState<PetData>(initialStatePet);
+    const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
     const [selectedPet, setSelectedPet] = useState<PetData>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
@@ -57,13 +60,20 @@ const Profile = () => {
     }, [dispatch]);
 
     const handleEdit = (data: PetData) => {
-        setSelectedPet(data);
-        setPetDrawerType(DrawerPanelActions.Edit);
-        togglePetDrawer();
+        // setSelectedPet(data);
+        // setPetDrawerType(DrawerPanelActions.Edit);
+        // togglePetDrawer();
     }
 
-    const handleView = (data: PetData) => {
-        setSelectedPet(data);
+    const handleView = async (data: PetData) => {
+        // setSelectedPet(data);
+        console.log("data :", data);
+
+        const response = await getPetVisits(data.petId as number); 
+        console.log("response :", response);
+
+        setPetVisitsData(response);
+
         setPetDrawerType(DrawerPanelActions.View);
         togglePetDrawer();
     }
@@ -177,12 +187,18 @@ const Profile = () => {
                     setPetData(initialStatePet);
                 }} 
                 onSave={handlePetSave} 
-                drawerHeader={selectedPet === null ? "Add Pet" : "Edit Pet"}
+                showBtn={petDrawerType !== DrawerPanelActions.View}
+                drawerHeader={
+                    petDrawerType === DrawerPanelActions.Add ? "Add Pet" 
+                    : 
+                    petDrawerType === DrawerPanelActions.Edit ? "Edit Pet" : "Pet Visits"
+                }
             >
                 <PetForm
-                    type={selectedPet === null ? DrawerPanelActions.Add : DrawerPanelActions.Edit}
+                    type={petDrawerType}
                     petData={selectedPet === null ? petData : selectedPet}
                     handleFormChange={handleFormChange}
+                    petVisits={petVisitsData}
                 />     
             </DrawerPanel>
             <ActionDialog

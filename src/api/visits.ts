@@ -7,3 +7,10 @@ export const fetchVisits = async () => {
     });
     return Visit.fromJSONArray((await response.json()).data as JSONObject[]);
 }
+
+export const getPetVisits = async (id: number) => {
+    const response = await fetch(`https://localhost:5001/api/visits/petvisits/${id}`, {
+        method: "GET"
+    });
+    return Visit.fromJSONArray((await response.json()).data as JSONObject[]);
+}

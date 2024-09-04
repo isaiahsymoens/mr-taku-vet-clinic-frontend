@@ -8,7 +8,7 @@ import UserForm, {UserData} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
 
 import {getUserByUsername} from "../../api/users";
-import {getUserPetsByUsername} from "../../api/pets";
+import {addPet, getUserPetsByUsername} from "../../api/pets";
 import {petActions} from "../../redux/features/pet";
 import {User} from "../../models/user";
 import {Pet} from "../../models/pet";
@@ -27,6 +27,7 @@ const tableHeaders: DataTableHeaders[] = [
 ];
 
 const initialStatePet: PetData = {
+    username: "",
     petName: "",
     petType: "",
     breed: "",
@@ -54,21 +55,6 @@ const Profile = () => {
     useEffect(() => {
         dispatch(petActions.storePets(loaderUserPets));
     }, [dispatch]);
-
-    const menuActions = (data: PetData) => [
-        {
-            name: "Edit",
-            onClick: () => handleEdit(data),
-        },
-        {
-            name: "View",
-            onClick: () => handleView(data),
-        },
-        {
-            name: "Delete",
-            onClick: () => handleDelete(data),
-        }
-    ];
 
     const handleEdit = (data: PetData) => {
         setSelectedPet(data);
@@ -111,7 +97,8 @@ const Profile = () => {
 
     }
 
-    const handlePetSave = () => {
+    const handlePetSave = async () => {
+        const response = await addPet({...petData, username: loaderUser.username}); 
     }
 
     return (
@@ -141,7 +128,20 @@ const Profile = () => {
                         <DataTable 
                             tableHeaders={tableHeaders} 
                             tableBody={pets}
-                            menuActions={menuActions}
+                            menuActions={(data: PetData) => [
+                                {
+                                    name: "Edit",
+                                    onClick: () => handleEdit(data),
+                                },
+                                {
+                                    name: "View",
+                                    onClick: () => handleView(data),
+                                },
+                                {
+                                    name: "Delete",
+                                    onClick: () => handleDelete(data),
+                                }
+                            ]}
                         />
                     </Box>
                 </Box>

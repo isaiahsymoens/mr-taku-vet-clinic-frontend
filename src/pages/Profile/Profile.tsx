@@ -23,9 +23,8 @@ import { Visit } from "../../models/visit";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
-    {label: "Pet Type", field: "petType"},
-    {label: "Breed", field: "breed"},
     {label: "Birth Date", field: "birthDate"},
+    {label: "No. of Visits", field: "numberOfVisits"},
 ];
 
 const initialStatePet: PetData = {
@@ -59,6 +58,11 @@ const Profile = () => {
         dispatch(petActions.storePets(loaderUserPets));
     }, [dispatch]);
 
+    const handleAdd = () => {
+        setPetDrawerType(DrawerPanelActions.Add);
+        togglePetDrawer();
+    }
+
     const handleEdit = (data: PetData) => {
         // setSelectedPet(data);
         // setPetDrawerType(DrawerPanelActions.Edit);
@@ -80,7 +84,7 @@ const Profile = () => {
 
     const handleDelete = (data: PetData) => {
         setSelectedPet(data);
-        setPetDrawerType(DrawerPanelActions.View);
+        setPetDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
     }
 
@@ -144,7 +148,7 @@ const Profile = () => {
                         boxShadow: 3 
                     }}>
                         <Box sx={{ marginTop: "-48px" }}>
-                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={togglePetDrawer} />
+                            <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={handleAdd} />
                         </Box>
                         <DataTable 
                             tableHeaders={tableHeaders} 

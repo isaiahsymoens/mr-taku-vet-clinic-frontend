@@ -63,8 +63,6 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                                     <Accordion key={pVisit.visitTypeId} sx={{width: "100%"}}>
                                         <AccordionSummary
                                             expandIcon={<TextSnippetOutlinedIcon />}
-                                            aria-controls="panel2-content"
-                                            id="panel2-header"
                                         >
                                             <Typography>{pVisit.visitType}</Typography>
                                         </AccordionSummary>
@@ -119,7 +117,6 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                     </LocalizationProvider>
                 </React.Fragment>
             }
-            
         </React.Fragment>
     );
 }

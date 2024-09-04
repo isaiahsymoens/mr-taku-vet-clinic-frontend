@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
-import {PetType} from "../../models/petType";
-import {getPetTypes} from "../../api/petTypes";
-import {DrawerPanelActions} from "../../components/DrawerPanel";
+
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {Dayjs} from "dayjs";
+
+import {PetType} from "../../models/petType";
+import {getPetTypes} from "../../api/petTypes";
+import {DrawerPanelActions} from "../../components/DrawerPanel";
+
 
 export interface PetData {
     username: string,
@@ -43,7 +46,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, handleFormChange}) => {
                 fullWidth 
             />
             <FormControl size="small">
-                <InputLabel id="petType">Pet Types</InputLabel>
+                <InputLabel id="petType">Pet Type</InputLabel>
                 <Select 
                     labelId="petType" 
                     label="Pet Type" 

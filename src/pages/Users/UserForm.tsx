@@ -47,31 +47,27 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                     size="small" 
                     fullWidth 
                 />
-                {type == DrawerPanelActions.Add && 
-                    <React.Fragment>
-                        <TextField 
-                            label="Email" 
-                            variant="outlined" 
-                            value={userData.email}
-                            onChange={(e) => handleFormChange("email", e.target.value)}  
-                            size="small" 
-                            fullWidth 
-                        />
-                        <FormControlLabel
-                            label="Active"
-                            control={<Switch checked={userData.active} onChange={(e) => handleFormChange("active", e.target.checked)} />}
-                        />
-                        <Divider />
-                        <TextField 
-                            label="Username" 
-                            variant="outlined" 
-                            value={userData.email?.split("@")[0]}   
-                            size="small" 
-                            disabled
-                            fullWidth 
-                        />
-                    </React.Fragment>
-                }
+                <TextField 
+                    label="Email" 
+                    variant="outlined" 
+                    value={userData.email}
+                    onChange={(e) => handleFormChange("email", e.target.value)}  
+                    size="small" 
+                    fullWidth 
+                />
+                <FormControlLabel
+                    label="Active"
+                    control={<Switch checked={userData.active} onChange={(e) => handleFormChange("active", e.target.checked)} />}
+                />
+                <Divider />
+                <TextField 
+                    label="Username" 
+                    variant="outlined" 
+                    value={userData.email?.split("@")[0]}   
+                    size="small" 
+                    disabled
+                    fullWidth 
+                />
                 <TextField 
                     label="Password" 
                     variant="outlined" 

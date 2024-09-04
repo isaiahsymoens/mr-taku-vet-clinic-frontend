@@ -3,12 +3,15 @@ import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/materia
 import {PetType} from "../../models/petType";
 import {getPetTypes} from "../../api/petTypes";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {Dayjs} from "dayjs";
 
 export interface PetData {
     petName: string;
     petType: string;
     breed?: string;
-    birthDate?: string;
+    birthDate?: Dayjs | null;
 }
 
 type PetFormProps = {
@@ -57,14 +60,14 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, handleFormChange}) => {
                 size="small" 
                 fullWidth 
             />
-            <TextField 
-                label="Birth Date" 
-                variant="outlined" 
-                value={petData.birthDate} 
-                onChange={(e) => handleFormChange("birthDate", e.target.value)} 
-                size="small" 
-                fullWidth 
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                    label="Birth Date"
+                    value={petData.birthDate} 
+                    onChange={(e) => handleFormChange("birthDate", e)}
+                    slotProps={{textField: {size: "small"}}}
+                />
+            </LocalizationProvider>
         </React.Fragment>
     );
 }

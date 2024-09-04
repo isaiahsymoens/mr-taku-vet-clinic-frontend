@@ -30,7 +30,7 @@ const initialStatePet: PetData = {
     petName: "",
     petType: "",
     breed: "",
-    birthDate: "", 
+    birthDate: null, 
 }
 
 type LoaderData = {

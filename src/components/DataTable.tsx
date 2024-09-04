@@ -21,7 +21,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                     {tableHeaders &&
                         <TableHead>
                             <TableRow>
-                                {tableHeaders?.map((tblHeader, index) => <TableCell key={index}>{tblHeader.label}</TableCell>)}
+                                {tableHeaders?.map((tblHeader, index) => <TableCell key={index} sx={{fontWeight: 600}}>{tblHeader.label}</TableCell>)}
                                 {menuActions && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
                             </TableRow>
                         </TableHead>

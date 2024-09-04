@@ -64,7 +64,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, handleFormChange}) => {
                 size="small" 
                 fullWidth 
             />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                 <DatePicker
                     label="Birth Date"
                     value={petData.birthDate} 

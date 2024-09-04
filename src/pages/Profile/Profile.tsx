@@ -98,7 +98,7 @@ const Profile = () => {
     }
 
     const handlePetSave = async () => {
-        const response = await addPet({...petData, username: loaderUser.username}); 
+        const response = await addPet({...petData, username: loaderUser.username});
     }
 
     return (

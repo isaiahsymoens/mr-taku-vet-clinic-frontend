@@ -30,7 +30,7 @@ const initialState: VisitData = {
     owner: "",
     pet: "",
     visitType: "",
-    visitDate: "",
+    date: null,
     notes: ""
 }
 

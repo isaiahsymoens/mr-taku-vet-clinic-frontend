@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Divider, Switch, TextField, Typography} from "@mui/material";
+import {Divider, FormControlLabel, Switch, TextField} from "@mui/material";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 
 export interface UserData {
@@ -57,10 +57,10 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                             size="small" 
                             fullWidth 
                         />
-                        {/* <Box sx={{display: "flex", alignItems: "center"}}>
-                            <Switch checked={userData.active} onChange={(e) => handleFormChange("active", e.target.value)} />
-                            <Typography variant="body2">Active</Typography>
-                        </Box> */}
+                        <FormControlLabel
+                            label="Active"
+                            control={<Switch checked={userData.active} onChange={(e) => handleFormChange("active", e.target.checked)} />}
+                        />
                         <Divider />
                         <TextField 
                             label="Username" 

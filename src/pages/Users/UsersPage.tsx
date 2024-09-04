@@ -113,7 +113,7 @@ const UsersPage: React.FC = () => {
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={users} 
-                    menuActions={(user: any) => [
+                    menuActions={(user: User) => [
                         {
                             name: "Edit",
                             onClick: () => handleEdit(user),

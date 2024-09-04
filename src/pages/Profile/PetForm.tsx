@@ -1,5 +1,8 @@
-import React from "react";
-import {TextField} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import {PetType} from "../../models/petType";
+import {getPetTypes} from "../../api/petTypes";
+import {DrawerPanelActions} from "../../components/DrawerPanel";
 
 export interface PetData {
     petName: string;
@@ -8,20 +11,23 @@ export interface PetData {
     birthDate?: string;
 }
 
-export enum PetTypes {
-    Add = "Add",
-    Edit = "Edit",
-    View = "View",
-    Delete = "Delete"
-}
-
 type PetFormProps = {
-    type: PetTypes | string;
+    type: DrawerPanelActions | string;
     petData: PetData;
     handleFormChange: (key: keyof PetData, value: any) => void;
 }
 
 const PetForm: React.FC<PetFormProps> = ({type, petData, handleFormChange}) => {
+    const [petTypes, setPetTypes] = useState<PetType[]>([]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            const response = await getPetTypes();
+            setPetTypes(response);
+        }
+        loadData();
+    }, []);
+
     return (
         <React.Fragment>
             <TextField 
@@ -32,14 +38,17 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, handleFormChange}) => {
                 size="small" 
                 fullWidth 
             />
-            <TextField 
-                label="Pet Type" 
-                variant="outlined" 
-                value={petData.petType}
-                onChange={(e) => handleFormChange("petType", e.target.value)}  
-                size="small" 
-                fullWidth 
-            />
+            <FormControl size="small">
+                <InputLabel id="petType">Pet Types</InputLabel>
+                <Select 
+                    labelId="petType" 
+                    label="Pet Type" 
+                    value={petData.petType}
+                    onChange={(e) => handleFormChange("petType", e.target.value)} 
+                >
+                    {petTypes.map(pType => <MenuItem key={pType.petTypeId} value={pType.petTypeId}>{pType.typeName}</MenuItem>)}
+                </Select>
+            </FormControl>
             <TextField 
                 label="Breed" 
                 variant="outlined" 

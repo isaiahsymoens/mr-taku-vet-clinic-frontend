@@ -1,4 +1,5 @@
 import {JSONObject} from "../utils/json";
+import { User } from "./user";
 
 export class Pet {
     petId: number;
@@ -8,6 +9,7 @@ export class Pet {
     breed: string;
     birthDate?: string;
     numberOfVisits?: number;
+    userDetails?: User;
 
     constructor(
         petId: number,
@@ -16,7 +18,8 @@ export class Pet {
         petTypeId: number,
         breed: string,
         birthDate: string,
-        numberOfVisits: number
+        numberOfVisits: number,
+        userDetails: User
     ) {
         this.petId = petId;
         this.petName = petName;
@@ -25,6 +28,7 @@ export class Pet {
         this.breed = breed;
         this.birthDate = birthDate;
         this.numberOfVisits = numberOfVisits;
+        this.userDetails = userDetails;
     }
 
     static fromJSON(json: JSONObject): Pet{
@@ -35,7 +39,8 @@ export class Pet {
             json["petTypeId"] as number,
             json["breed"] as string,
             json["birthDate"] as string,
-            json["numberOfVisits"] as number
+            json["numberOfVisits"] as number,
+            User.fromJSON(json["user"] as JSONObject)
         );
     } 
 

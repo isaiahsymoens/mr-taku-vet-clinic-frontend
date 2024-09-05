@@ -16,8 +16,8 @@ import {RootState} from "../../redux";
 import {Box} from "@mui/material";
 
 const tableHeaders: DataTableHeaders[] = [
-    {label: "Owner", field: "owner"},
-    {label: "Pet", field: "pets.petName"},
+    {label: "Owner", field: "petDetails.userDetails.name"},
+    {label: "Pet", field: "petDetails.petName"},
     {label: "Visit Type", field: "visitType"},
     {label: "Visit Date", field: "date"}
 ];

@@ -7,7 +7,7 @@ export class Visit {
     petId: number;
     date: string;
     notes: string;
-    pets?: Pet;
+    petDetails?: Pet;
 
     constructor(
         visitTypeId: number,
@@ -15,14 +15,14 @@ export class Visit {
         petId: number,
         date: string,
         notes: string,
-        pets: Pet
+        petDetails: Pet
     ) {
         this.visitTypeId = visitTypeId;
         this.visitType = visitType;
         this.petId = petId;
         this.date = date;
         this.notes = notes;
-        this.pets = pets;
+        this.petDetails = petDetails;
     }
 
     static fromJSON(json: JSONObject): Visit {

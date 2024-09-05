@@ -55,7 +55,9 @@ const Profile = () => {
     const pets = useSelector((state: RootState) => state.pet.pets);
 
     useEffect(() => {
-        dispatch(petActions.storePets(loaderUserPets));
+        if (loaderUserPets) {
+            dispatch(petActions.storePets(loaderUserPets));
+        }
     }, [dispatch]);
 
     const handleAdd = () => {
@@ -102,7 +104,6 @@ const Profile = () => {
 
     const handleSaveConfirmDlg = async () => {
         try {
-            console.log("petId :", selectedPet.petId);
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
             setPetData(null!);

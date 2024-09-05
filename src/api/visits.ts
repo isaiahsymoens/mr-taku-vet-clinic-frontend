@@ -1,6 +1,10 @@
 import {Visit} from "../models/visit";
 import {JSONObject} from "../utils/json";
 
+export interface AddVisitRequest extends Visit {
+    petId: number;
+}
+
 export const fetchVisits = async () => {
     const response = await fetch(`https://localhost:5001/api/visits`, {
         method: "GET"
@@ -15,7 +19,7 @@ export const getPetVisits = async (id: number) => {
     return Visit.fromJSONArray((await response.json()).data as JSONObject[]);
 }
 
-export const addVisit = async (data: Visit) => {
+export const addVisit = async (data: AddVisitRequest) => {
     const response = await fetch("https://localhost:5001/api/visits", {
         method: "POST",
         headers: {
@@ -23,5 +27,5 @@ export const addVisit = async (data: Visit) => {
         },
         body: JSON.stringify(data)
     });
-    return await response.json();
+    return Visit.fromJSON((await response.json()).data as JSONObject);
 }

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
-import DrawerPanel from "../../components/DrawerPanel";
-import VisitForm, {AddVisitRequest, UserList, VisitTypes} from "./VisitForm";
+import DrawerPanel, { DrawerPanelActions } from "../../components/DrawerPanel";
+import VisitForm, {UserList} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
-import {addVisit, fetchVisits} from "../../api/visits";
+import {addVisit, AddVisitRequest, fetchVisits} from "../../api/visits";
 
 import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -25,7 +25,7 @@ const tableHeaders: DataTableHeaders[] = [
 ];
 
 const initialState: AddVisitRequest = {
-    petName: "",
+    petId: 0,
     visitTypeId: 0, 
     date: null,
     notes: ""
@@ -39,7 +39,7 @@ type LoaderData = {
 const VisitsPage: React.FC = () => {
     const [visitData, setVisitData] = useState<AddVisitRequest>(initialState);
     const [selectedVisit, setSelectedVisit] = useState<Visit>(null!);
-    const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
+    const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
 
@@ -54,7 +54,7 @@ const VisitsPage: React.FC = () => {
             setUserList(loaderUsers.filter(u => u.petOwned > 0).map(u => ({
                 username: u.username,
                 name: `${u.firstName} ${u.middleName} ${u.lastName}`,
-            }))); 
+            })));
         }
         if (loaderVisits) {
             dispatch(visitActions.setVisits(loaderVisits));
@@ -63,19 +63,19 @@ const VisitsPage: React.FC = () => {
 
     const handleEdit = (data: Visit) => {
         setSelectedVisit(data);
-        setVisitDrawerType(VisitTypes.Edit);
+        setVisitDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
 
     const handleView = (data: Visit) => {
         setSelectedVisit(data); 
-        setVisitDrawerType(VisitTypes.View);
+        setVisitDrawerType(DrawerPanelActions.View);
         toggleDrawer();
     }
 
     const handleDelete = (data: Visit) => {
         setSelectedVisit(data);
-        setVisitDrawerType(VisitTypes.Delete);
+        setVisitDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
     }
 
@@ -102,8 +102,10 @@ const VisitsPage: React.FC = () => {
 
     const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("visitData :", visitData);
-        // const response = await addVisit(visitData);
+        const response = await addVisit(visitData);
+        dispatch(visitActions.addVisit(response));
+        setVisitData(initialState);
+        toggleDrawer();
     }
 
     return (
@@ -134,7 +136,7 @@ const VisitsPage: React.FC = () => {
                 onCancel={toggleCancelDrawer} 
                 onSave={handleSave} 
                 drawerHeader="Add Visit"
-                showBtn={visitDrawerType !== VisitTypes.View}
+                showBtn={visitDrawerType !== DrawerPanelActions.View}
             >
                 <VisitForm 
                     type={visitDrawerType}
@@ -159,6 +161,5 @@ export default VisitsPage;
 export const loader = async () => {
     const loaderUsers = await fetchUsers();
     const loaderVisits = await fetchVisits();
-
     return {loaderUsers, loaderVisits};
 }

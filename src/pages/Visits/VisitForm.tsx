@@ -9,25 +9,16 @@ import {VisitType} from "../../models/visitType";
 import {getVisitTypes} from "../../api/visitTypes";
 import {getUserPetsByUsername} from "../../api/pets";
 import {Visit} from "../../models/visit";
+import { DrawerPanelActions } from "../../components/DrawerPanel";
+import { AddVisitRequest } from "../../api/visits";
 
-export interface AddVisitRequest extends Visit {
-    petName: string;
-}
-
-export enum VisitTypes {
-    Add = "Add",
-    Edit = "Edit",
-    View = "View",
-    Delete = "Delete"
-}
-
-export type UserList = {
+export interface UserList {
     username: string;
     name: string;
 }
 
 type VisitFormProps = {
-    type: VisitTypes | string;
+    type: DrawerPanelActions | string;
     visitData: AddVisitRequest;
     userList: UserList[];
     handleFormChange: (key: keyof AddVisitRequest, value: any) => void;
@@ -40,23 +31,21 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
 
     useEffect(() => {
         const loadData = async () => {
-            const response = await getVisitTypes();
-            setVisitTypes(response);
+            setVisitTypes(await getVisitTypes());
         }
         loadData();
     }, []);
 
     useEffect(() => {
         const loadData = async () => {
-            const response = await getUserPetsByUsername(owner);
-            setPetNames(response);
+            setPetNames(await getUserPetsByUsername(owner));
         }
         if (owner !== "") loadData();
     }, [owner]);
 
     return (
         <React.Fragment>
-            {type !== VisitTypes.View &&
+            {type !== DrawerPanelActions.View &&
                 <React.Fragment>
                     <FormControl size="small">
                         <InputLabel id="owner">Owner*</InputLabel>
@@ -82,14 +71,14 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                         <Select 
                             labelId="pet" 
                             label="Pet" 
-                            value={visitData.petName} 
-                            onChange={(e) => handleFormChange("petName", e.target.value)}
+                            value={visitData.petId} 
+                            onChange={(e) => handleFormChange("petId", e.target.value)}
                             required
                         >
                             {petNames.map((pet, index) => 
                                 <MenuItem 
                                     key={index} 
-                                    value={pet.petName}
+                                    value={pet.petId}
                                 >
                                     {pet.petName}
                                 </MenuItem>
@@ -133,7 +122,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                 size="small" 
                 multiline
                 rows={4}
-                disabled={type === VisitTypes.View}
+                disabled={type === DrawerPanelActions.View}
                 fullWidth 
                 required
             />

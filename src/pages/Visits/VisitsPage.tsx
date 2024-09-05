@@ -1,30 +1,26 @@
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
-import DataTable from "../../components/DataTable";
+import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel from "../../components/DrawerPanel";
-import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
+import VisitForm, {VisitData, VisitTypes} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
-import {fetchVisits} from "../../api/visits";
+import {Visit} from "../../models/visit";
+import {addVisit, fetchVisits} from "../../api/visits";
+
+import {useLoaderData} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {visitActions} from "../../redux/features/visit";
+import {RootState} from "../../redux";
+
 import {Box} from "@mui/material";
 
-const tableData = {
-    tableHeaders: [
-        {label: "Owner", field: "owner"},
-        {label: "Pet", field: "pet"},
-        {label: "VisitType", field: "visitType"},
-        {label: "VisitDate", field: "visitDate"}
-        
-    ],
-    tableBody: [
-        {owner: "Saitama Sy 1", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 2", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 3", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 4", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 5", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 6", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-    ]
-}
+const tableHeaders: DataTableHeaders[] = [
+    {label: "Owner", field: "owner"},
+    {label: "Pet", field: "pet"},
+    {label: "VisitType", field: "visitType"},
+    {label: "VisitDate", field: "visitDate"}
+];
 
 const initialState: VisitData = {
     owner: "",
@@ -41,20 +37,15 @@ const VisitsPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
 
-    const menuActions = (data: VisitData) => [
-        {
-            name: "Edit",
-            onClick: () => handleEdit(data),
-        },
-        {
-            name: "View",
-            onClick: () => handleView(data),
-        },
-        {
-            name: "Delete",
-            onClick: () => handleDelete(data),
+    const visits = useSelector((state: RootState) => state.visit.visits);
+    const dispatch = useDispatch();
+    const loaderData = useLoaderData() as Visit;
+
+    useEffect(() => {
+        if (loaderData) {
+            dispatch(visitActions.setVisits(loaderData));
         }
-    ];
+    }, [dispatch]);
 
     const handleEdit = (data: VisitData) => {
         setSelectedVisit(data);
@@ -95,7 +86,10 @@ const VisitsPage: React.FC = () => {
         console.log("selectedVisit :", selectedVisit);
     }
 
-    const handleSave = () => {
+    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log("visitData :", visitData);
+        // const response = await addVisit(visitData);
     }
 
     return (
@@ -103,9 +97,22 @@ const VisitsPage: React.FC = () => {
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <DataTable 
-                    tableHeaders={tableData.tableHeaders} 
-                    tableBody={tableData.tableBody}
-                    menuActions={menuActions}
+                    tableHeaders={tableHeaders} 
+                    tableBody={visits}
+                    menuActions={(data: VisitData) => [
+                        {
+                            name: "Edit",
+                            onClick: () => handleEdit(data),
+                        },
+                        {
+                            name: "View",
+                            onClick: () => handleView(data),
+                        },
+                        {
+                            name: "Delete",
+                            onClick: () => handleDelete(data),
+                        }
+                    ]}
                 />
             </Box>
             <DrawerPanel 
@@ -135,6 +142,5 @@ const VisitsPage: React.FC = () => {
 export default VisitsPage;
 
 export const loader = async () => {
-    const response = await fetchVisits();
-    return response;
+    return await fetchVisits();
 }

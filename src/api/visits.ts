@@ -14,3 +14,14 @@ export const getPetVisits = async (id: number) => {
     });
     return Visit.fromJSONArray((await response.json()).data as JSONObject[]);
 }
+
+export const addVisit = async (data: Visit) => {
+    const response = await fetch("https://localhost:5001/api/visits", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}

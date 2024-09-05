@@ -20,7 +20,7 @@ const visitSlice = createSlice({
             state.visits.push(action.payload);
         },
         removeVisit: (state, action) => {
-            state.visits = state.visits.filter(visit => visit.visitTypeId !== action.payload);
+            state.visits = state.visits.filter(visit => visit.visitId !== action.payload);
         },
         updateVisit: (state, action) => {
         }

@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {DrawerPanelActions} from "../../components/DrawerPanel";
 import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
@@ -7,10 +8,10 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {Pet} from "../../models/pet";
 import {VisitType} from "../../models/visitType";
 import {getVisitTypes} from "../../api/visitTypes";
+import {AddVisitRequest} from "../../api/visits";
 import {getUserPetsByUsername} from "../../api/pets";
 import {Visit} from "../../models/visit";
-import { DrawerPanelActions } from "../../components/DrawerPanel";
-import { AddVisitRequest } from "../../api/visits";
+
 
 export interface UserList {
     username: string;

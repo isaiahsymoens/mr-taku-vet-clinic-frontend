@@ -6,7 +6,7 @@ import VisitForm, {UserList} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
-import {addVisit, AddVisitRequest, fetchVisits} from "../../api/visits";
+import {addVisit, AddVisitRequest, deleteVisit, fetchVisits} from "../../api/visits";
 
 import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -97,8 +97,13 @@ const VisitsPage: React.FC = () => {
         setIsActionDialog(prev => !prev);
     }
 
-    const handleSaveConfirmDlg = () => {
-        console.log("selectedVisit :", selectedVisit);
+    const handleSaveConfirmDlg = async () => {
+        try {
+            await deleteVisit(selectedVisit.visitId as number);
+            dispatch(visitActions.removeVisit(selectedVisit.visitId));
+            setSelectedVisit(null!);
+            toggleActionDialog();
+        } catch(err) {}
     }
 
     const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {

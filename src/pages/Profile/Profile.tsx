@@ -131,7 +131,7 @@ const Profile = () => {
 
     return (
         <React.Fragment>
-            <Box sx={{ flexGrow: 1, marginTop: "48px", p: 3 }}>
+            <Box sx={{flexGrow: 1, marginTop: "48px", p: 3}}>
                 <Box sx={{
                     minHeight: "60vh",
                     display: "flex",

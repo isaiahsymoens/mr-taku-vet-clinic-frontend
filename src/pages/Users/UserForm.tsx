@@ -17,7 +17,7 @@ export interface UserData {
 }
 
 type UserFormProps = {
-    type: DrawerPanelActions;
+    type: DrawerPanelActions | string;
     userData: UserData;
     handleFormChange: (key: keyof UserData, value: any) => void;
 }

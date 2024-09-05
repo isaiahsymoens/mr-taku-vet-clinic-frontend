@@ -39,6 +39,8 @@ const UsersPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
 
+    const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
+
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
     const navigate = useNavigate();
@@ -52,17 +54,25 @@ const UsersPage: React.FC = () => {
 
     const handleEdit = (data: any) => {
         setSelectedUser(data);
+        setUserDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
 
     const handleView = (data: any) => {
         setSelectedUser(data);
+        setUserDrawerType(DrawerPanelActions.View);
         navigate(`/${data.username}`);
     }
 
     const handleDelete = (data: any) => {
         setSelectedUser(data);
+        setUserDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
+    }
+
+    const handleAdd = () => {
+        setUserDrawerType(DrawerPanelActions.Add);
+        toggleDrawer();
     }
 
     const toggleDrawer = () => {
@@ -93,7 +103,7 @@ const UsersPage: React.FC = () => {
         }
     }
 
-    const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSaveAdd = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const response = await addUser(userData);
@@ -109,7 +119,7 @@ const UsersPage: React.FC = () => {
 
     return (
         <React.Fragment>
-            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
+            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={handleAdd} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
@@ -136,11 +146,11 @@ const UsersPage: React.FC = () => {
                     toggleDrawer();
                     setSelectedUser(null!);
                 }} 
-                onSave={selectedUser ? handleEditUser : handleAddUser} 
-                drawerHeader={selectedUser ? "Edit User" : "Add User"}
+                onSave={userDrawerType === DrawerPanelActions.Add ? handleSaveAdd : handleEditUser} 
+                drawerHeader={userDrawerType === DrawerPanelActions.Add ? "Add User" : "Edit User"}
             >
                 <UserForm 
-                    type={selectedUser == null ? DrawerPanelActions.Add : DrawerPanelActions.Edit} 
+                    type={userDrawerType} 
                     userData={selectedUser == null ? userData : selectedUser} 
                     handleFormChange={handleFormChange} 
                 />

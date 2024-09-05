@@ -3,18 +3,15 @@ import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/materia
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {Dayjs} from "dayjs";
 
 import {Pet} from "../../models/pet";
 import {VisitType} from "../../models/visitType";
 import {getVisitTypes} from "../../api/visitTypes";
 import {getUserPetsByUsername} from "../../api/pets";
+import {Visit} from "../../models/visit";
 
-export interface VisitData {
+export interface AddVisitRequest extends Visit {
     petName: string;
-    visitTypeId: number;
-    date?: Dayjs | null;
-    notes?: string;
 }
 
 export enum VisitTypes {
@@ -31,9 +28,9 @@ export type UserList = {
 
 type VisitFormProps = {
     type: VisitTypes | string;
-    visitData: VisitData;
+    visitData: AddVisitRequest;
     userList: UserList[];
-    handleFormChange: (key: keyof VisitData, value: any) => void;
+    handleFormChange: (key: keyof AddVisitRequest, value: any) => void;
 }
 
 const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleFormChange}) => {

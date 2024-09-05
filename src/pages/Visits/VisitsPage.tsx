@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel from "../../components/DrawerPanel";
-import VisitForm, {UserList, VisitData, VisitTypes} from "./VisitForm";
+import VisitForm, {AddVisitRequest, UserList, VisitTypes} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
@@ -24,7 +24,7 @@ const tableHeaders: DataTableHeaders[] = [
     {label: "Visit Date", field: "date"}
 ];
 
-const initialState: VisitData = {
+const initialState: AddVisitRequest = {
     petName: "",
     visitTypeId: 0, 
     date: null,
@@ -36,11 +36,9 @@ type LoaderData = {
     loaderVisits: Visit[];
 }
 
-
-
 const VisitsPage: React.FC = () => {
-    const [visitData, setVisitData] = useState<VisitData>(initialState);
-    const [selectedVisit, setSelectedVisit] = useState<VisitData>(null!);
+    const [visitData, setVisitData] = useState<AddVisitRequest>(initialState);
+    const [selectedVisit, setSelectedVisit] = useState<Visit>(null!);
     const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
@@ -63,25 +61,25 @@ const VisitsPage: React.FC = () => {
         }
     }, [dispatch]);
 
-    const handleEdit = (data: VisitData) => {
+    const handleEdit = (data: Visit) => {
         setSelectedVisit(data);
         setVisitDrawerType(VisitTypes.Edit);
         toggleDrawer();
     }
 
-    const handleView = (data: VisitData) => {
+    const handleView = (data: Visit) => {
         setSelectedVisit(data); 
         setVisitDrawerType(VisitTypes.View);
         toggleDrawer();
     }
 
-    const handleDelete = (data: VisitData) => {
+    const handleDelete = (data: Visit) => {
         setSelectedVisit(data);
         setVisitDrawerType(VisitTypes.Delete);
         toggleActionDialog();
     }
 
-    const handleFormChange = (key: keyof VisitData, value: any) => {
+    const handleFormChange = (key: keyof AddVisitRequest, value: any) => {
         setVisitData((prevData) => ({...prevData, [key]: value}));
     }
 
@@ -115,7 +113,7 @@ const VisitsPage: React.FC = () => {
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={visits}
-                    menuActions={(data: VisitData) => [
+                    menuActions={(data: Visit) => [
                         {
                             name: "Edit",
                             onClick: () => handleEdit(data),

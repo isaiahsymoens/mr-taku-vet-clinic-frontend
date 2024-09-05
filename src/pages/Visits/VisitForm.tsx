@@ -11,9 +11,8 @@ import {getVisitTypes} from "../../api/visitTypes";
 import {getUserPetsByUsername} from "../../api/pets";
 
 export interface VisitData {
-    owner?: string;
-    pet?: string;
-    visitType?: string;
+    petName: string;
+    visitTypeId: number;
     date?: Dayjs | null;
     notes?: string;
 }
@@ -40,6 +39,7 @@ type VisitFormProps = {
 const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleFormChange}) => {
     const [visitTypes, setVisitTypes] = useState<VisitType[]>([]);
     const [petNames, setPetNames] = useState<Pet[]>([]);
+    const [owner, setOwner] = useState<string>("");
 
     useEffect(() => {
         const loadData = async () => {
@@ -51,11 +51,11 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
 
     useEffect(() => {
         const loadData = async () => {
-            const response = await getUserPetsByUsername(visitData.owner as string);
+            const response = await getUserPetsByUsername(owner);
             setPetNames(response);
         }
-        if (visitData?.owner) loadData();
-    }, [visitData.owner]);
+        if (owner !== "") loadData();
+    }, [owner]);
 
     return (
         <React.Fragment>
@@ -66,8 +66,8 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                         <Select 
                             labelId="owner" 
                             label="Owner" 
-                            value={visitData.owner} 
-                            onChange={(e) => handleFormChange("owner", e.target.value)}
+                            value={owner} 
+                            onChange={(e) => setOwner(e.target.value)}
                             required
                         >
                             {userList.map(user => 
@@ -80,14 +80,13 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                             )}
                         </Select>
                     </FormControl>
-
                     <FormControl size="small">
                         <InputLabel id="pet">Pet*</InputLabel>
                         <Select 
                             labelId="pet" 
                             label="Pet" 
-                            value={visitData.pet} 
-                            onChange={(e) => handleFormChange("pet", e.target.value)}
+                            value={visitData.petName} 
+                            onChange={(e) => handleFormChange("petName", e.target.value)}
                             required
                         >
                             {petNames.map((pet, index) => 
@@ -100,23 +99,13 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                             )}
                         </Select>
                     </FormControl>
-
-                    <TextField 
-                        label="Pet" 
-                        variant="outlined" 
-                        value={visitData.pet} 
-                        onChange={(e) => handleFormChange("pet", e.target.value)}
-                        size="small" 
-                        fullWidth
-                        required 
-                    />
                     <FormControl size="small">
                         <InputLabel id="visitType">Visit Type</InputLabel>
                         <Select 
                             labelId="visitType" 
                             label="Visit Type" 
-                            value={visitData.visitType} 
-                            onChange={(e) => handleFormChange("visitType", e.target.value)}
+                            value={visitData.visitTypeId} 
+                            onChange={(e) => handleFormChange("visitTypeId", e.target.value)}
                             required
                         >
                             {visitTypes.map(vType => 

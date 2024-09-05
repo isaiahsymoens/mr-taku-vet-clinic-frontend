@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import { Visit } from "../../models/visit";
+import {Visit} from "../../models/visit";
 
 type VisitState = {
     visits: Visit[];

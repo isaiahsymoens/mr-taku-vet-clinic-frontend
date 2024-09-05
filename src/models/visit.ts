@@ -1,11 +1,12 @@
+import {Dayjs} from "dayjs";
 import {JSONObject} from "../utils/json";
-import { Pet } from "./pet";
+import {Pet} from "./pet";
 
 export class Visit {
-    visitTypeId: number;
+    visitTypeId?: number;
     visitType?: string;
     petId: number;
-    date: string;
+    date?: Dayjs | null;
     notes: string;
     petDetails?: Pet;
 
@@ -13,7 +14,7 @@ export class Visit {
         visitTypeId: number,
         visitType: string,
         petId: number,
-        date: string,
+        date: Dayjs | null,
         notes: string,
         petDetails: Pet
     ) {
@@ -30,7 +31,7 @@ export class Visit {
             json["visitTypeId"] as number,
             json["visitType"] as string,
             json["petId"] as number,
-            json["date"] as string,
+            json["date"] as Dayjs | null,
             json["notes"] as string,
             Pet.fromJSON(json["pet"] as JSONObject)
         );

@@ -1,5 +1,5 @@
 import {JSONObject} from "../utils/json";
-import { User } from "./user";
+import {User} from "./user";
 
 export class Pet {
     petId: number;

@@ -25,9 +25,8 @@ const tableHeaders: DataTableHeaders[] = [
 ];
 
 const initialState: VisitData = {
-    owner: "",
-    pet: "",
-    visitType: "",
+    petName: "",
+    visitTypeId: 0, 
     date: null,
     notes: ""
 }
@@ -41,7 +40,7 @@ type LoaderData = {
 
 const VisitsPage: React.FC = () => {
     const [visitData, setVisitData] = useState<VisitData>(initialState);
-    const [selectedVisit, setSelectedVisit] = useState<VisitData>({});
+    const [selectedVisit, setSelectedVisit] = useState<VisitData>(null!);
     const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);

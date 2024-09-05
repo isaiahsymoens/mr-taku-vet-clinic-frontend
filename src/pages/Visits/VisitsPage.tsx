@@ -125,7 +125,6 @@ const VisitsPage: React.FC = () => {
     const handleEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            console.log("test yeah.");
             const response = await updateVisit(visitData);
             dispatch(visitActions.updateVisit(response));
             setVisitData(initialState);

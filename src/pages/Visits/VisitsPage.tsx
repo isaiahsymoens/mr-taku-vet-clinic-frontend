@@ -17,9 +17,9 @@ import {Box} from "@mui/material";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "owner"},
-    {label: "Pet", field: "pet"},
-    {label: "VisitType", field: "visitType"},
-    {label: "VisitDate", field: "visitDate"}
+    {label: "Pet", field: "pets.petName"},
+    {label: "Visit Type", field: "visitType"},
+    {label: "Visit Date", field: "date"}
 ];
 
 const initialState: VisitData = {

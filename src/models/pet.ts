@@ -9,7 +9,7 @@ export class Pet {
     breed: string;
     birthDate?: string;
     numberOfVisits?: number;
-    userDetails?: User;
+    user?: User;
 
     constructor(
         petId: number,
@@ -19,7 +19,7 @@ export class Pet {
         breed: string,
         birthDate: string,
         numberOfVisits: number,
-        userDetails: User
+        user: User
     ) {
         this.petId = petId;
         this.petName = petName;
@@ -28,7 +28,7 @@ export class Pet {
         this.breed = breed;
         this.birthDate = birthDate;
         this.numberOfVisits = numberOfVisits;
-        this.userDetails = userDetails;
+        this.user = user;
     }
 
     static fromJSON(json: JSONObject): Pet{

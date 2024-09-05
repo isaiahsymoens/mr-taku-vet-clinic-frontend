@@ -5,32 +5,28 @@ import {Pet} from "./pet";
 export class Visit {
     visitTypeId?: number;
     visitType?: string;
-    petId: number;
     date?: Dayjs | null;
     notes: string;
-    petDetails?: Pet;
+    pet?: Pet;
 
     constructor(
         visitTypeId: number,
         visitType: string,
-        petId: number,
         date: Dayjs | null,
         notes: string,
-        petDetails: Pet
+        pet: Pet
     ) {
         this.visitTypeId = visitTypeId;
         this.visitType = visitType;
-        this.petId = petId;
         this.date = date;
         this.notes = notes;
-        this.petDetails = petDetails;
+        this.pet = pet;
     }
 
     static fromJSON(json: JSONObject): Visit {
         return new Visit (
             json["visitTypeId"] as number,
             json["visitType"] as string,
-            json["petId"] as number,
             json["date"] as Dayjs | null,
             json["notes"] as string,
             Pet.fromJSON(json["pet"] as JSONObject)

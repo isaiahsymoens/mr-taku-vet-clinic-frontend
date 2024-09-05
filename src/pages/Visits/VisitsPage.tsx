@@ -18,8 +18,8 @@ import { fetchUsers } from "../../api/users";
 import { User } from "../../models/user";
 
 const tableHeaders: DataTableHeaders[] = [
-    {label: "Owner", field: "petDetails.userDetails.name"},
-    {label: "Pet", field: "petDetails.petName"},
+    {label: "Owner", field: "pet.user.name"},
+    {label: "Pet", field: "pet.petName"},
     {label: "Visit Type", field: "visitType"},
     {label: "Visit Date", field: "date"}
 ];

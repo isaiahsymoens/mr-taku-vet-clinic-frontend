@@ -1,7 +1,8 @@
 import {Visit} from "../models/visit";
 import {JSONObject} from "../utils/json";
 
-export interface AddVisitRequest extends Visit {
+export interface AddVisitRequest extends Omit<Visit, "visitType"> {
+    visitTypeId: number;
     petId: number;
 }
 

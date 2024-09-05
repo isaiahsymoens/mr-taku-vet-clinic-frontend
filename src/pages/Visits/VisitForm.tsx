@@ -20,11 +20,12 @@ export interface UserList {
 type VisitFormProps = {
     type: DrawerPanelActions | string;
     visitData: AddVisitRequest;
+    selectedVisitData: Visit;
     userList: UserList[];
     handleFormChange: (key: keyof AddVisitRequest, value: any) => void;
 }
 
-const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleFormChange}) => {
+const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData, userList, handleFormChange}) => {
     const [visitTypes, setVisitTypes] = useState<VisitType[]>([]);
     const [petNames, setPetNames] = useState<Pet[]>([]);
     const [owner, setOwner] = useState<string>("");
@@ -90,7 +91,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                         <Select 
                             labelId="visitType" 
                             label="Visit Type" 
-                            value={visitData.visitTypeId} 
+                            value={visitData?.visitTypeId} 
                             onChange={(e) => handleFormChange("visitTypeId", e.target.value)}
                             required
                         >
@@ -112,20 +113,36 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleF
                             slotProps={{textField: {size: "small"}}}
                         />
                     </LocalizationProvider>
+                    <TextField 
+                        label="Notes"
+                        variant="outlined" 
+                        value={visitData.notes} 
+                        onChange={(e) => handleFormChange("notes", e.target.value)}
+                        size="small" 
+                        multiline
+                        rows={4}
+                        disabled={type === DrawerPanelActions.View}
+                        fullWidth 
+                        required
+                    />
                 </React.Fragment>
             }
-            <TextField 
-                label="Notes"
-                variant="outlined" 
-                value={visitData.notes} 
-                onChange={(e) => handleFormChange("notes", e.target.value)}
-                size="small" 
-                multiline
-                rows={4}
-                disabled={type === DrawerPanelActions.View}
-                fullWidth 
-                required
-            />
+            {type === DrawerPanelActions.View &&
+                <React.Fragment>
+                    <TextField 
+                        label="Notes"
+                        variant="outlined" 
+                        value={selectedVisitData.notes} 
+                        onChange={(e) => handleFormChange("notes", e.target.value)}
+                        size="small" 
+                        multiline
+                        rows={4}
+                        disabled={type === DrawerPanelActions.View}
+                        fullWidth 
+                        required
+                    />
+                </React.Fragment>
+            }
         </React.Fragment>
     );
 }

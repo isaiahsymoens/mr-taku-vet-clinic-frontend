@@ -39,14 +39,15 @@ type LoaderData = {
 const VisitsPage: React.FC = () => {
     const [visitData, setVisitData] = useState<AddVisitRequest>(initialState);
     const [selectedVisit, setSelectedVisit] = useState<Visit>(null!);
-    const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
+    const [userList, setUserList] = useState<UserList[]>([]);
+    
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
-
-    const [userList, setUserList] = useState<UserList[]>([]);
-
-    const visits = useSelector((state: RootState) => state.visit.visits);
+    const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
+    
     const dispatch = useDispatch();
+    const visits = useSelector((state: RootState) => state.visit.visits);
+
     const {loaderUsers, loaderVisits} = useLoaderData() as LoaderData;
 
     useEffect(() => {
@@ -133,14 +134,22 @@ const VisitsPage: React.FC = () => {
             </Box>
             <DrawerPanel 
                 open={isDrawerOpen} 
-                onCancel={toggleCancelDrawer} 
+                onCancel={() => {
+                    toggleCancelDrawer();
+                    setSelectedVisit(null!);
+                }} 
                 onSave={handleSave} 
-                drawerHeader="Add Visit"
+                drawerHeader={
+                    visitDrawerType === DrawerPanelActions.Add ? "Add Visit"
+                    :
+                    visitDrawerType === DrawerPanelActions.Edit ? "Edit Visit" : "View Visit"
+                }
                 showBtn={visitDrawerType !== DrawerPanelActions.View}
             >
                 <VisitForm 
                     type={visitDrawerType}
                     visitData={visitData}
+                    selectedVisitData={selectedVisit}
                     userList={userList}
                     handleFormChange={handleFormChange}
                 />

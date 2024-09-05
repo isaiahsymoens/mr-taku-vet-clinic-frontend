@@ -7,7 +7,7 @@ import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
 import {User} from "../../models/user";
-import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits} from "../../api/visits";
+import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit} from "../../api/visits";
 import {fetchUsers} from "../../api/users";
 
 import {RootState} from "../../redux";
@@ -112,11 +112,22 @@ const VisitsPage: React.FC = () => {
         } catch(err) {}
     }
 
-    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleAddSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const response = await addVisit(visitData as AddEditVisitRequest);
             dispatch(visitActions.addVisit(response));
+            setVisitData(initialState);
+            toggleDrawer();
+        } catch(err) {}
+    }
+
+    const handleEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            console.log("test yeah.");
+            const response = await updateVisit(visitData);
+            dispatch(visitActions.updateVisit(response));
             setVisitData(initialState);
             toggleDrawer();
         } catch(err) {}
@@ -157,7 +168,7 @@ const VisitsPage: React.FC = () => {
                     setVisitData(initialState);
                     setSelectedVisit(null!);
                 }} 
-                onSave={handleSave} 
+                onSave={visitDrawerType === DrawerPanelActions.Add ? handleAddSave : handleEditSave} 
                 drawerHeader={
                     visitDrawerType === DrawerPanelActions.Add ? "Add Visit"
                     :

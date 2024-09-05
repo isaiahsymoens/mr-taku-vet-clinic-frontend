@@ -23,6 +23,11 @@ const visitSlice = createSlice({
             state.visits = state.visits.filter(visit => visit.visitId !== action.payload);
         },
         updateVisit: (state, action) => {
+            const updateVisit = action.payload;
+            const index = state.visits.findIndex(visit => visit.visitId === updateVisit.visitId);
+            if (index !== -1) {
+                state.visits[index] = updateVisit;
+            }
         }
     }
 });

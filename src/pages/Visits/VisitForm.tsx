@@ -1,73 +1,100 @@
 import React, {useEffect, useState} from "react";
+import {DrawerPanelActions} from "../../components/DrawerPanel";
 import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {Dayjs} from "dayjs";
 
+import {Pet} from "../../models/pet";
 import {VisitType} from "../../models/visitType";
 import {getVisitTypes} from "../../api/visitTypes";
+import {AddVisitRequest} from "../../api/visits";
+import {getUserPetsByUsername} from "../../api/pets";
+import {Visit} from "../../models/visit";
 
 
-export interface VisitData {
-    owner?: string;
-    pet?: string;
-    visitType?: string;
-    date?: Dayjs | null;
-    notes?: string;
-}
-
-export enum VisitTypes {
-    Add = "Add",
-    Edit = "Edit",
-    View = "View",
-    Delete = "Delete"
+export interface UserList {
+    username: string;
+    name: string;
 }
 
 type VisitFormProps = {
-    type: VisitTypes | string;
-    visitData: VisitData;
-    handleFormChange: (key: keyof VisitData, value: any) => void;
+    type: DrawerPanelActions | string;
+    visitData: AddVisitRequest;
+    selectedVisitData: Visit;
+    userList: UserList[];
+    handleFormChange: (key: keyof AddVisitRequest, value: any) => void;
 }
 
-const VisitForm: React.FC<VisitFormProps> = ({type, visitData, handleFormChange}) => {
+const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData, userList, handleFormChange}) => {
     const [visitTypes, setVisitTypes] = useState<VisitType[]>([]);
+    const [petNames, setPetNames] = useState<Pet[]>([]);
+    const [owner, setOwner] = useState<string>("");
 
     useEffect(() => {
         const loadData = async () => {
-            const response = await getVisitTypes();
-            setVisitTypes(response);
+            setVisitTypes(await getVisitTypes());
         }
         loadData();
     }, []);
 
+    useEffect(() => {
+        const loadData = async () => {
+            setPetNames(await getUserPetsByUsername(owner));
+        }
+        if (owner !== "") loadData();
+    }, [owner]);
+
     return (
         <React.Fragment>
-            {type !== VisitTypes.View &&
+            {type !== DrawerPanelActions.View &&
                 <React.Fragment>
-                    <TextField 
-                        label="Owner" 
-                        variant="outlined" 
-                        value={visitData.owner} 
-                        onChange={(e) => handleFormChange("owner", e.target.value)} 
-                        size="small" 
-                        fullWidth 
-                    />
-                    <TextField 
-                        label="Pet" 
-                        variant="outlined" 
-                        value={visitData.pet} 
-                        onChange={(e) => handleFormChange("pet", e.target.value)}
-                        size="small" 
-                        fullWidth 
-                    />
+                    <FormControl size="small">
+                        <InputLabel id="owner">Owner*</InputLabel>
+                        <Select 
+                            labelId="owner" 
+                            label="Owner" 
+                            value={owner} 
+                            onChange={(e) => setOwner(e.target.value)}
+                            required
+                        >
+                            {userList.map(user => 
+                                <MenuItem 
+                                    key={user.username} 
+                                    value={user.username}
+                                >
+                                    {user.name}
+                                </MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                    <FormControl size="small">
+                        <InputLabel id="pet">Pet*</InputLabel>
+                        <Select 
+                            labelId="pet" 
+                            label="Pet" 
+                            value={visitData.petId} 
+                            onChange={(e) => handleFormChange("petId", e.target.value)}
+                            required
+                        >
+                            {petNames.map((pet, index) => 
+                                <MenuItem 
+                                    key={index} 
+                                    value={pet.petId}
+                                >
+                                    {pet.petName}
+                                </MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
                     <FormControl size="small">
                         <InputLabel id="visitType">Visit Type</InputLabel>
                         <Select 
                             labelId="visitType" 
                             label="Visit Type" 
-                            value={visitData.visitType} 
-                            onChange={(e) => handleFormChange("visitType", e.target.value)}
+                            value={visitData?.visitTypeId} 
+                            onChange={(e) => handleFormChange("visitTypeId", e.target.value)}
+                            required
                         >
                             {visitTypes.map(vType => 
                                 <MenuItem 
@@ -87,19 +114,36 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, handleFormChange}
                             slotProps={{textField: {size: "small"}}}
                         />
                     </LocalizationProvider>
+                    <TextField 
+                        label="Notes"
+                        variant="outlined" 
+                        value={visitData.notes} 
+                        onChange={(e) => handleFormChange("notes", e.target.value)}
+                        size="small" 
+                        multiline
+                        rows={4}
+                        disabled={type === DrawerPanelActions.View}
+                        fullWidth 
+                        required
+                    />
                 </React.Fragment>
             }
-            <TextField 
-                label="Notes"
-                variant="outlined" 
-                value={visitData.notes} 
-                onChange={(e) => handleFormChange("notes", e.target.value)}
-                size="small" 
-                multiline
-                rows={4}
-                disabled={type === VisitTypes.View}
-                fullWidth 
-            />
+            {type === DrawerPanelActions.View &&
+                <React.Fragment>
+                    <TextField 
+                        label="Notes"
+                        variant="outlined" 
+                        value={selectedVisitData.notes} 
+                        onChange={(e) => handleFormChange("notes", e.target.value)}
+                        size="small" 
+                        multiline
+                        rows={4}
+                        disabled={type === DrawerPanelActions.View}
+                        fullWidth 
+                        required
+                    />
+                </React.Fragment>
+            }
         </React.Fragment>
     );
 }

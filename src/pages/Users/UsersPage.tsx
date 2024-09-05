@@ -22,6 +22,7 @@ const tableHeaders: DataTableHeaders[] = [
 ];
 
 const initialStateUserData: AddUser = {
+    name: "",
     firstName: "", 
     middleName: "", 
     lastName: "", 
@@ -44,7 +45,6 @@ const UsersPage: React.FC = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("loaderData :", loaderData);
         if (loaderData) {
             dispatch(userActions.setUsers(loaderData));
         }

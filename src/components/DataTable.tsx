@@ -14,6 +14,9 @@ export type DataTableProps = {
 }
 
 const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActions}) => {
+    const getNestedValue = (obj: any, path: string) => {
+        return path.split(".").reduce((value, key) => value && value[key], obj);
+    }
     return (
         <React.Fragment>
             <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
@@ -31,7 +34,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                             <TableRow key={rowIndex}>
                                 {tableHeaders?.map((tHeader: any, colIndex) => (
                                     <TableCell key={colIndex}>
-                                    {tBody[tHeader.field]}
+                                        {getNestedValue(tBody, tHeader.field)}
                                     </TableCell>
                                 ))}
                                 {menuActions && 

@@ -6,20 +6,22 @@ import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import PetForm, {PetData} from "./PetForm";
 import UserForm, {UserData} from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
+import ActionDialog from "../../components/ActionDialog";
 
-import {getUserByUsername} from "../../api/users";
-import {addPet, deletePet, getUserPetsByUsername} from "../../api/pets";
-import {petActions} from "../../redux/features/pet";
-import {User} from "../../models/user";
 import {Pet} from "../../models/pet";
+import {User} from "../../models/user";
+import {Visit} from "../../models/visit";
+
+import {addPet, deletePet, getUserPetsByUsername} from "../../api/pets";
+import {getUserByUsername} from "../../api/users";
+import {getPetVisits} from "../../api/visits";
 
 import {RootState} from "../../redux";
+import {petActions} from "../../redux/features/pet";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
+
 import {Box} from "@mui/material";
-import ActionDialog from "../../components/ActionDialog";
-import { getPetVisits } from "../../api/visits";
-import { Visit } from "../../models/visit";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -55,7 +57,9 @@ const Profile = () => {
     const pets = useSelector((state: RootState) => state.pet.pets);
 
     useEffect(() => {
-        dispatch(petActions.storePets(loaderUserPets));
+        if (loaderUserPets) {
+            dispatch(petActions.storePets(loaderUserPets));
+        }
     }, [dispatch]);
 
     const handleAdd = () => {
@@ -102,7 +106,6 @@ const Profile = () => {
 
     const handleSaveConfirmDlg = async () => {
         try {
-            console.log("petId :", selectedPet.petId);
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
             setPetData(null!);
@@ -147,7 +150,7 @@ const Profile = () => {
                         overflow: "hidden",
                         boxShadow: 3 
                     }}>
-                        <Box sx={{ marginTop: "-48px" }}>
+                        <Box sx={{marginTop: "-48px"}}>
                             <SubHeader text="Pets" btnText="Add Pet" toggleDrawer={handleAdd} />
                         </Box>
                         <DataTable 

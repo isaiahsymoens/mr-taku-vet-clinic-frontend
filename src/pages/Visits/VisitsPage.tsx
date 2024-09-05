@@ -1,80 +1,86 @@
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
-import DataTable from "../../components/DataTable";
-import DrawerPanel from "../../components/DrawerPanel";
-import VisitForm, { VisitData, VisitTypes } from "./VisitForm";
+import DataTable, {DataTableHeaders} from "../../components/DataTable";
+import DrawerPanel, { DrawerPanelActions } from "../../components/DrawerPanel";
+import VisitForm, {UserList} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
-import {fetchVisits} from "../../api/visits";
+import {Visit} from "../../models/visit";
+import {addVisit, AddVisitRequest, deleteVisit, fetchVisits} from "../../api/visits";
+
+import {useLoaderData} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {visitActions} from "../../redux/features/visit";
+import {RootState} from "../../redux";
+
 import {Box} from "@mui/material";
+import { fetchUsers } from "../../api/users";
+import { User } from "../../models/user";
 
-const tableData = {
-    tableHeaders: [
-        {label: "Owner", field: "owner"},
-        {label: "Pet", field: "pet"},
-        {label: "VisitType", field: "visitType"},
-        {label: "VisitDate", field: "visitDate"}
-        
-    ],
-    tableBody: [
-        {owner: "Saitama Sy 1", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 2", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 3", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 4", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 5", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-        {owner: "Saitama Sy 6", pet: "Doge", visitType: "Consultation", visitDate: "08-28-2024"},
-    ]
-}
+const tableHeaders: DataTableHeaders[] = [
+    {label: "Owner", field: "pet.user.name"},
+    {label: "Pet", field: "pet.petName"},
+    {label: "Visit Type", field: "visitType"},
+    {label: "Visit Date", field: "date"}
+];
 
-const initialState: VisitData = {
-    owner: "",
-    pet: "",
-    visitType: "",
+const initialState: AddVisitRequest = {
+    petId: 0,
+    visitTypeId: 0, 
     date: null,
     notes: ""
 }
 
+type LoaderData = {
+    loaderUsers: User[];
+    loaderVisits: Visit[];
+}
+
 const VisitsPage: React.FC = () => {
-    const [visitData, setVisitData] = useState<VisitData>(initialState);
-    const [selectedVisit, setSelectedVisit] = useState<VisitData>({});
-    const [visitDrawerType, setVisitDrawerType] = useState<VisitTypes | string>("");
+    const [visitData, setVisitData] = useState<AddVisitRequest>(initialState);
+    const [selectedVisit, setSelectedVisit] = useState<Visit>(null!);
+    const [userList, setUserList] = useState<UserList[]>([]);
+    
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
+    const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
+    
+    const dispatch = useDispatch();
+    const visits = useSelector((state: RootState) => state.visit.visits);
 
-    const menuActions = (data: VisitData) => [
-        {
-            name: "Edit",
-            onClick: () => handleEdit(data),
-        },
-        {
-            name: "View",
-            onClick: () => handleView(data),
-        },
-        {
-            name: "Delete",
-            onClick: () => handleDelete(data),
+    const {loaderUsers, loaderVisits} = useLoaderData() as LoaderData;
+
+    useEffect(() => {
+        if (loaderUsers) {
+            setUserList(loaderUsers.filter(u => u.petOwned > 0).map(u => ({
+                username: u.username,
+                name: `${u.firstName} ${u.middleName} ${u.lastName}`,
+            })));
         }
-    ];
+        if (loaderVisits) {
+            dispatch(visitActions.setVisits(loaderVisits));
+        }
+    }, [dispatch]);
 
-    const handleEdit = (data: VisitData) => {
+    const handleEdit = (data: Visit) => {
         setSelectedVisit(data);
-        setVisitDrawerType(VisitTypes.Edit);
+        setVisitDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
 
-    const handleView = (data: VisitData) => {
+    const handleView = (data: Visit) => {
         setSelectedVisit(data); 
-        setVisitDrawerType(VisitTypes.View);
+        setVisitDrawerType(DrawerPanelActions.View);
         toggleDrawer();
     }
 
-    const handleDelete = (data: VisitData) => {
+    const handleDelete = (data: Visit) => {
         setSelectedVisit(data);
-        setVisitDrawerType(VisitTypes.Delete);
+        setVisitDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
     }
 
-    const handleFormChange = (key: keyof VisitData, value: any) => {
+    const handleFormChange = (key: keyof AddVisitRequest, value: any) => {
         setVisitData((prevData) => ({...prevData, [key]: value}));
     }
 
@@ -91,11 +97,23 @@ const VisitsPage: React.FC = () => {
         setIsActionDialog(prev => !prev);
     }
 
-    const handleSaveConfirmDlg = () => {
-        console.log("selectedVisit :", selectedVisit);
+    const handleSaveConfirmDlg = async () => {
+        try {
+            await deleteVisit(selectedVisit.visitId as number);
+            dispatch(visitActions.removeVisit(selectedVisit.visitId));
+            setSelectedVisit(null!);
+            toggleActionDialog();
+        } catch(err) {}
     }
 
-    const handleSave = () => {
+    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const response = await addVisit(visitData as AddVisitRequest);
+            dispatch(visitActions.addVisit(response));
+            setVisitData(initialState);
+            toggleDrawer();
+        } catch(err) {}
     }
 
     return (
@@ -103,21 +121,43 @@ const VisitsPage: React.FC = () => {
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <DataTable 
-                    tableHeaders={tableData.tableHeaders} 
-                    tableBody={tableData.tableBody}
-                    menuActions={menuActions}
+                    tableHeaders={tableHeaders} 
+                    tableBody={visits}
+                    menuActions={(data: Visit) => [
+                        {
+                            name: "Edit",
+                            onClick: () => handleEdit(data),
+                        },
+                        {
+                            name: "View",
+                            onClick: () => handleView(data),
+                        },
+                        {
+                            name: "Delete",
+                            onClick: () => handleDelete(data),
+                        }
+                    ]}
                 />
             </Box>
             <DrawerPanel 
                 open={isDrawerOpen} 
-                onCancel={toggleCancelDrawer} 
+                onCancel={() => {
+                    toggleCancelDrawer();
+                    setSelectedVisit(null!);
+                }} 
                 onSave={handleSave} 
-                drawerHeader="Add Visit"
-                showBtn={visitDrawerType !== VisitTypes.View}
+                drawerHeader={
+                    visitDrawerType === DrawerPanelActions.Add ? "Add Visit"
+                    :
+                    visitDrawerType === DrawerPanelActions.Edit ? "Edit Visit" : "View Visit"
+                }
+                showBtn={visitDrawerType !== DrawerPanelActions.View}
             >
                 <VisitForm 
                     type={visitDrawerType}
                     visitData={visitData}
+                    selectedVisitData={selectedVisit}
+                    userList={userList}
                     handleFormChange={handleFormChange}
                 />
             </DrawerPanel>
@@ -135,6 +175,7 @@ const VisitsPage: React.FC = () => {
 export default VisitsPage;
 
 export const loader = async () => {
-    const response = await fetchVisits();
-    return response;
+    const loaderUsers = await fetchUsers();
+    const loaderVisits = await fetchVisits();
+    return {loaderUsers, loaderVisits};
 }

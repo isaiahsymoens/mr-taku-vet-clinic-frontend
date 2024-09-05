@@ -40,6 +40,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
             <TextField 
                     label="First Name" 
                     type="text"
+                    name="firstName"
                     variant="outlined" 
                     value={userData.firstName}
                     onChange={(e) => handleFormChange("firstName", e.target.value)} 
@@ -50,6 +51,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 <TextField 
                     label="Middle Name" 
                     type="text"
+                    name="middleName"
                     variant="outlined" 
                     value={userData.middleName}
                     onChange={(e) => handleFormChange("middleName", e.target.value)}  
@@ -59,6 +61,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 <TextField 
                     label="Last Name" 
                     type="text"
+                    name="lastName"
                     variant="outlined" 
                     value={userData.lastName} 
                     onChange={(e) => handleFormChange("lastName", e.target.value)} 
@@ -69,6 +72,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 <TextField 
                     label="Email" 
                     type="email"
+                    name="email"
                     variant="outlined" 
                     value={userData.email}
                     onChange={(e) => handleFormChange("email", e.target.value)}  
@@ -78,12 +82,13 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 />
                 <FormControlLabel
                     label="Active"
-                    control={<Switch checked={userData.active} onChange={(e) => handleFormChange("active", e.target.checked)} />}
+                    control={<Switch name="active" checked={userData.active} onChange={(e) => handleFormChange("active", e.target.checked)} />}
                 />
                 <Divider />
                 <TextField 
                     label="Username"
                     type="text" 
+                    name="username"
                     variant="outlined" 
                     value={userData.email?.split("@")[0]}   
                     size="small" 
@@ -96,6 +101,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={showPassword ? "text" : "password"}
+                        name="password"
                         value={userData.password} 
                         onChange={(e) => handleFormChange("password", e.target.value)}  
                         endAdornment={

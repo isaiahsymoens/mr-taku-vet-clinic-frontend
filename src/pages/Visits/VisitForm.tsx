@@ -5,9 +5,10 @@ import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {Dayjs} from "dayjs";
 
+import {Pet} from "../../models/pet";
 import {VisitType} from "../../models/visitType";
 import {getVisitTypes} from "../../api/visitTypes";
-
+import {getUserPetsByUsername} from "../../api/pets";
 
 export interface VisitData {
     owner?: string;
@@ -24,14 +25,21 @@ export enum VisitTypes {
     Delete = "Delete"
 }
 
+export type UserList = {
+    username: string;
+    name: string;
+}
+
 type VisitFormProps = {
     type: VisitTypes | string;
     visitData: VisitData;
+    userList: UserList[];
     handleFormChange: (key: keyof VisitData, value: any) => void;
 }
 
-const VisitForm: React.FC<VisitFormProps> = ({type, visitData, handleFormChange}) => {
+const VisitForm: React.FC<VisitFormProps> = ({type, visitData, userList, handleFormChange}) => {
     const [visitTypes, setVisitTypes] = useState<VisitType[]>([]);
+    const [petNames, setPetNames] = useState<Pet[]>([]);
 
     useEffect(() => {
         const loadData = async () => {
@@ -41,25 +49,66 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, handleFormChange}
         loadData();
     }, []);
 
+    useEffect(() => {
+        const loadData = async () => {
+            const response = await getUserPetsByUsername(visitData.owner as string);
+            setPetNames(response);
+        }
+        if (visitData?.owner) loadData();
+    }, [visitData.owner]);
+
     return (
         <React.Fragment>
             {type !== VisitTypes.View &&
                 <React.Fragment>
-                    <TextField 
-                        label="Owner" 
-                        variant="outlined" 
-                        value={visitData.owner} 
-                        onChange={(e) => handleFormChange("owner", e.target.value)} 
-                        size="small" 
-                        fullWidth 
-                    />
+                    <FormControl size="small">
+                        <InputLabel id="owner">Owner*</InputLabel>
+                        <Select 
+                            labelId="owner" 
+                            label="Owner" 
+                            value={visitData.owner} 
+                            onChange={(e) => handleFormChange("owner", e.target.value)}
+                            required
+                        >
+                            {userList.map(user => 
+                                <MenuItem 
+                                    key={user.username} 
+                                    value={user.username}
+                                >
+                                    {user.name}
+                                </MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl size="small">
+                        <InputLabel id="pet">Pet*</InputLabel>
+                        <Select 
+                            labelId="pet" 
+                            label="Pet" 
+                            value={visitData.pet} 
+                            onChange={(e) => handleFormChange("pet", e.target.value)}
+                            required
+                        >
+                            {petNames.map((pet, index) => 
+                                <MenuItem 
+                                    key={index} 
+                                    value={pet.petName}
+                                >
+                                    {pet.petName}
+                                </MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+
                     <TextField 
                         label="Pet" 
                         variant="outlined" 
                         value={visitData.pet} 
                         onChange={(e) => handleFormChange("pet", e.target.value)}
                         size="small" 
-                        fullWidth 
+                        fullWidth
+                        required 
                     />
                     <FormControl size="small">
                         <InputLabel id="visitType">Visit Type</InputLabel>
@@ -68,6 +117,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, handleFormChange}
                             label="Visit Type" 
                             value={visitData.visitType} 
                             onChange={(e) => handleFormChange("visitType", e.target.value)}
+                            required
                         >
                             {visitTypes.map(vType => 
                                 <MenuItem 
@@ -99,6 +149,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, handleFormChange}
                 rows={4}
                 disabled={type === VisitTypes.View}
                 fullWidth 
+                required
             />
         </React.Fragment>
     );

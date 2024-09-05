@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel from "../../components/DrawerPanel";
-import VisitForm, {VisitData, VisitTypes} from "./VisitForm";
+import VisitForm, {UserList, VisitData, VisitTypes} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
@@ -14,6 +14,8 @@ import {visitActions} from "../../redux/features/visit";
 import {RootState} from "../../redux";
 
 import {Box} from "@mui/material";
+import { fetchUsers } from "../../api/users";
+import { User } from "../../models/user";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "petDetails.userDetails.name"},
@@ -30,6 +32,13 @@ const initialState: VisitData = {
     notes: ""
 }
 
+type LoaderData = {
+    loaderUsers: User[];
+    loaderVisits: Visit[];
+}
+
+
+
 const VisitsPage: React.FC = () => {
     const [visitData, setVisitData] = useState<VisitData>(initialState);
     const [selectedVisit, setSelectedVisit] = useState<VisitData>({});
@@ -37,13 +46,21 @@ const VisitsPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
 
+    const [userList, setUserList] = useState<UserList[]>([]);
+
     const visits = useSelector((state: RootState) => state.visit.visits);
     const dispatch = useDispatch();
-    const loaderData = useLoaderData() as Visit;
+    const {loaderUsers, loaderVisits} = useLoaderData() as LoaderData;
 
     useEffect(() => {
-        if (loaderData) {
-            dispatch(visitActions.setVisits(loaderData));
+        if (loaderUsers) {
+            setUserList(loaderUsers.filter(u => u.petOwned > 0).map(u => ({
+                username: u.username,
+                name: `${u.firstName} ${u.middleName} ${u.lastName}`,
+            }))); 
+        }
+        if (loaderVisits) {
+            dispatch(visitActions.setVisits(loaderVisits));
         }
     }, [dispatch]);
 
@@ -125,6 +142,7 @@ const VisitsPage: React.FC = () => {
                 <VisitForm 
                     type={visitDrawerType}
                     visitData={visitData}
+                    userList={userList}
                     handleFormChange={handleFormChange}
                 />
             </DrawerPanel>
@@ -142,5 +160,8 @@ const VisitsPage: React.FC = () => {
 export default VisitsPage;
 
 export const loader = async () => {
-    return await fetchVisits();
+    const loaderUsers = await fetchUsers();
+    const loaderVisits = await fetchVisits();
+
+    return {loaderUsers, loaderVisits};
 }

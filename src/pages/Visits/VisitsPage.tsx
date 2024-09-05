@@ -108,10 +108,12 @@ const VisitsPage: React.FC = () => {
 
     const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await addVisit(visitData);
-        dispatch(visitActions.addVisit(response));
-        setVisitData(initialState);
-        toggleDrawer();
+        try {
+            const response = await addVisit(visitData as AddVisitRequest);
+            dispatch(visitActions.addVisit(response));
+            setVisitData(initialState);
+            toggleDrawer();
+        } catch(err) {}
     }
 
     return (

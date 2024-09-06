@@ -29,8 +29,8 @@ export const addUser = async (data: AddEditUserRequest) => {
     // return User.fromJSON((await response.json()).data as JSONObject);
 }
 
-export const updateUser = async (data: AddEditUserRequest) => {
-    const response = await fetch(`https://localhost:5001/api/users/${data.username}`, {
+export const updateUser = async (username: string, data: AddEditUserRequest) => {
+    const response = await fetch(`https://localhost:5001/api/users/${username}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"

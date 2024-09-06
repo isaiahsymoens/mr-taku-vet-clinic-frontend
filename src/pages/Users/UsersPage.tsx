@@ -4,7 +4,7 @@ import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import ActionDialog from "../../components/ActionDialog";
-import UserForm, {UserData} from "./UserForm";
+import UserForm from "./UserForm";
 
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
@@ -34,7 +34,8 @@ const initialStateUserData: AddEditUserRequest = {
 
 const UsersPage: React.FC = () => {
     const [userData, setUserData] = useState<AddEditUserRequest>(initialStateUserData);
-    const [selectedUser, setSelectedUser] = useState<UserData>(null!);
+    const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(initialStateUserData);
+    const [selectedUser, setSelectedUser] = useState<AddEditUserRequest>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
@@ -53,6 +54,7 @@ const UsersPage: React.FC = () => {
     }, [dispatch]);
 
     const handleEdit = (data: User) => {
+        setOrgUserData(data);
         setUserData(data);
         setUserDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
@@ -89,9 +91,7 @@ const UsersPage: React.FC = () => {
             dispatch(userActions.removeUser(selectedUser.username as string));
             setSelectedUser(null!);
             toggleActionDialog();
-        } catch (err) {
-            // TODO: handle error message
-        }
+        } catch (err) {}
     }
 
     const handleFormChange = (key: keyof AddEditUserRequest, value: any) => {
@@ -116,9 +116,15 @@ const UsersPage: React.FC = () => {
     const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            // console.log("user :", userData);
-            const response = await updateUser(userData);
-            console.log("response :", response);
+            let changedData: any = {};
+            (Object.keys(userData) as (keyof AddEditUserRequest)[]).forEach(key => {
+                if (orgUserData[key] !== userData[key]) {
+                    changedData[key] = userData[key];
+                }
+            });
+            const response = await updateUser(userData.username, changedData);
+            dispatch(userActions.updateUser(response));
+            toggleDrawer();
         } catch(err) {}
     }
 
@@ -159,7 +165,7 @@ const UsersPage: React.FC = () => {
                 <UserForm 
                     type={userDrawerType} 
                     userData={userData} 
-                    handleFormChange={handleFormChange} 
+                    handleFormChange={handleFormChange}
                 />
             </DrawerPanel>
             <ActionDialog

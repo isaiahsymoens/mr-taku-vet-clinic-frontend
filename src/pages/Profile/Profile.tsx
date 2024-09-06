@@ -3,8 +3,8 @@ import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
-import PetForm, {PetData} from "./PetForm";
-import UserForm, {UserData} from "../Users/UserForm";
+import PetForm from "./PetForm";
+import UserForm from "../Users/UserForm";
 import ProfileCard from "../../components/ProfileCard";
 import ActionDialog from "../../components/ActionDialog";
 
@@ -13,11 +13,12 @@ import {User} from "../../models/user";
 import {Visit} from "../../models/visit";
 
 import {AddEditPetRequest, addPet, deletePet, getUserPetsByUsername, updatePet} from "../../api/pets";
-import {getUserByUsername} from "../../api/users";
+import {AddEditUserRequest, getUserByUsername, updateUser} from "../../api/users";
 import {getPetVisits} from "../../api/visits";
 
 import {RootState} from "../../redux";
 import {petActions} from "../../redux/features/pet";
+import {userActions} from "../../redux/features/user";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 
@@ -45,7 +46,8 @@ type LoaderData = {
 const Profile = () => {
     const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
     const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
-    const [userData, setUserData] = useState<UserData>({});
+    const [userData, setUserData] = useState<AddEditUserRequest>(null!);
+    const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(null!);
     const [petData, setPetData] = useState<AddEditPetRequest>(initialStatePet);
     const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
     const [selectedPet, setSelectedPet] = useState<PetData>(null!);
@@ -55,10 +57,15 @@ const Profile = () => {
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
     const pets = useSelector((state: RootState) => state.pet.pets);
+    const user = useSelector((state: RootState) => state.user.users);
 
     useEffect(() => {
+        if (loaderUser) {
+            setUserData(loaderUser);
+            setOrgUserData(loaderUser);
+            dispatch(userActions.setUsers(loaderUser));
+        }
         if (loaderUserPets) {
-            console.log("loaderUserPets :", loaderUserPets);
             dispatch(petActions.storePets(loaderUserPets));
         }
     }, [dispatch]);
@@ -78,13 +85,13 @@ const Profile = () => {
         togglePetDrawer();
     }
 
-    const handleView = async (data: PetData) => {
+    const handleView = async (data: Pet) => {
         setPetVisitsData(await getPetVisits(data.petId as number));
         setPetDrawerType(DrawerPanelActions.View);
         togglePetDrawer();
     }
 
-    const handleDelete = (data: PetData) => {
+    const handleDelete = (data: Pet) => {
         setSelectedPet(data);
         setPetDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
@@ -111,11 +118,32 @@ const Profile = () => {
         } catch(err) {}
     }
 
-    const handleFormChange = (key: keyof PetData | keyof UserData, value: any) => {
+    const handlePetFormChange = (key: keyof Pet, value: any) => {
         setPetData((prevData) => ({...prevData, [key]: value}));
     }
 
-    const handleUserSave = () => {
+    const handleUserFormChange = (key: keyof AddEditUserRequest, value: any) => {
+        if (key === "email") {
+            setUserData((prevData) => ({...prevData, [key]: value}));
+            setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
+        } else {
+            setUserData((prevData) => ({...prevData, [key]: value}));
+        }
+    }
+
+    const handleEditUserSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            let changedData: any = {};
+            (Object.keys(userData) as (keyof AddEditUserRequest)[]).forEach(key => {
+                if (orgUserData[key] !== userData[key]) {
+                    changedData[key] = userData[key];
+                }
+            });
+            const response = await updateUser(userData.username, changedData);
+            dispatch(userActions.updateUser(response));
+            toggleUserDrawer();
+        } catch(err) {}
     }
 
     const handleAddPetSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -149,7 +177,7 @@ const Profile = () => {
                     },
                     gap: 3
                 }}>
-                    <ProfileCard toggleUserDrawer={toggleUserDrawer}/>
+                    <ProfileCard user={user} toggleUserDrawer={toggleUserDrawer}/>
                     <Box sx={{ 
                         width: {
                             xs: "100%",
@@ -164,7 +192,7 @@ const Profile = () => {
                         <DataTable 
                             tableHeaders={tableHeaders} 
                             tableBody={pets}
-                            menuActions={(data: PetData) => [
+                            menuActions={(data: Pet) => [
                                 {
                                     name: "Edit",
                                     onClick: () => handleEdit(data),
@@ -185,13 +213,13 @@ const Profile = () => {
             <DrawerPanel 
                 open={isUserDrawerOpen} 
                 onCancel={toggleUserDrawer} 
-                onSave={handleUserSave} 
+                onSave={handleEditUserSave} 
                 drawerHeader="Edit User"
             >
                 <UserForm
                     type={DrawerPanelActions.Edit} 
                     userData={userData} 
-                    handleFormChange={handleFormChange} 
+                    handleFormChange={handleUserFormChange} 
                 />
             </DrawerPanel>
             <DrawerPanel 
@@ -212,7 +240,7 @@ const Profile = () => {
                 <PetForm
                     type={petDrawerType}
                     petData={petData}
-                    handleFormChange={handleFormChange}
+                    handleFormChange={handlePetFormChange}
                     petVisits={petVisitsData}
                 />     
             </DrawerPanel>

@@ -2,10 +2,11 @@ import React from "react";
 import {Box, Typography, Button} from "@mui/material";
 
 type ProfileCardProps = {
+    user: any;
     toggleUserDrawer: () => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({toggleUserDrawer}) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({user, toggleUserDrawer}) => {
     return (
         <Box sx={{ 
             width: {
@@ -18,7 +19,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({toggleUserDrawer}) => {
             justifyContent: "center",
             alignItems: "center" 
         }}>
-            <img src="https://cdn.pixabay.com/photo/2024/03/16/20/35/ai-generated-8637800_1280.jpg"
+            <img src="https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png"
                 height={150}
                 style={{
                     width: "100%",
@@ -27,8 +28,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({toggleUserDrawer}) => {
                 }}
             />
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
-                <Typography variant="subtitle2">Monkey D. Luffy</Typography>
-                <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>monkeydluffy@gmail.com</Typography>
+                <Typography variant="subtitle2">{`${user.firstName} ${user.middleName} ${user.lastName}`}</Typography>
+                <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>{user.email}</Typography>
                 <Button variant="contained" onClick={toggleUserDrawer}>Edit Profile</Button>
             </Box>
         </Box>

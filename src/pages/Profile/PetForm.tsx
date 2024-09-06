@@ -11,7 +11,6 @@ import {
     Table, 
     TableBody, 
     TableContainer, 
-    TableRow, 
     TextField, 
     Typography
 } from "@mui/material";
@@ -19,19 +18,19 @@ import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {Dayjs} from "dayjs";
 
 import {PetType} from "../../models/petType";
 import {Visit} from "../../models/visit";
 import {getPetTypes} from "../../api/petTypes";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 import {AddEditPetRequest} from "../../api/pets";
+import {Pet} from "../../models/pet";
 
 type PetFormProps = {
     type: DrawerPanelActions | string;
     petData: AddEditPetRequest;
     petVisits: Visit[];
-    handleFormChange: (key: keyof AddEditPetRequest, value: any) => void;
+    handleFormChange: (key: keyof Pet, value: any) => void;
 }
 
 const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormChange}) => {

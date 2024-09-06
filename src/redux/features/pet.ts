@@ -13,6 +13,9 @@ const petSlice = createSlice({
     name: "pet",
     initialState,
     reducers: {
+        storePets: (state, action) => {
+            state.pets = action.payload;
+        },
         addPet: (state, action) => {
             state.pets.push(action.payload);
         },
@@ -20,10 +23,11 @@ const petSlice = createSlice({
             state.pets = state.pets.filter(pet => pet.petId !== action.payload);
         },
         updatePet: (state, action) => {
-
-        },
-        storePets: (state, action) => {
-            state.pets = action.payload;
+            const updatePet = action.payload;
+            const index = state.pets.findIndex(pet => pet.petId === updatePet.petId);
+            if (index !== -1) {
+                state.pets[index] = updatePet;
+            }
         }
     }
 });

@@ -25,21 +25,13 @@ import {PetType} from "../../models/petType";
 import {Visit} from "../../models/visit";
 import {getPetTypes} from "../../api/petTypes";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
-
-export interface PetData {
-    petId?: number,
-    username: string,
-    petName: string;
-    petType: string;
-    breed?: string;
-    birthDate?: Dayjs | null;
-}
+import {AddEditPetRequest} from "../../api/pets";
 
 type PetFormProps = {
     type: DrawerPanelActions | string;
-    petData: PetData;
+    petData: AddEditPetRequest;
     petVisits: Visit[];
-    handleFormChange: (key: keyof PetData, value: any) => void;
+    handleFormChange: (key: keyof AddEditPetRequest, value: any) => void;
 }
 
 const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormChange}) => {
@@ -47,8 +39,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
 
     useEffect(() => {
         const loadData = async () => {
-            const response = await getPetTypes();
-            setPetTypes(response);
+            setPetTypes(await getPetTypes());
         }
         loadData();
     }, []);
@@ -94,8 +85,8 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                         <Select 
                             labelId="petType" 
                             label="Pet Type" 
-                            value={petData.petType}
-                            onChange={(e) => handleFormChange("petType", e.target.value)} 
+                            value={petData.petTypeId}
+                            onChange={(e) => handleFormChange("petTypeId", e.target.value)} 
                         >
                             {petTypes.map(pType => <MenuItem key={pType.petTypeId} value={pType.petTypeId}>{pType.typeName}</MenuItem>)}
                         </Select>

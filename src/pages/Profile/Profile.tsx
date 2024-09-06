@@ -12,7 +12,7 @@ import {Pet} from "../../models/pet";
 import {User} from "../../models/user";
 import {Visit} from "../../models/visit";
 
-import {addPet, deletePet, getUserPetsByUsername} from "../../api/pets";
+import {AddEditPetRequest, addPet, deletePet, getUserPetsByUsername, updatePet} from "../../api/pets";
 import {getUserByUsername} from "../../api/users";
 import {getPetVisits} from "../../api/visits";
 
@@ -29,10 +29,10 @@ const tableHeaders: DataTableHeaders[] = [
     {label: "No. of Visits", field: "numberOfVisits"},
 ];
 
-const initialStatePet: PetData = {
+const initialStatePet: AddEditPetRequest = {
     username: "",
     petName: "",
-    petType: "",
+    petTypeId: 0,
     breed: "",
     birthDate: null, 
 }
@@ -46,7 +46,7 @@ const Profile = () => {
     const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
     const [isPetDrawerOpen, setIsPetDrawerOpen] = useState(false);
     const [userData, setUserData] = useState<UserData>({});
-    const [petData, setPetData] = useState<PetData>(initialStatePet);
+    const [petData, setPetData] = useState<AddEditPetRequest>(initialStatePet);
     const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
     const [selectedPet, setSelectedPet] = useState<PetData>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
@@ -68,21 +68,18 @@ const Profile = () => {
         togglePetDrawer();
     }
 
-    const handleEdit = (data: PetData) => {
-        // setSelectedPet(data);
+    const handleEdit = (data: Pet) => {
+        setPetData({
+            ...data,
+            username: data.user?.username as string, 
+            petTypeId: data.petType?.petTypeId as number
+        });
         setPetDrawerType(DrawerPanelActions.Edit);
         togglePetDrawer();
     }
 
     const handleView = async (data: PetData) => {
-        // setSelectedPet(data);
-        console.log("data :", data);
-
-        const response = await getPetVisits(data.petId as number); 
-        console.log("response :", response);
-
-        setPetVisitsData(response);
-
+        setPetVisitsData(await getPetVisits(data.petId as number));
         setPetDrawerType(DrawerPanelActions.View);
         togglePetDrawer();
     }
@@ -134,7 +131,9 @@ const Profile = () => {
     const handlePetEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-
+            dispatch(petActions.updatePet(await updatePet(petData)));
+            setPetData(initialStatePet);
+            togglePetDrawer();
         } catch(err) {}
     }
 

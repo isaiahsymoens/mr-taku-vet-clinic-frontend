@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
-import DrawerPanel, { DrawerPanelActions } from "../../components/DrawerPanel";
+import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import VisitForm, {UserList} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 

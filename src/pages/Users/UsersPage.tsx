@@ -9,7 +9,7 @@ import UserForm, {UserData} from "./UserForm";
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {AddUser, addUser, deleteUser, fetchUsers} from "../../api/users";
+import {AddEditUserRequest, addUser, deleteUser, fetchUsers, updateUser} from "../../api/users";
 import {User} from "../../models/user";
 
 import {Box} from "@mui/material";
@@ -21,7 +21,7 @@ const tableHeaders: DataTableHeaders[] = [
     {label: "Pet Owned", field: "petOwned"},
 ];
 
-const initialStateUserData: AddUser = {
+const initialStateUserData: AddEditUserRequest = {
     name: "",
     firstName: "", 
     middleName: "", 
@@ -33,7 +33,7 @@ const initialStateUserData: AddUser = {
 }
 
 const UsersPage: React.FC = () => {
-    const [userData, setUserData] = useState<AddUser>(initialStateUserData);
+    const [userData, setUserData] = useState<AddEditUserRequest>(initialStateUserData);
     const [selectedUser, setSelectedUser] = useState<UserData>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -52,19 +52,19 @@ const UsersPage: React.FC = () => {
         }
     }, [dispatch]);
 
-    const handleEdit = (data: any) => {
-        setSelectedUser(data);
+    const handleEdit = (data: User) => {
+        setUserData(data);
         setUserDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
 
-    const handleView = (data: any) => {
+    const handleView = (data: User) => {
         setSelectedUser(data);
         setUserDrawerType(DrawerPanelActions.View);
         navigate(`/${data.username}`);
     }
 
-    const handleDelete = (data: any) => {
+    const handleDelete = (data: User) => {
         setSelectedUser(data);
         setUserDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
@@ -94,7 +94,7 @@ const UsersPage: React.FC = () => {
         }
     }
 
-    const handleFormChange = (key: keyof UserData, value: any) => {
+    const handleFormChange = (key: keyof AddEditUserRequest, value: any) => {
         if (key === "email") {
             setUserData((prevData) => ({...prevData, [key]: value}));
             setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
@@ -113,8 +113,13 @@ const UsersPage: React.FC = () => {
         } catch (err) {}
     }
 
-    const handleEditUser = () => {
-        console.log("Edit User!");
+    const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            // console.log("user :", userData);
+            const response = await updateUser(userData);
+            console.log("response :", response);
+        } catch(err) {}
     }
 
     return (
@@ -144,6 +149,8 @@ const UsersPage: React.FC = () => {
                 open={isDrawerOpen} 
                 onCancel={() => {
                     toggleDrawer();
+                    setUserDrawerType("");
+                    setUserData(initialStateUserData);
                     setSelectedUser(null!);
                 }} 
                 onSave={userDrawerType === DrawerPanelActions.Add ? handleSaveAdd : handleEditUser} 
@@ -151,7 +158,7 @@ const UsersPage: React.FC = () => {
             >
                 <UserForm 
                     type={userDrawerType} 
-                    userData={selectedUser == null ? userData : selectedUser} 
+                    userData={userData} 
                     handleFormChange={handleFormChange} 
                 />
             </DrawerPanel>

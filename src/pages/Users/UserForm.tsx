@@ -3,23 +3,12 @@ import {Divider, FormControl, FormControlLabel, IconButton, InputAdornment, Inpu
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
-export interface UserData {
-    firstName?: string;
-    middleName?: string;
-    lastName?: string;
-    email?: string;
-    petOwned?: number;
-    username?: string;
-    password?: string;
-    userType?: string;
-    active?: boolean;
-}
+import {AddEditUserRequest} from "../../api/users";
 
 type UserFormProps = {
     type: DrawerPanelActions | string;
-    userData: UserData;
-    handleFormChange: (key: keyof UserData, value: any) => void;
+    userData: AddEditUserRequest;
+    handleFormChange: (key: keyof AddEditUserRequest, value: any) => void;
 }
 
 const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) => {
@@ -118,7 +107,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                         </InputAdornment>
                     }
                     label="Password"
-                    required
+                    required={type !== DrawerPanelActions.Edit}
                 />
             </FormControl>
         </React.Fragment>

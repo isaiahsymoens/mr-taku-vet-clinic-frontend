@@ -1,3 +1,4 @@
+import dayjs, { Dayjs } from "dayjs";
 import {JSONObject} from "../utils/json";
 import {User} from "./user";
 
@@ -7,7 +8,7 @@ export class Pet {
     petType?: string;
     petTypeId?: number;
     breed: string;
-    birthDate?: string;
+    birthDate: Dayjs | null;
     numberOfVisits?: number;
     user?: User;
 
@@ -17,7 +18,7 @@ export class Pet {
         petType: string,
         petTypeId: number,
         breed: string,
-        birthDate: string,
+        birthDate: Dayjs | null,
         numberOfVisits: number,
         user: User
     ) {
@@ -38,7 +39,7 @@ export class Pet {
             json["petType"] as string,
             json["petTypeId"] as number,
             json["breed"] as string,
-            json["birthDate"] as string,
+            json["birthDate"] ? dayjs(json["birthDate"] as string) : null,
             json["numberOfVisits"] as number,
             User.fromJSON(json["user"] as JSONObject)
         );

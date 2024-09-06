@@ -58,6 +58,7 @@ const Profile = () => {
 
     useEffect(() => {
         if (loaderUserPets) {
+            console.log("loaderUserPets :", loaderUserPets);
             dispatch(petActions.storePets(loaderUserPets));
         }
     }, [dispatch]);
@@ -69,8 +70,8 @@ const Profile = () => {
 
     const handleEdit = (data: PetData) => {
         // setSelectedPet(data);
-        // setPetDrawerType(DrawerPanelActions.Edit);
-        // togglePetDrawer();
+        setPetDrawerType(DrawerPanelActions.Edit);
+        togglePetDrawer();
     }
 
     const handleView = async (data: PetData) => {
@@ -120,13 +121,21 @@ const Profile = () => {
     const handleUserSave = () => {
     }
 
-    const handlePetSave = async () => {
+    const handleAddPetSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
             const response = await addPet({...petData, username: loaderUser.username});
             dispatch(petActions.addPet(response));
             setPetData(initialStatePet);
             togglePetDrawer();
         } catch (err) {} 
+    }
+
+    const handlePetEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+
+        } catch(err) {}
     }
 
     return (
@@ -193,7 +202,7 @@ const Profile = () => {
                     setSelectedPet(null!);
                     setPetData(initialStatePet);
                 }} 
-                onSave={handlePetSave} 
+                onSave={petDrawerType === DrawerPanelActions.Add ? handleAddPetSave : handlePetEditSave} 
                 showBtn={petDrawerType !== DrawerPanelActions.View}
                 drawerHeader={
                     petDrawerType === DrawerPanelActions.Add ? "Add Pet" 
@@ -203,7 +212,7 @@ const Profile = () => {
             >
                 <PetForm
                     type={petDrawerType}
-                    petData={selectedPet === null ? petData : selectedPet}
+                    petData={petData}
                     handleFormChange={handleFormChange}
                     petVisits={petVisitsData}
                 />     

@@ -29,7 +29,7 @@ export const addUser = async (data: AddEditUserRequest) => {
     // return User.fromJSON((await response.json()).data as JSONObject);
 }
 
-export const updateUser = async (data: User) => {
+export const updateUser = async (data: AddEditUserRequest) => {
     const response = await fetch(`https://localhost:5001/api/users/${data.username}`, {
         method: "PUT",
         headers: {

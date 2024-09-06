@@ -11,6 +11,7 @@ import {
     Table, 
     TableBody, 
     TableContainer, 
+    TableRow, 
     TextField, 
     Typography
 } from "@mui/material";
@@ -59,12 +60,12 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                     <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
                         <Table>
                             <TableBody>
-                                {petVisits.map(pVisit =>
-                                    <Accordion key={pVisit.visitTypeId} sx={{width: "100%"}}>
+                                {petVisits.map((pVisit, index) =>
+                                    <Accordion key={index} sx={{width: "100%"}}>
                                         <AccordionSummary
                                             expandIcon={<TextSnippetOutlinedIcon />}
                                         >
-                                            <Typography>{pVisit.visitType}</Typography>
+                                            <Typography>{pVisit.visitType?.typeName}</Typography>
                                         </AccordionSummary>
                                         <AccordionDetails>
                                         <Typography variant="body1" sx={{fontSize: "1rem", fontWeight: "600"}}>Notes</Typography>

@@ -28,8 +28,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({user, toggleUserDrawer}) => {
                 }}
             />
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingY: 2 }}>
-                <Typography variant="subtitle2">{`${user.firstName} ${user.middleName} ${user.lastName}`}</Typography>
-                <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>{user.email}</Typography>
+                <Typography variant="subtitle2">{`${user?.firstName} ${user?.middleName} ${user?.lastName}`}</Typography>
+                <Typography variant="body2" sx={{ paddingBottom: 1.5 }}>{user?.email}</Typography>
                 <Button variant="contained" onClick={toggleUserDrawer}>Edit Profile</Button>
             </Box>
         </Box>

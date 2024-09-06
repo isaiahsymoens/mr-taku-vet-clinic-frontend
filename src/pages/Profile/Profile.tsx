@@ -57,13 +57,13 @@ const Profile = () => {
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
     const pets = useSelector((state: RootState) => state.pet.pets);
-    const user = useSelector((state: RootState) => state.user.users);
+    const user = useSelector((state: RootState) => state.user.userProfile);
 
     useEffect(() => {
         if (loaderUser) {
             setUserData(loaderUser);
             setOrgUserData(loaderUser);
-            dispatch(userActions.setUsers(loaderUser));
+            dispatch(userActions.setUserProfile(loaderUser));
         }
         if (loaderUserPets) {
             dispatch(petActions.storePets(loaderUserPets));
@@ -141,7 +141,7 @@ const Profile = () => {
                 }
             });
             const response = await updateUser(userData.username, changedData);
-            dispatch(userActions.updateUser(response));
+            dispatch(userActions.setUserProfile(response));
             toggleUserDrawer();
         } catch(err) {}
     }

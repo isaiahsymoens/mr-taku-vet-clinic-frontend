@@ -2,10 +2,12 @@ import {createSlice} from "@reduxjs/toolkit";
 import {User} from "../../models/user";
 
 interface UserState {
+    userProfile: User;
     users: User[];
 }
 
 const initialState: UserState = {
+    userProfile: null!,
     users: []
 }
 
@@ -13,6 +15,9 @@ const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
+        setUserProfile: (state, action) => {
+            state.userProfile = action.payload;
+        },
         setUsers: (state, action) => {
             state.users = action.payload;
         },
@@ -23,14 +28,10 @@ const userSlice = createSlice({
             state.users = state.users.filter(user => user.username !== action.payload);
         },
         updateUser: (state, action) => {
-            if (Array.isArray(state.users)) {
-                const updateUser = action.payload;
-                const index = state.users.findIndex(user => user.username === updateUser.username);
-                if (index !== -1) {
-                    state.users[index] = updateUser;
-                }
-            } else {
-                state.users = action.payload;
+            const updateUser = action.payload;
+            const index = state.users.findIndex(user => user.username === updateUser.username);
+            if (index !== -1) {
+                state.users[index] = updateUser;
             }
         }
     }

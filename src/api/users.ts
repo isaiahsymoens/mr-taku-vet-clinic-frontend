@@ -25,8 +25,7 @@ export const addUser = async (data: AddEditUserRequest) => {
         },
         body: JSON.stringify(data)
     });
-    return await response.json();
-    // return User.fromJSON((await response.json()).data as JSONObject);
+    return User.fromJSON((await response.json()).data as JSONObject);
 }
 
 export const updateUser = async (username: string, data: AddEditUserRequest) => {

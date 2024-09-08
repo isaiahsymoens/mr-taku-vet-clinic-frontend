@@ -107,7 +107,7 @@ const UsersPage: React.FC = () => {
         e.preventDefault();
         try {
             const response = await addUser(userData);
-            dispatch(userActions.addUser(response.data));
+            dispatch(userActions.addUser(response));
             setUserData(initialStateUserData);
             toggleDrawer();
         } catch (err) {}

@@ -1,30 +1,31 @@
 import React, {useEffect, useState} from "react";
 import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
-import DrawerPanel, { DrawerPanelActions } from "../../components/DrawerPanel";
+import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import VisitForm, {UserList} from "./VisitForm";
 import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
-import {addVisit, AddVisitRequest, deleteVisit, fetchVisits} from "../../api/visits";
+import {User} from "../../models/user";
+import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit} from "../../api/visits";
+import {fetchUsers} from "../../api/users";
 
+import {RootState} from "../../redux";
+import {visitActions} from "../../redux/features/visit";
 import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {visitActions} from "../../redux/features/visit";
-import {RootState} from "../../redux";
 
 import {Box} from "@mui/material";
-import { fetchUsers } from "../../api/users";
-import { User } from "../../models/user";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
     {label: "Pet", field: "pet.petName"},
-    {label: "Visit Type", field: "visitType"},
+    {label: "Visit Type", field: "visitType.typeName"},
     {label: "Visit Date", field: "date"}
 ];
 
-const initialState: AddVisitRequest = {
+const initialState: AddEditVisitRequest = {
+    owner: "",
     petId: 0,
     visitTypeId: 0, 
     date: null,
@@ -37,7 +38,7 @@ type LoaderData = {
 }
 
 const VisitsPage: React.FC = () => {
-    const [visitData, setVisitData] = useState<AddVisitRequest>(initialState);
+    const [visitData, setVisitData] = useState<AddEditVisitRequest>(initialState);
     const [selectedVisit, setSelectedVisit] = useState<Visit>(null!);
     const [userList, setUserList] = useState<UserList[]>([]);
     
@@ -63,7 +64,12 @@ const VisitsPage: React.FC = () => {
     }, [dispatch]);
 
     const handleEdit = (data: Visit) => {
-        setSelectedVisit(data);
+        setVisitData({
+            ...data, 
+            owner: data.pet?.user?.username as string,
+            petId: data.pet?.petId as number, 
+            visitTypeId: data.visitType?.visitTypeId as number
+        });
         setVisitDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
@@ -80,7 +86,7 @@ const VisitsPage: React.FC = () => {
         toggleActionDialog();
     }
 
-    const handleFormChange = (key: keyof AddVisitRequest, value: any) => {
+    const handleFormChange = (key: keyof AddEditVisitRequest, value: any) => {
         setVisitData((prevData) => ({...prevData, [key]: value}));
     }
 
@@ -106,19 +112,34 @@ const VisitsPage: React.FC = () => {
         } catch(err) {}
     }
 
-    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleAddSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await addVisit(visitData as AddVisitRequest);
+            const response = await addVisit(visitData as AddEditVisitRequest);
             dispatch(visitActions.addVisit(response));
             setVisitData(initialState);
             toggleDrawer();
         } catch(err) {}
     }
 
+    const handleEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const response = await updateVisit(visitData);
+            dispatch(visitActions.updateVisit(response));
+            setVisitData(initialState);
+            toggleDrawer();
+        } catch(err) {}
+    }
+
+    const handleAdd = () => {
+        setVisitDrawerType(DrawerPanelActions.Add);
+        toggleDrawer();
+    }
+    
     return (
         <Box>
-            <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={toggleDrawer} />
+            <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={handleAdd} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
@@ -143,9 +164,10 @@ const VisitsPage: React.FC = () => {
                 open={isDrawerOpen} 
                 onCancel={() => {
                     toggleCancelDrawer();
+                    setVisitData(initialState);
                     setSelectedVisit(null!);
                 }} 
-                onSave={handleSave} 
+                onSave={visitDrawerType === DrawerPanelActions.Add ? handleAddSave : handleEditSave} 
                 drawerHeader={
                     visitDrawerType === DrawerPanelActions.Add ? "Add Visit"
                     :

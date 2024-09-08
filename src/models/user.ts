@@ -2,7 +2,7 @@ import {JSONObject} from "../utils/json";
 
 export class User {
     firstName: string;
-    middleName: string;
+    middleName?: string;
     lastName: string;
     email: string;
     username: string;

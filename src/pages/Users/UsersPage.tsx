@@ -4,12 +4,12 @@ import SubHeader from "../../components/SubHeader";
 import DataTable, {DataTableHeaders} from "../../components/DataTable";
 import DrawerPanel, {DrawerPanelActions} from "../../components/DrawerPanel";
 import ActionDialog from "../../components/ActionDialog";
-import UserForm, {UserData} from "./UserForm";
+import UserForm from "./UserForm";
 
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {AddUser, addUser, deleteUser, fetchUsers} from "../../api/users";
+import {AddEditUserRequest, addUser, deleteUser, fetchUsers, updateUser} from "../../api/users";
 import {User} from "../../models/user";
 
 import {Box} from "@mui/material";
@@ -21,7 +21,7 @@ const tableHeaders: DataTableHeaders[] = [
     {label: "Pet Owned", field: "petOwned"},
 ];
 
-const initialStateUserData: AddUser = {
+const initialStateUserData: AddEditUserRequest = {
     name: "",
     firstName: "", 
     middleName: "", 
@@ -33,11 +33,14 @@ const initialStateUserData: AddUser = {
 }
 
 const UsersPage: React.FC = () => {
-    const [userData, setUserData] = useState<AddUser>(initialStateUserData);
-    const [selectedUser, setSelectedUser] = useState<UserData>(null!);
+    const [userData, setUserData] = useState<AddEditUserRequest>(initialStateUserData);
+    const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(initialStateUserData);
+    const [selectedUser, setSelectedUser] = useState<AddEditUserRequest>(null!);
     
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
+
+    const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
@@ -50,19 +53,28 @@ const UsersPage: React.FC = () => {
         }
     }, [dispatch]);
 
-    const handleEdit = (data: any) => {
-        setSelectedUser(data);
+    const handleEdit = (data: User) => {
+        setOrgUserData(data);
+        setUserData(data);
+        setUserDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
 
-    const handleView = (data: any) => {
+    const handleView = (data: User) => {
         setSelectedUser(data);
+        setUserDrawerType(DrawerPanelActions.View);
         navigate(`/${data.username}`);
     }
 
-    const handleDelete = (data: any) => {
+    const handleDelete = (data: User) => {
         setSelectedUser(data);
+        setUserDrawerType(DrawerPanelActions.Delete);
         toggleActionDialog();
+    }
+
+    const handleAdd = () => {
+        setUserDrawerType(DrawerPanelActions.Add);
+        toggleDrawer();
     }
 
     const toggleDrawer = () => {
@@ -79,12 +91,10 @@ const UsersPage: React.FC = () => {
             dispatch(userActions.removeUser(selectedUser.username as string));
             setSelectedUser(null!);
             toggleActionDialog();
-        } catch (err) {
-            // TODO: handle error message
-        }
+        } catch (err) {}
     }
 
-    const handleFormChange = (key: keyof UserData, value: any) => {
+    const handleFormChange = (key: keyof AddEditUserRequest, value: any) => {
         if (key === "email") {
             setUserData((prevData) => ({...prevData, [key]: value}));
             setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
@@ -93,7 +103,7 @@ const UsersPage: React.FC = () => {
         }
     }
 
-    const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSaveAdd = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const response = await addUser(userData);
@@ -103,13 +113,24 @@ const UsersPage: React.FC = () => {
         } catch (err) {}
     }
 
-    const handleEditUser = () => {
-        console.log("Edit User!");
+    const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            let changedData: any = {};
+            (Object.keys(userData) as (keyof AddEditUserRequest)[]).forEach(key => {
+                if (orgUserData[key] !== userData[key]) {
+                    changedData[key] = userData[key];
+                }
+            });
+            const response = await updateUser(userData.username, changedData);
+            dispatch(userActions.updateUser(response));
+            toggleDrawer();
+        } catch(err) {}
     }
 
     return (
         <React.Fragment>
-            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={toggleDrawer} />
+            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={handleAdd} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
@@ -134,15 +155,17 @@ const UsersPage: React.FC = () => {
                 open={isDrawerOpen} 
                 onCancel={() => {
                     toggleDrawer();
+                    setUserDrawerType("");
+                    setUserData(initialStateUserData);
                     setSelectedUser(null!);
                 }} 
-                onSave={selectedUser ? handleEditUser : handleAddUser} 
-                drawerHeader={selectedUser ? "Edit User" : "Add User"}
+                onSave={userDrawerType === DrawerPanelActions.Add ? handleSaveAdd : handleEditUser} 
+                drawerHeader={userDrawerType === DrawerPanelActions.Add ? "Add User" : "Edit User"}
             >
                 <UserForm 
-                    type={selectedUser == null ? DrawerPanelActions.Add : DrawerPanelActions.Edit} 
-                    userData={selectedUser == null ? userData : selectedUser} 
-                    handleFormChange={handleFormChange} 
+                    type={userDrawerType} 
+                    userData={userData} 
+                    handleFormChange={handleFormChange}
                 />
             </DrawerPanel>
             <ActionDialog

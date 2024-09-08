@@ -1,17 +1,18 @@
-import {Dayjs} from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 import {JSONObject} from "../utils/json";
 import {Pet} from "./pet";
+import {VisitType} from "./visitType";
 
 export class Visit {
     visitId?: number;
-    visitType: string;
+    visitType?: VisitType;
     date: Dayjs | null;
     notes: string;
     pet?: Pet;
 
     constructor(
         visitId: number,
-        visitType: string,
+        visitType: VisitType,
         date: Dayjs | null,
         notes: string,
         pet: Pet
@@ -26,8 +27,8 @@ export class Visit {
     static fromJSON(json: JSONObject): Visit {
         return new Visit (
             json["visitId"] as number,
-            json["visitType"] as string,
-            json["date"] as Dayjs | null,
+            VisitType.fromJSON(json["visitType"] as JSONObject),
+            json["date"] ? dayjs(json["date"] as string) : null,
             json["notes"] as string,
             Pet.fromJSON(json["pet"] as JSONObject)
         );

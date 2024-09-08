@@ -1,8 +1,8 @@
 import {JSONObject} from "../utils/json";
 
 export class VisitType {
-    visitTypeId: number;
-    typeName: string;
+    visitTypeId?: number;
+    typeName?: string;
 
     constructor(visitTypeId: number, typeName: string){
         this.visitTypeId = visitTypeId;

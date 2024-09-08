@@ -1,6 +1,7 @@
 import React from "react";
 import DataTableRowMenu from "./DataTableRowMenu";
 import {Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow} from "@mui/material";
+import dayjs from "dayjs";
 
 export type DataTableHeaders = {
     label: string;
@@ -17,6 +18,14 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
     const getNestedValue = (obj: any, path: string) => {
         return path.split(".").reduce((value, key) => value && value[key], obj);
     }
+
+    const renderCellValue = (value: any) => {
+        if (dayjs.isDayjs(value)) {
+            return value.format("MMMM D, YYYY");
+        }
+        return value;
+    }
+
     return (
         <React.Fragment>
             <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
@@ -34,7 +43,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                             <TableRow key={rowIndex}>
                                 {tableHeaders?.map((tHeader: any, colIndex) => (
                                     <TableCell key={colIndex}>
-                                        {getNestedValue(tBody, tHeader.field)}
+                                        {renderCellValue(getNestedValue(tBody, tHeader.field))}
                                     </TableCell>
                                 ))}
                                 {menuActions && 

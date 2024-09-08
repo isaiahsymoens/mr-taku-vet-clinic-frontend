@@ -8,10 +8,9 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {Pet} from "../../models/pet";
 import {VisitType} from "../../models/visitType";
 import {getVisitTypes} from "../../api/visitTypes";
-import {AddVisitRequest} from "../../api/visits";
+import {AddEditVisitRequest} from "../../api/visits";
 import {getUserPetsByUsername} from "../../api/pets";
 import {Visit} from "../../models/visit";
-
 
 export interface UserList {
     username: string;
@@ -20,16 +19,15 @@ export interface UserList {
 
 type VisitFormProps = {
     type: DrawerPanelActions | string;
-    visitData: AddVisitRequest;
+    visitData: AddEditVisitRequest;
     selectedVisitData: Visit;
     userList: UserList[];
-    handleFormChange: (key: keyof AddVisitRequest, value: any) => void;
+    handleFormChange: (key: keyof AddEditVisitRequest, value: any) => void;
 }
 
 const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData, userList, handleFormChange}) => {
     const [visitTypes, setVisitTypes] = useState<VisitType[]>([]);
     const [petNames, setPetNames] = useState<Pet[]>([]);
-    const [owner, setOwner] = useState<string>("");
 
     useEffect(() => {
         const loadData = async () => {
@@ -40,10 +38,10 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
 
     useEffect(() => {
         const loadData = async () => {
-            setPetNames(await getUserPetsByUsername(owner));
+            setPetNames(await getUserPetsByUsername(visitData.owner));
         }
-        if (owner !== "") loadData();
-    }, [owner]);
+        if (visitData?.owner) loadData();
+    }, [visitData.owner]);
 
     return (
         <React.Fragment>
@@ -54,9 +52,10 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                         <Select 
                             labelId="owner" 
                             label="Owner" 
-                            value={owner} 
-                            onChange={(e) => setOwner(e.target.value)}
+                            value={visitData.owner} 
+                            onChange={(e) => handleFormChange("owner", e.target.value)}
                             required
+                            disabled={type === DrawerPanelActions.Edit}
                         >
                             {userList.map(user => 
                                 <MenuItem 
@@ -76,6 +75,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                             value={visitData.petId} 
                             onChange={(e) => handleFormChange("petId", e.target.value)}
                             required
+                            disabled={type === DrawerPanelActions.Edit}
                         >
                             {petNames.map((pet, index) => 
                                 <MenuItem 

@@ -1,30 +1,29 @@
+import dayjs, { Dayjs } from "dayjs";
 import {JSONObject} from "../utils/json";
 import {User} from "./user";
+import {PetType} from "./petType";
 
 export class Pet {
-    petId: number;
+    petId?: number;
     petName: string;
-    petType?: string;
-    petTypeId?: number;
+    petType?: PetType;
     breed: string;
-    birthDate?: string;
+    birthDate: Dayjs | null;
     numberOfVisits?: number;
     user?: User;
 
     constructor(
         petId: number,
         petName: string,
-        petType: string,
-        petTypeId: number,
+        petType: PetType,
         breed: string,
-        birthDate: string,
+        birthDate: Dayjs | null,
         numberOfVisits: number,
         user: User
     ) {
         this.petId = petId;
         this.petName = petName;
         this.petType = petType;
-        this.petTypeId = petTypeId;
         this.breed = breed;
         this.birthDate = birthDate;
         this.numberOfVisits = numberOfVisits;
@@ -35,10 +34,9 @@ export class Pet {
         return new Pet(
             json["petId"] as number,
             json["petName"] as string,
-            json["petType"] as string,
-            json["petTypeId"] as number,
+            PetType.fromJSON(json["petType"] as JSONObject),
             json["breed"] as string,
-            json["birthDate"] as string,
+            json["birthDate"] ? dayjs(json["birthDate"] as string) : null,
             json["numberOfVisits"] as number,
             User.fromJSON(json["user"] as JSONObject)
         );

@@ -18,27 +18,19 @@ import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {Dayjs} from "dayjs";
 
 import {PetType} from "../../models/petType";
 import {Visit} from "../../models/visit";
 import {getPetTypes} from "../../api/petTypes";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
-
-export interface PetData {
-    petId?: number,
-    username: string,
-    petName: string;
-    petType: string;
-    breed?: string;
-    birthDate?: Dayjs | null;
-}
+import {AddEditPetRequest} from "../../api/pets";
+import {Pet} from "../../models/pet";
 
 type PetFormProps = {
     type: DrawerPanelActions | string;
-    petData: PetData;
+    petData: AddEditPetRequest;
     petVisits: Visit[];
-    handleFormChange: (key: keyof PetData, value: any) => void;
+    handleFormChange: (key: keyof Pet, value: any) => void;
 }
 
 const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormChange}) => {
@@ -46,8 +38,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
 
     useEffect(() => {
         const loadData = async () => {
-            const response = await getPetTypes();
-            setPetTypes(response);
+            setPetTypes(await getPetTypes());
         }
         loadData();
     }, []);
@@ -59,12 +50,12 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                     <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
                         <Table>
                             <TableBody>
-                                {petVisits.map(pVisit =>
-                                    <Accordion key={pVisit.visitTypeId} sx={{width: "100%"}}>
+                                {petVisits.map((pVisit, index) =>
+                                    <Accordion key={index} sx={{width: "100%"}}>
                                         <AccordionSummary
                                             expandIcon={<TextSnippetOutlinedIcon />}
                                         >
-                                            <Typography>{pVisit.visitType}</Typography>
+                                            <Typography>{pVisit.visitType?.typeName}</Typography>
                                         </AccordionSummary>
                                         <AccordionDetails>
                                         <Typography variant="body1" sx={{fontSize: "1rem", fontWeight: "600"}}>Notes</Typography>
@@ -93,8 +84,8 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                         <Select 
                             labelId="petType" 
                             label="Pet Type" 
-                            value={petData.petType}
-                            onChange={(e) => handleFormChange("petType", e.target.value)} 
+                            value={petData.petTypeId}
+                            onChange={(e) => handleFormChange("petTypeId", e.target.value)} 
                         >
                             {petTypes.map(pType => <MenuItem key={pType.petTypeId} value={pType.petTypeId}>{pType.typeName}</MenuItem>)}
                         </Select>

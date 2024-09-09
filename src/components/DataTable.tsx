@@ -92,9 +92,9 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
             <TablePagination 
                 component="div"
                 count={tableBody.length}
-                page={10}
+                page={0}
                 onPageChange={() => {}}
-                rowsPerPage={10}
+                rowsPerPage={0}
                 onRowsPerPageChange={() => {}}
             />
         </React.Fragment>

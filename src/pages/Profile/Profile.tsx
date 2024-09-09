@@ -13,7 +13,7 @@ import {User} from "../../models/user";
 import {Visit} from "../../models/visit";
 
 import {AddEditPetRequest, addPet, deletePet, getUserPetsByUsername, updatePet} from "../../api/pets";
-import {AddEditUserRequest, getUserByUsername, updateUser} from "../../api/users";
+import {AddEditUserRequest, getUserByUsername, getUserPasswordByUsername, updateUser} from "../../api/users";
 import {getPetVisits} from "../../api/visits";
 
 import {RootState} from "../../redux";
@@ -181,7 +181,16 @@ const Profile = () => {
                     },
                     gap: 3
                 }}>
-                    <ProfileCard user={user} toggleUserDrawer={toggleUserDrawer}/>
+                    <ProfileCard 
+                        user={user} 
+                        toggleUserDrawer={async () => {
+                            const response = await getUserPasswordByUsername(orgUserData.username);
+                            const dataWithPassword: any = {...orgUserData, password: response};
+                            setOrgUserData(dataWithPassword);
+                            setUserData(dataWithPassword);
+                            toggleUserDrawer();
+                        }}
+                    />
                     <Box sx={{ 
                         width: {
                             xs: "100%",

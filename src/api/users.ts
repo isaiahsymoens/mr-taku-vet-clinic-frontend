@@ -51,7 +51,7 @@ export const updateUser = async (username: string, data: AddEditUserRequest) => 
     if (!response.ok) {
         throw json.errors;
     }
-    return User.fromJSON(json as JSONObject);
+    return User.fromJSON(json.data as JSONObject);
 }
 
 export const deleteUser = async (username: string) => {

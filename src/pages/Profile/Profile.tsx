@@ -22,7 +22,7 @@ import {userActions} from "../../redux/features/user";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 
-import {Box} from "@mui/material";
+import {Alert, Box} from "@mui/material";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -50,9 +50,10 @@ const Profile = () => {
     const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(null!);
     const [petData, setPetData] = useState<AddEditPetRequest>(initialStatePet);
     const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
-    const [selectedPet, setSelectedPet] = useState<PetData>(null!);
+    const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
+    const [error, setError] = useState<string>("");
 
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
@@ -140,10 +141,13 @@ const Profile = () => {
                     changedData[key] = userData[key];
                 }
             });
-            const response = await updateUser(userData.username, changedData);
+            const response = await updateUser(orgUserData.username, changedData);
             dispatch(userActions.setUserProfile(response));
             toggleUserDrawer();
-        } catch(err) {}
+            setError("");
+        } catch(err) {
+            setError((err as any).email);
+        }
     }
 
     const handleAddPetSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -212,7 +216,7 @@ const Profile = () => {
             </Box>
             <DrawerPanel 
                 open={isUserDrawerOpen} 
-                onCancel={toggleUserDrawer} 
+                onCancel={() => {toggleUserDrawer(); setError("");}} 
                 onSave={handleEditUserSave} 
                 drawerHeader="Edit User"
             >
@@ -221,6 +225,7 @@ const Profile = () => {
                     userData={userData} 
                     handleFormChange={handleUserFormChange} 
                 />
+                {error && <Alert severity="error">{error}</Alert>}
             </DrawerPanel>
             <DrawerPanel 
                 open={isPetDrawerOpen} 

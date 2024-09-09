@@ -30,7 +30,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
 
     return (
         <React.Fragment>
-            <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
+            <TableContainer component={Paper} sx={{width: "100%", height: "100%", overflow: "auto"}}>
                 <Table stickyHeader>
                     {tableHeaders &&
                         <TableHead>

@@ -114,7 +114,7 @@ const Profile = () => {
         try {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
-            setPetData(null!);
+            setPetData(initialStatePet);
             toggleActionDialog();
         } catch(err) {}
     }

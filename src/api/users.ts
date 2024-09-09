@@ -1,5 +1,5 @@
 import {User} from "../models/user";
-import {JSONObject} from "../utils/json";
+import {JSONObject, JSONValue} from "../utils/json";
 
 export type AddEditUserRequest = Omit<User, "petOwned">;
 
@@ -25,7 +25,11 @@ export const addUser = async (data: AddEditUserRequest) => {
         },
         body: JSON.stringify(data)
     });
-    return User.fromJSON((await response.json()).data as JSONObject);
+    const json = await response.json();
+    if (!response.ok) {
+        throw json.errors;
+    }
+    return User.fromJSON(json.data as JSONObject);
 }
 
 export const updateUser = async (username: string, data: AddEditUserRequest) => {

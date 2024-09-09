@@ -110,7 +110,9 @@ const UsersPage: React.FC = () => {
             dispatch(userActions.addUser(response));
             setUserData(initialStateUserData);
             toggleDrawer();
-        } catch (err) {}
+        } catch (err) {
+            console.log("test :", err);
+        }
     }
 
     const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {

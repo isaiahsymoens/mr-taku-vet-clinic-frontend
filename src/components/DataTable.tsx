@@ -1,6 +1,6 @@
 import React from "react";
 import DataTableRowMenu from "./DataTableRowMenu";
-import {Box, Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow, Typography} from "@mui/material";
+import {Box, Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow, Typography, TablePagination} from "@mui/material";
 import dayjs from "dayjs";
 
 import PetsIcon from '@mui/icons-material/Pets';
@@ -30,7 +30,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
 
     return (
         <React.Fragment>
-            <TableContainer component={Paper} sx={{width: "100%", height: "100%", overflow: "auto"}}>
+            <TableContainer component={Paper} sx={{width: "100%", height: "100vh", maxHeight: "65vh", overflow: "auto"}}>
                 <Table stickyHeader>
                     {tableHeaders &&
                         <TableHead>
@@ -89,6 +89,14 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination 
+                component="div"
+                count={tableBody.length}
+                page={10}
+                onPageChange={() => {}}
+                rowsPerPage={10}
+                onRowsPerPageChange={() => {}}
+            />
         </React.Fragment>
     );
 }

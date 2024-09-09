@@ -9,7 +9,7 @@ import UserForm from "./UserForm";
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {AddEditUserRequest, addUser, deleteUser, fetchUsers, updateUser} from "../../api/users";
+import {AddEditUserRequest, addUser, deleteUser, fetchUsers, getUserPasswordByUsername, updateUser} from "../../api/users";
 import {User} from "../../models/user";
 
 import {Alert, Box} from "@mui/material";
@@ -54,9 +54,11 @@ const UsersPage: React.FC = () => {
         }
     }, [dispatch]);
 
-    const handleEdit = (data: User) => {
-        setOrgUserData(data);
-        setUserData(data);
+    const handleEdit = async (data: User) => {
+        const response = await getUserPasswordByUsername(data.username);
+        const dataWithPassword: any = {...data, password: response};
+        setOrgUserData(dataWithPassword);
+        setUserData(dataWithPassword);
         setUserDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }

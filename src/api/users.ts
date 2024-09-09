@@ -1,5 +1,5 @@
 import {User} from "../models/user";
-import {JSONObject, JSONValue} from "../utils/json";
+import {JSONObject} from "../utils/json";
 
 export type AddEditUserRequest = Omit<User, "petOwned">;
 
@@ -15,6 +15,13 @@ export const getUserByUsername = async (username: string) => {
         method: "GET"
     });
     return User.fromJSON((await response.json()).data as JSONObject);
+};
+
+export const getUserPasswordByUsername = async (username: string) => {
+    const response = await fetch(`https://localhost:5001/api/users/userpassword/${username}`, {
+        method: "GET"
+    });
+    return (await response.json()).data.password || "";
 };
 
 export const addUser = async (data: AddEditUserRequest) => {

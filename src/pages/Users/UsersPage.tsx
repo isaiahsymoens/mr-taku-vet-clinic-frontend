@@ -102,12 +102,7 @@ const UsersPage: React.FC = () => {
     }
 
     const handleFormChange = (key: keyof AddEditUserRequest, value: any) => {
-        if (key === "email") {
-            setUserData((prevData) => ({...prevData, [key]: value}));
-            setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
-        } else {
-            setUserData((prevData) => ({...prevData, [key]: value}));
-        }
+        setUserData((prevData) => ({...prevData, [key]: value}));
     }
 
     const handleSaveAdd = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -201,7 +196,10 @@ const UsersPage: React.FC = () => {
             >
                 <Alert
                     severity="success"
-                    sx={{background: "#28A745", color: "#FFF"}}
+                    sx={{
+                        background: "#28A745", 
+                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
+                    }}
                     onClose={() => setSnackbarMsg("")}
                 >
                     {snackbarMsg}

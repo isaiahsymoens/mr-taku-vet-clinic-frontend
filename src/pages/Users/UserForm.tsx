@@ -79,9 +79,9 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 type="text" 
                 name="username"
                 variant="outlined" 
-                value={userData.email?.split("@")[0]}   
+                value={userData.username}   
+                onChange={(e) => handleFormChange("username", e.target.value)}  
                 size="small" 
-                disabled
                 fullWidth 
                 required
             />

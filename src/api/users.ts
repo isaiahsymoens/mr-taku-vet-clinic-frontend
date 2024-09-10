@@ -1,4 +1,5 @@
 import {User} from "../models/user";
+import {extractErrorMessages, GenericErrorResponse} from "../utils/errorHelper";
 import {JSONObject} from "../utils/json";
 
 export type AddEditUserRequest = Omit<User, "petOwned">;
@@ -34,7 +35,7 @@ export const addUser = async (data: AddEditUserRequest) => {
     });
     const json = await response.json();
     if (!response.ok) {
-        throw json.errors;
+        throw extractErrorMessages(json.errors as GenericErrorResponse);
     }
     return User.fromJSON(json.data as JSONObject);
 }
@@ -49,7 +50,7 @@ export const updateUser = async (username: string, data: AddEditUserRequest) => 
     });
     const json = await response.json();
     if (!response.ok) {
-        throw json.errors;
+        throw extractErrorMessages(json.errors as GenericErrorResponse);
     }
     return User.fromJSON(json.data as JSONObject);
 }

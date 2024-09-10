@@ -4,22 +4,23 @@ import {DrawerPanelActions} from "../../components/DrawerPanel";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {AddEditUserRequest} from "../../api/users";
+import {GenericErrorResponse} from "../../utils/errorHelper";
 
 type UserFormProps = {
     type: DrawerPanelActions | string;
     userData: AddEditUserRequest;
     handleFormChange: (key: keyof AddEditUserRequest, value: any) => void;
+    errors: GenericErrorResponse;
 }
 
-const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) => {
+const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, errors}) => {
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    
+    const hasError = (field: string) => field in errors;
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    
     const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
@@ -32,6 +33,8 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 name="firstName"
                 variant="outlined" 
                 value={userData.firstName}
+                error={hasError("firstName")}
+                helperText={errors.firstName}
                 onChange={(e) => handleFormChange("firstName", e.target.value)} 
                 size="small" 
                 fullWidth 
@@ -43,6 +46,8 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 name="middleName"
                 variant="outlined" 
                 value={userData.middleName}
+                error={hasError("middleName")}
+                helperText={errors.middleName}
                 onChange={(e) => handleFormChange("middleName", e.target.value)}  
                 size="small" 
                 fullWidth 
@@ -53,6 +58,8 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 name="lastName"
                 variant="outlined" 
                 value={userData.lastName} 
+                error={hasError("lastName")}
+                helperText={errors.lastName}
                 onChange={(e) => handleFormChange("lastName", e.target.value)} 
                 size="small" 
                 fullWidth 
@@ -64,6 +71,8 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 name="email"
                 variant="outlined" 
                 value={userData.email}
+                error={hasError("email")}
+                helperText={errors.email}
                 onChange={(e) => handleFormChange("email", e.target.value)}  
                 size="small" 
                 fullWidth 
@@ -79,7 +88,9 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange}) =
                 type="text" 
                 name="username"
                 variant="outlined" 
-                value={userData.username}   
+                value={userData.username}  
+                error={hasError("username")}
+                helperText={errors.username} 
                 onChange={(e) => handleFormChange("username", e.target.value)}  
                 size="small" 
                 fullWidth 

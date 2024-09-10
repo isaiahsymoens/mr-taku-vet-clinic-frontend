@@ -14,6 +14,7 @@ import {User} from "../../models/user";
 
 import {Alert, Box, Snackbar} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
+import {GenericErrorResponse} from "../../utils/errorHelper";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "name"},
@@ -37,14 +38,11 @@ const UsersPage: React.FC = () => {
     const [userData, setUserData] = useState<AddEditUserRequest>(initialStateUserData);
     const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(initialStateUserData);
     const [selectedUser, setSelectedUser] = useState<AddEditUserRequest>(null!);
-    
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
-
     const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
-    const [error, setError] = useState<string>("");
-
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [errors, setErrors] = useState<GenericErrorResponse>({});
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
@@ -108,19 +106,21 @@ const UsersPage: React.FC = () => {
     const handleSaveAdd = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            setErrors({});
             const response = await addUser(userData);
             dispatch(userActions.addUser(response));
             setUserData(initialStateUserData);
             toggleDrawer();
             reset();
         } catch (err) {
-            setError((err as any).email);
+            setErrors(err as GenericErrorResponse);
         }
     }
 
     const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            setErrors({});
             let changedData: any = {};
             (Object.keys(userData) as (keyof AddEditUserRequest)[]).forEach(key => {
                 if (orgUserData[key] !== userData[key]) {
@@ -132,7 +132,7 @@ const UsersPage: React.FC = () => {
             toggleDrawer();
             reset();
         } catch(err) {
-            setError((err as any).email);
+            setErrors(err as GenericErrorResponse);
         }
     }
 
@@ -140,7 +140,7 @@ const UsersPage: React.FC = () => {
         setUserDrawerType("");
         setUserData(initialStateUserData);
         setSelectedUser(null!);
-        setError("");
+        setErrors({});
     }
 
     return (
@@ -179,8 +179,8 @@ const UsersPage: React.FC = () => {
                     type={userDrawerType} 
                     userData={userData} 
                     handleFormChange={handleFormChange}
+                    errors={errors}
                 />
-                {error && <Alert severity="error">{error}</Alert>}
             </DrawerPanel>
             <ActionDialog
                 title="Are you sure you want to delete this user record?"

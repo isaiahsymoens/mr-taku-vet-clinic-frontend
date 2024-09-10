@@ -19,6 +19,7 @@ const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "name"},
     {label: "Email", field: "email"},
     {label: "Pet Owned", field: "petOwned"},
+    {label: "Active", field: "active"}
 ];
 
 const initialStateUserData: AddEditUserRequest = {

@@ -14,7 +14,7 @@ import {
     TablePagination
 } from "@mui/material";
 import PetsIcon from '@mui/icons-material/Pets';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import CircleIcon from '@mui/icons-material/Circle';
 
 export type DataTableHeaders = {
     label: string;
@@ -84,7 +84,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                                     } else {
                                         return <TableCell key={colIndex}>
                                             {tHeader.field === "active" ? 
-                                                <FiberManualRecordIcon 
+                                                <CircleIcon 
                                                     sx={{
                                                         fontSize: "1em", 
                                                         color: renderCellValue(getNestedValue(tBody, tHeader.field)) ? "#28A745" : "#D3D3D3"

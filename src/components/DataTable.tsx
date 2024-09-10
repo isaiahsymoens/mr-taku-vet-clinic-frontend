@@ -1,9 +1,20 @@
 import React from "react";
-import DataTableRowMenu from "./DataTableRowMenu";
-import {Box, Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow, Typography, TablePagination} from "@mui/material";
 import dayjs from "dayjs";
-
+import DataTableRowMenu from "./DataTableRowMenu";
+import {
+    Box, 
+    Paper, 
+    TableCell, 
+    TableContainer, 
+    Table, 
+    TableBody, 
+    TableHead, 
+    TableRow, 
+    Typography, 
+    TablePagination
+} from "@mui/material";
 import PetsIcon from '@mui/icons-material/Pets';
+import CircleIcon from '@mui/icons-material/Circle';
 
 export type DataTableHeaders = {
     label: string;
@@ -72,7 +83,17 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                                         </TableCell>
                                     } else {
                                         return <TableCell key={colIndex}>
-                                            {renderCellValue(getNestedValue(tBody, tHeader.field))}
+                                            {tHeader.field === "active" ? 
+                                                <CircleIcon 
+                                                    sx={{
+                                                        fontSize: "1em", 
+                                                        color: renderCellValue(getNestedValue(tBody, tHeader.field)) ? "#28A745" : "#D3D3D3"
+                                                    }} 
+                                                />
+                                                :
+                                                renderCellValue(getNestedValue(tBody, tHeader.field))
+                                            }
+                                            
                                         </TableCell>
                                     }
                                 })}

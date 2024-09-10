@@ -15,7 +15,7 @@ import {visitActions} from "../../redux/features/visit";
 import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
-import {Box} from "@mui/material";
+import {Alert, Box, Snackbar} from "@mui/material";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -45,7 +45,8 @@ const VisitsPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
     const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
-    
+    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+
     const dispatch = useDispatch();
     const visits = useSelector((state: RootState) => state.visit.visits);
 
@@ -107,6 +108,7 @@ const VisitsPage: React.FC = () => {
         try {
             await deleteVisit(selectedVisit.visitId as number);
             dispatch(visitActions.removeVisit(selectedVisit.visitId));
+            setSnackbarMsg("Successfully deleted.");
             setSelectedVisit(null!);
             toggleActionDialog();
         } catch(err) {}
@@ -190,6 +192,22 @@ const VisitsPage: React.FC = () => {
                 onSave={handleSaveConfirmDlg}
                 onCancel={toggleActionDialog}
             />
+            <Snackbar 
+                open={snackbarMsg !== ""} 
+                autoHideDuration={3000} 
+                onClose={() => setSnackbarMsg("")}
+            >
+                <Alert
+                    severity="success"
+                    sx={{
+                        background: "#28A745", 
+                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
+                    }}
+                    onClose={() => setSnackbarMsg("")}
+                >
+                    {snackbarMsg}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

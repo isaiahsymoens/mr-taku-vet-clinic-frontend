@@ -12,7 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AddEditUserRequest, addUser, deleteUser, fetchUsers, getUserPasswordByUsername, updateUser} from "../../api/users";
 import {User} from "../../models/user";
 
-import {Alert, Box} from "@mui/material";
+import {Alert, Box, Snackbar} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
 
 const tableHeaders: DataTableHeaders[] = [
@@ -43,6 +43,8 @@ const UsersPage: React.FC = () => {
 
     const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
     const [error, setError] = useState<string>("");
+
+    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
@@ -93,6 +95,7 @@ const UsersPage: React.FC = () => {
         try {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
+            setSnackbarMsg("Successfully deleted.");
             setSelectedUser(null!);
             toggleActionDialog();
         } catch (err) {}
@@ -134,7 +137,6 @@ const UsersPage: React.FC = () => {
             toggleDrawer();
             reset();
         } catch(err) {
-            console.log("err :", err);
             setError((err as any).email);
         }
     }
@@ -192,6 +194,19 @@ const UsersPage: React.FC = () => {
                 onSave={handleSaveConfirmDlg}
                 onCancel={toggleActionDialog}
             />
+            <Snackbar 
+                open={snackbarMsg !== ""} 
+                autoHideDuration={3000} 
+                onClose={() => setSnackbarMsg("")}
+            >
+                <Alert
+                    severity="success"
+                    sx={{background: "#28A745", color: "#FFF"}}
+                    onClose={() => setSnackbarMsg("")}
+                >
+                    {snackbarMsg}
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }

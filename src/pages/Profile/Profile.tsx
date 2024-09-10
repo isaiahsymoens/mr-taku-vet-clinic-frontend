@@ -22,7 +22,7 @@ import {userActions} from "../../redux/features/user";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 
-import {Alert, Box} from "@mui/material";
+import {Alert, Box, Snackbar} from "@mui/material";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -54,6 +54,7 @@ const Profile = () => {
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
     const [error, setError] = useState<string>("");
+    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
 
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
@@ -114,6 +115,7 @@ const Profile = () => {
         try {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
+            setSnackbarMsg("Successfully deleted.");
             setPetData(initialStatePet);
             toggleActionDialog();
         } catch(err) {}
@@ -265,6 +267,22 @@ const Profile = () => {
                 onSave={handleSaveConfirmDlg}
                 onCancel={toggleActionDialog}
             />
+            <Snackbar 
+                open={snackbarMsg !== ""} 
+                autoHideDuration={3000} 
+                onClose={() => setSnackbarMsg("")}
+            >
+                <Alert
+                    severity="success"
+                    sx={{
+                        background: "#28A745", 
+                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
+                    }}
+                    onClose={() => setSnackbarMsg("")}
+                >
+                    {snackbarMsg}
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }

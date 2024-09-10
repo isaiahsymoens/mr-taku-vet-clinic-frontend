@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import UsersPage, {loader as usersPageLoader} from "./pages/Users/UsersPage";
 import VisitsPage, {loader as visitPageLoader}  from "./pages/Visits/VisitsPage";
 import Profile, {loader as profilePageLoader} from "./pages/Profile/Profile";
+import AccountPage from "./pages/Account/AccountPage";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
@@ -30,7 +31,11 @@ const App: React.FC = () => {
           element: <Profile />,
           loader: profilePageLoader,
         },
-      ]
+      ],
+    },
+    {
+      path: "testpage",
+      element: <AccountPage />
     }
   ]);
   

@@ -9,10 +9,10 @@ import UserForm from "./UserForm";
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {AddEditUserRequest, addUser, deleteUser, fetchUsers, updateUser} from "../../api/users";
+import {AddEditUserRequest, addUser, deleteUser, fetchUsers, getUserPasswordByUsername, updateUser} from "../../api/users";
 import {User} from "../../models/user";
 
-import {Box} from "@mui/material";
+import {Alert, Box} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
 
 const tableHeaders: DataTableHeaders[] = [
@@ -41,6 +41,7 @@ const UsersPage: React.FC = () => {
     const [isActionDialog, setIsActionDialog] = useState(false);
 
     const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
+    const [error, setError] = useState<string>("");
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
@@ -53,9 +54,11 @@ const UsersPage: React.FC = () => {
         }
     }, [dispatch]);
 
-    const handleEdit = (data: User) => {
-        setOrgUserData(data);
-        setUserData(data);
+    const handleEdit = async (data: User) => {
+        const response = await getUserPasswordByUsername(data.username);
+        const dataWithPassword: any = {...data, password: response};
+        setOrgUserData(dataWithPassword);
+        setUserData(dataWithPassword);
         setUserDrawerType(DrawerPanelActions.Edit);
         toggleDrawer();
     }
@@ -107,10 +110,13 @@ const UsersPage: React.FC = () => {
         e.preventDefault();
         try {
             const response = await addUser(userData);
-            dispatch(userActions.addUser(response.data));
+            dispatch(userActions.addUser(response));
             setUserData(initialStateUserData);
             toggleDrawer();
-        } catch (err) {}
+            reset();
+        } catch (err) {
+            setError((err as any).email);
+        }
     }
 
     const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -122,10 +128,21 @@ const UsersPage: React.FC = () => {
                     changedData[key] = userData[key];
                 }
             });
-            const response = await updateUser(userData.username, changedData);
+            const response = await updateUser(orgUserData.username, changedData);
             dispatch(userActions.updateUser(response));
             toggleDrawer();
-        } catch(err) {}
+            reset();
+        } catch(err) {
+            console.log("err :", err);
+            setError((err as any).email);
+        }
+    }
+
+    const reset = () => {
+        setUserDrawerType("");
+        setUserData(initialStateUserData);
+        setSelectedUser(null!);
+        setError("");
     }
 
     return (
@@ -155,9 +172,7 @@ const UsersPage: React.FC = () => {
                 open={isDrawerOpen} 
                 onCancel={() => {
                     toggleDrawer();
-                    setUserDrawerType("");
-                    setUserData(initialStateUserData);
-                    setSelectedUser(null!);
+                    reset();
                 }} 
                 onSave={userDrawerType === DrawerPanelActions.Add ? handleSaveAdd : handleEditUser} 
                 drawerHeader={userDrawerType === DrawerPanelActions.Add ? "Add User" : "Edit User"}
@@ -167,6 +182,7 @@ const UsersPage: React.FC = () => {
                     userData={userData} 
                     handleFormChange={handleFormChange}
                 />
+                {error && <Alert severity="error">{error}</Alert>}
             </DrawerPanel>
             <ActionDialog
                 title="Are you sure you want to delete this user record?"

@@ -17,6 +17,13 @@ export const getUserByUsername = async (username: string) => {
     return User.fromJSON((await response.json()).data as JSONObject);
 };
 
+export const getUserPasswordByUsername = async (username: string) => {
+    const response = await fetch(`https://localhost:5001/api/users/userpassword/${username}`, {
+        method: "GET"
+    });
+    return (await response.json()).data.password || "";
+};
+
 export const addUser = async (data: AddEditUserRequest) => {
     const response = await fetch(`https://localhost:5001/api/users`, {
         method: "POST",
@@ -25,8 +32,11 @@ export const addUser = async (data: AddEditUserRequest) => {
         },
         body: JSON.stringify(data)
     });
-    return await response.json();
-    // return User.fromJSON((await response.json()).data as JSONObject);
+    const json = await response.json();
+    if (!response.ok) {
+        throw json.errors;
+    }
+    return User.fromJSON(json.data as JSONObject);
 }
 
 export const updateUser = async (username: string, data: AddEditUserRequest) => {
@@ -37,7 +47,11 @@ export const updateUser = async (username: string, data: AddEditUserRequest) => 
         },
         body: JSON.stringify(data)
     });
-    return User.fromJSON((await response.json()).data as JSONObject);
+    const json = await response.json();
+    if (!response.ok) {
+        throw json.errors;
+    }
+    return User.fromJSON(json.data as JSONObject);
 }
 
 export const deleteUser = async (username: string) => {

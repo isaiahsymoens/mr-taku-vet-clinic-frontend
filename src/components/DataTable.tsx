@@ -1,7 +1,9 @@
 import React from "react";
 import DataTableRowMenu from "./DataTableRowMenu";
-import {Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow} from "@mui/material";
+import {Box, Paper, TableCell, TableContainer, Table, TableBody, TableHead, TableRow, Typography, TablePagination} from "@mui/material";
 import dayjs from "dayjs";
+
+import PetsIcon from '@mui/icons-material/Pets';
 
 export type DataTableHeaders = {
     label: string;
@@ -28,7 +30,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
 
     return (
         <React.Fragment>
-            <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
+            <TableContainer component={Paper} sx={{width: "100%", height: "100vh", maxHeight: "65vh", overflow: "auto"}}>
                 <Table stickyHeader>
                     {tableHeaders &&
                         <TableHead>
@@ -41,11 +43,39 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                     <TableBody>
                         {tableBody.map((tBody, rowIndex) => (
                             <TableRow key={rowIndex}>
-                                {tableHeaders?.map((tHeader: any, colIndex) => (
-                                    <TableCell key={colIndex}>
-                                        {renderCellValue(getNestedValue(tBody, tHeader.field))}
-                                    </TableCell>
-                                ))}
+                                {tableHeaders?.map((tHeader: any, colIndex) => {
+                                    if (tHeader.field === "petName") {
+                                        return <TableCell key={colIndex} sx={{display: "flex", alignItems: "center"}}>
+                                            <PetsIcon 
+                                                sx={{ 
+                                                    color: "#FFF",
+                                                    background: "#AAA",
+                                                    borderRadius: "5em",
+                                                    p: .5, 
+                                                    mr: 1
+                                                }}
+                                            />
+                                            <Box sx={{display: "flex", flexDirection: "column"}}>
+                                                {renderCellValue(getNestedValue(tBody, tHeader.field))}
+                                                <Box sx={{display: "flex"}}>
+                                                    <Typography sx={{color: "gray", fontSize: ".8rem"}}>
+                                                        {renderCellValue(getNestedValue(tBody, "petType.typeName"))} 
+                                                    </Typography>
+                                                    {tBody.breed !== null && 
+                                                        <Typography sx={{color: "gray", fontSize: ".8rem"}}>
+                                                            <span style={{padding: "0px 5px"}}>•</span>
+                                                            {`${renderCellValue(getNestedValue(tBody, "breed"))}`}
+                                                        </Typography>
+                                                    }
+                                                </Box>
+                                            </Box>
+                                        </TableCell>
+                                    } else {
+                                        return <TableCell key={colIndex}>
+                                            {renderCellValue(getNestedValue(tBody, tHeader.field))}
+                                        </TableCell>
+                                    }
+                                })}
                                 {menuActions && 
                                     <TableCell>
                                         <DataTableRowMenu 
@@ -59,6 +89,14 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination 
+                component="div"
+                count={tableBody.length}
+                page={0}
+                onPageChange={() => {}}
+                rowsPerPage={0}
+                onRowsPerPageChange={() => {}}
+            />
         </React.Fragment>
     );
 }

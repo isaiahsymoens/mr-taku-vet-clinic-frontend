@@ -13,7 +13,7 @@ import {User} from "../../models/user";
 import {Visit} from "../../models/visit";
 
 import {AddEditPetRequest, addPet, deletePet, getUserPetsByUsername, updatePet} from "../../api/pets";
-import {AddEditUserRequest, getUserByUsername, updateUser} from "../../api/users";
+import {AddEditUserRequest, getUserByUsername, getUserPasswordByUsername, updateUser} from "../../api/users";
 import {getPetVisits} from "../../api/visits";
 
 import {RootState} from "../../redux";
@@ -22,7 +22,7 @@ import {userActions} from "../../redux/features/user";
 import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 
-import {Box} from "@mui/material";
+import {Alert, Box} from "@mui/material";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -50,9 +50,10 @@ const Profile = () => {
     const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(null!);
     const [petData, setPetData] = useState<AddEditPetRequest>(initialStatePet);
     const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
-    const [selectedPet, setSelectedPet] = useState<PetData>(null!);
+    const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
+    const [error, setError] = useState<string>("");
 
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
@@ -113,7 +114,7 @@ const Profile = () => {
         try {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
-            setPetData(null!);
+            setPetData(initialStatePet);
             toggleActionDialog();
         } catch(err) {}
     }
@@ -140,10 +141,13 @@ const Profile = () => {
                     changedData[key] = userData[key];
                 }
             });
-            const response = await updateUser(userData.username, changedData);
+            const response = await updateUser(orgUserData.username, changedData);
             dispatch(userActions.setUserProfile(response));
             toggleUserDrawer();
-        } catch(err) {}
+            setError("");
+        } catch(err) {
+            setError((err as any).email);
+        }
     }
 
     const handleAddPetSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -177,7 +181,16 @@ const Profile = () => {
                     },
                     gap: 3
                 }}>
-                    <ProfileCard user={user} toggleUserDrawer={toggleUserDrawer}/>
+                    <ProfileCard 
+                        user={user} 
+                        toggleUserDrawer={async () => {
+                            const response = await getUserPasswordByUsername(orgUserData.username);
+                            const dataWithPassword: any = {...orgUserData, password: response};
+                            setOrgUserData(dataWithPassword);
+                            setUserData(dataWithPassword);
+                            toggleUserDrawer();
+                        }}
+                    />
                     <Box sx={{ 
                         width: {
                             xs: "100%",
@@ -212,7 +225,7 @@ const Profile = () => {
             </Box>
             <DrawerPanel 
                 open={isUserDrawerOpen} 
-                onCancel={toggleUserDrawer} 
+                onCancel={() => {toggleUserDrawer(); setError("");}} 
                 onSave={handleEditUserSave} 
                 drawerHeader="Edit User"
             >
@@ -221,6 +234,7 @@ const Profile = () => {
                     userData={userData} 
                     handleFormChange={handleUserFormChange} 
                 />
+                {error && <Alert severity="error">{error}</Alert>}
             </DrawerPanel>
             <DrawerPanel 
                 open={isPetDrawerOpen} 

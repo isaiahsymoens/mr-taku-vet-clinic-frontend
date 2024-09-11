@@ -46,7 +46,6 @@ const UsersPage: React.FC = () => {
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
-    const searchUsers = useSelector((state: RootState) => state.user.searchUsers);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();

@@ -1,6 +1,7 @@
+import {useEffect, useState} from "react";
 import {Box, Typography, Paper, InputBase, IconButton, Button} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import {useEffect, useState} from "react";
+import CloseIcon from '@mui/icons-material/Close';
 
 type SubHeaderProps = {
     text: string;
@@ -21,6 +22,20 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
     const handleSearch = () => {
         if (onSearch) {
             onSearch(searchInput);
+            if (searchInput !== "") {
+                setShowSearchReset(true);
+            }
+        }
+    }
+
+    const handleClearSearch = () => {
+        if (onSearch) {
+            setSearchInput(() => {
+                onSearch("");
+                setSearchInput("");
+                return "";
+            });
+            setShowSearchReset(false);
         }
     }
 
@@ -45,15 +60,20 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                             height: 36.5
                         }}
                     >
+                        <IconButton type="button" onClick={handleSearch}>
+                            <SearchIcon />
+                        </IconButton>
                         <InputBase
                             sx={{flex: 1, fontSize: "1rem", ml: 1}}
                             placeholder="Search.."
                             value={searchInput}
                             onChange={handleInputChange}
                         />
-                        <IconButton type="button" onClick={handleSearch}>
-                            <SearchIcon />
-                        </IconButton>
+                        {showSearchReset &&
+                            <IconButton type="button" onClick={handleClearSearch}>
+                                <CloseIcon />
+                            </IconButton>
+                        }
                     </Paper>
                 }
                 <Button 

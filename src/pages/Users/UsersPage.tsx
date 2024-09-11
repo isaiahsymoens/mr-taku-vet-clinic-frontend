@@ -9,7 +9,7 @@ import UserForm from "./UserForm";
 import {userActions} from "../../redux/features/user";
 import {RootState} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
-import {AddEditUserRequest, addUser, deleteUser, fetchUsers, getUserPasswordByUsername, updateUser} from "../../api/users";
+import {AddEditUserRequest, addUser, deleteUser, fetchUsers, getUserPasswordByUsername, searchUsersByName, updateUser} from "../../api/users";
 import {User} from "../../models/user";
 
 import {Alert, Box, Snackbar} from "@mui/material";
@@ -46,6 +46,8 @@ const UsersPage: React.FC = () => {
 
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
+    const searchUsers = useSelector((state: RootState) => state.user.searchUsers);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -143,9 +145,20 @@ const UsersPage: React.FC = () => {
         setErrors({});
     }
 
+    const handleSearch = async (input: string) => {
+        const response = await searchUsersByName(input);
+        dispatch(userActions.setUsers(response));
+    }
+
     return (
         <React.Fragment>
-            <SubHeader text="Users" showSearchbar={true} btnText="Add User" toggleDrawer={handleAdd} />
+            <SubHeader 
+                text="Users" 
+                showSearchbar={true} 
+                btnText="Add User" 
+                toggleDrawer={handleAdd} 
+                onSearch={handleSearch} 
+            />
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <DataTable 
                     tableHeaders={tableHeaders} 

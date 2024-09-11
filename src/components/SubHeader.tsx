@@ -1,14 +1,29 @@
 import {Box, Typography, Paper, InputBase, IconButton, Button} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
+import {useEffect, useState} from "react";
 
 type SubHeaderProps = {
     text: string;
     showSearchbar?: boolean;
     btnText: string;
     toggleDrawer?: () => void;
+    onSearch?: (searchText: string) => void;
 }
 
-const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, toggleDrawer}) => {
+const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, toggleDrawer, onSearch}) => {
+    const [searchInput, setSearchInput] = useState("");
+    const [showSearchReset, setShowSearchReset] = useState(false);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchInput(e.target.value);
+    }
+
+    const handleSearch = () => {
+        if (onSearch) {
+            onSearch(searchInput);
+        }
+    }
+
     return (
         <Box sx={{ 
             background: "#F5F5F5",
@@ -31,9 +46,12 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                         }}
                     >
                         <InputBase
-                            sx={{ ml: 1, flex: 1, fontSize: "1rem" }}
-                            placeholder="Search.."/>
-                        <IconButton type="button">
+                            sx={{flex: 1, fontSize: "1rem", ml: 1}}
+                            placeholder="Search.."
+                            value={searchInput}
+                            onChange={handleInputChange}
+                        />
+                        <IconButton type="button" onClick={handleSearch}>
                             <SearchIcon />
                         </IconButton>
                     </Paper>

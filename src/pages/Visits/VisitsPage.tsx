@@ -16,6 +16,7 @@ import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 import {Alert, Box, Snackbar} from "@mui/material";
+import {GenericErrorResponse} from "../../utils/errorHelper";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -46,6 +47,7 @@ const VisitsPage: React.FC = () => {
     const [isActionDialog, setIsActionDialog] = useState(false);
     const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [errors, setErrors] = useState<GenericErrorResponse>({});
 
     const dispatch = useDispatch();
     const visits = useSelector((state: RootState) => state.visit.visits);
@@ -183,6 +185,7 @@ const VisitsPage: React.FC = () => {
                     selectedVisitData={selectedVisit}
                     userList={userList}
                     handleFormChange={handleFormChange}
+                    errors={errors}
                 />
             </DrawerPanel>
             <ActionDialog

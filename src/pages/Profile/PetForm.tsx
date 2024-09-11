@@ -4,6 +4,7 @@ import {
     AccordionDetails, 
     AccordionSummary, 
     FormControl, 
+    FormHelperText, 
     InputLabel, 
     MenuItem, 
     Paper, 
@@ -24,16 +25,17 @@ import {Visit} from "../../models/visit";
 import {getPetTypes} from "../../api/petTypes";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 import {AddEditPetRequest} from "../../api/pets";
-import {Pet} from "../../models/pet";
+import {GenericErrorResponse} from "../../utils/errorHelper";
 
 type PetFormProps = {
     type: DrawerPanelActions | string;
     petData: AddEditPetRequest;
     petVisits: Visit[];
-    handleFormChange: (key: keyof Pet, value: any) => void;
+    handleFormChange: (key: keyof AddEditPetRequest, value: any) => void;
+    errors: GenericErrorResponse;
 }
 
-const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormChange}) => {
+const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormChange, errors}) => {
     const [petTypes, setPetTypes] = useState<PetType[]>([]);
 
     useEffect(() => {
@@ -42,6 +44,8 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
         }
         loadData();
     }, []);
+
+    const hasError = (field: string) => field in errors;
 
     return (
         <React.Fragment>
@@ -75,11 +79,13 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                         label="Name" 
                         variant="outlined" 
                         value={petData.petName} 
+                        error={hasError("petName")}
+                        helperText={errors.petName}
                         onChange={(e) => handleFormChange("petName", e.target.value)} 
                         size="small" 
                         fullWidth 
                     />
-                    <FormControl size="small">
+                    <FormControl size="small" error={hasError("petTypeId")}>
                         <InputLabel id="petType">Pet Type</InputLabel>
                         <Select 
                             labelId="petType" 
@@ -89,11 +95,16 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                         >
                             {petTypes.map(pType => <MenuItem key={pType.petTypeId} value={pType.petTypeId}>{pType.typeName}</MenuItem>)}
                         </Select>
+                        <FormHelperText>
+                            {errors.petTypeId}
+                        </FormHelperText>
                     </FormControl>
                     <TextField 
                         label="Breed" 
                         variant="outlined" 
                         value={petData.breed} 
+                        error={hasError("breed")}
+                        helperText={errors.breed}
                         onChange={(e) => handleFormChange("breed", e.target.value)} 
                         size="small" 
                         fullWidth 

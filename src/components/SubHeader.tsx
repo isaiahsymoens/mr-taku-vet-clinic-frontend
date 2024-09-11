@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Box, Typography, Paper, InputBase, IconButton, Button} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,14 +17,16 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(e.target.value);
+        setShowSearchReset(false);
+        if (e.target.value === "") {
+            handleClearSearch();
+        }
     }
 
     const handleSearch = () => {
-        if (onSearch) {
+        if (onSearch && searchInput !== "") {
             onSearch(searchInput);
-            if (searchInput !== "") {
-                setShowSearchReset(true);
-            }
+            setShowSearchReset(true);
         }
     }
 
@@ -60,8 +62,11 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                             height: 36.5
                         }}
                     >
-                        <IconButton type="button" onClick={handleSearch}>
-                            <SearchIcon />
+                        <IconButton 
+                            type="button" 
+                            onClick={showSearchReset ? handleClearSearch : handleSearch}
+                        >
+                            {showSearchReset ? <CloseIcon /> : <SearchIcon />}
                         </IconButton>
                         <InputBase
                             sx={{flex: 1, fontSize: "1rem", ml: 1}}
@@ -69,11 +74,6 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                             value={searchInput}
                             onChange={handleInputChange}
                         />
-                        {showSearchReset &&
-                            <IconButton type="button" onClick={handleClearSearch}>
-                                <CloseIcon />
-                            </IconButton>
-                        }
                     </Paper>
                 }
                 <Button 

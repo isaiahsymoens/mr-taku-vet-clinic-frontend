@@ -72,7 +72,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                                                     <Typography sx={{color: "gray", fontSize: ".8rem"}}>
                                                         {renderCellValue(getNestedValue(tBody, "petType.typeName"))} 
                                                     </Typography>
-                                                    {tBody.breed !== null && 
+                                                    {tBody.breed !== "" && 
                                                         <Typography sx={{color: "gray", fontSize: ".8rem"}}>
                                                             <span style={{padding: "0px 5px"}}>•</span>
                                                             {`${renderCellValue(getNestedValue(tBody, "breed"))}`}

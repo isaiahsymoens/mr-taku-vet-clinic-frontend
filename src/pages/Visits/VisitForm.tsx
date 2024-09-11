@@ -124,7 +124,14 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                             label="Date"
                             value={visitData.date} 
                             onChange={(e) => handleFormChange("date", e)}
-                            slotProps={{textField: {size: "small"}}}
+                            slotProps={{
+                                textField: {
+                                    size: "small",
+                                    required: true,
+                                    error: hasError("date"),
+                                    helperText: errors?.date
+                                }
+                            }}
                         />
                     </LocalizationProvider>
                     <TextField 

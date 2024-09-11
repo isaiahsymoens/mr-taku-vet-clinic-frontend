@@ -83,6 +83,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                         helperText={errors.petName}
                         onChange={(e) => handleFormChange("petName", e.target.value)} 
                         size="small" 
+                        required
                         fullWidth 
                     />
                     <FormControl size="small" error={hasError("petTypeId")}>
@@ -114,7 +115,14 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                             label="Birth Date"
                             value={petData.birthDate} 
                             onChange={(e) => handleFormChange("birthDate", e)}
-                            slotProps={{textField: {size: "small"}}}
+                            slotProps={{
+                                textField: {
+                                    size: "small",
+                                    required: true,
+                                    error: hasError("birthDate"),
+                                    helperText: errors?.birthDate
+                                }
+                            }}
                         />
                     </LocalizationProvider>
                 </React.Fragment>

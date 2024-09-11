@@ -12,6 +12,7 @@ import {AddEditVisitRequest} from "../../api/visits";
 import {getUserPetsByUsername} from "../../api/pets";
 import {Visit} from "../../models/visit";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import dayjs from "dayjs";
 
 export interface UserList {
     username: string;
@@ -51,14 +52,13 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
         <React.Fragment>
             {type !== DrawerPanelActions.View &&
                 <React.Fragment>
-                    <FormControl size="small" error={hasError("owner")}>
-                        <InputLabel id="owner">Owner*</InputLabel>
+                    <FormControl size="small" required error={hasError("owner")}>
+                        <InputLabel id="owner">Owner</InputLabel>
                         <Select 
                             labelId="owner" 
                             label="Owner" 
                             value={visitData.owner} 
                             onChange={(e) => handleFormChange("owner", e.target.value)}
-                            required
                             disabled={type === DrawerPanelActions.Edit}
                         >
                             {userList.map(user => 
@@ -74,14 +74,13 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                             {errors.owner}
                         </FormHelperText>
                     </FormControl>
-                    <FormControl size="small" error={hasError("petId")}>
-                        <InputLabel id="pet">Pet*</InputLabel>
+                    <FormControl size="small" required error={hasError("petId")}>
+                        <InputLabel id="pet">Pet</InputLabel>
                         <Select 
                             labelId="pet" 
                             label="Pet" 
                             value={visitData.petId} 
                             onChange={(e) => handleFormChange("petId", e.target.value)}
-                            required
                             disabled={type === DrawerPanelActions.Edit}
                         >
                             {petNames.map((pet, index) => 
@@ -97,7 +96,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                             {errors.petId}
                         </FormHelperText>
                     </FormControl>
-                    <FormControl size="small" error={hasError("visitTypeId")}>
+                    <FormControl size="small" required error={hasError("visitTypeId")}>
                         <InputLabel id="visitType">Visit Type</InputLabel>
                         <Select 
                             labelId="visitType" 
@@ -124,6 +123,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                             label="Date"
                             value={visitData.date} 
                             onChange={(e) => handleFormChange("date", e)}
+                            minDate={dayjs()}
                             slotProps={{
                                 textField: {
                                     size: "small",

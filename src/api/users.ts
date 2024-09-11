@@ -25,6 +25,17 @@ export const getUserPasswordByUsername = async (username: string) => {
     return (await response.json()).data.password || "";
 };
 
+export const searchUsersByName = async (name: string) => {
+    const response = await fetch("https://localhost:5001/api/users/search", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({name: name})
+    });
+    return User.fromJSONArray((await response.json()).data as JSONObject[]) || [];
+}
+
 export const addUser = async (data: AddEditUserRequest) => {
     const response = await fetch(`https://localhost:5001/api/users`, {
         method: "POST",

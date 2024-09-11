@@ -23,6 +23,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 
 import {Alert, Box, Snackbar} from "@mui/material";
+import {GenericErrorResponse} from "../../utils/errorHelper";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -53,8 +54,8 @@ const Profile = () => {
     const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
-    const [error, setError] = useState<string>("");
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [errors, setErrors] = useState<GenericErrorResponse>({});
 
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
@@ -121,21 +122,17 @@ const Profile = () => {
         } catch(err) {}
     }
 
-    const handlePetFormChange = (key: keyof Pet, value: any) => {
+    const handlePetFormChange = (key: keyof AddEditPetRequest, value: any) => {
         setPetData((prevData) => ({...prevData, [key]: value}));
     }
 
     const handleUserFormChange = (key: keyof AddEditUserRequest, value: any) => {
-        if (key === "email") {
-            setUserData((prevData) => ({...prevData, [key]: value}));
-            setUserData((prevData) => ({...prevData, username: value.split("@")[0]}));    
-        } else {
-            setUserData((prevData) => ({...prevData, [key]: value}));
-        }
+        setUserData((prevData) => ({...prevData, [key]: value}));
     }
 
     const handleEditUserSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrors({});
         try {
             let changedData: any = {};
             (Object.keys(userData) as (keyof AddEditUserRequest)[]).forEach(key => {
@@ -146,29 +143,34 @@ const Profile = () => {
             const response = await updateUser(orgUserData.username, changedData);
             dispatch(userActions.setUserProfile(response));
             toggleUserDrawer();
-            setError("");
         } catch(err) {
-            setError((err as any).email);
+            setErrors(err as GenericErrorResponse);
         }
     }
 
     const handleAddPetSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrors({});
         try {
             const response = await addPet({...petData, username: loaderUser.username});
             dispatch(petActions.addPet(response));
             setPetData(initialStatePet);
             togglePetDrawer();
-        } catch (err) {} 
+        } catch (err) {
+            setErrors(err as GenericErrorResponse);
+        } 
     }
 
     const handlePetEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrors({});
         try {
             dispatch(petActions.updatePet(await updatePet(petData)));
             setPetData(initialStatePet);
             togglePetDrawer();
-        } catch(err) {}
+        } catch(err) {
+            setErrors(err as GenericErrorResponse);
+        }
     }
 
     return (
@@ -227,7 +229,7 @@ const Profile = () => {
             </Box>
             <DrawerPanel 
                 open={isUserDrawerOpen} 
-                onCancel={() => {toggleUserDrawer(); setError("");}} 
+                onCancel={() => {toggleUserDrawer(); setErrors({});}} 
                 onSave={handleEditUserSave} 
                 drawerHeader="Edit User"
             >
@@ -235,8 +237,8 @@ const Profile = () => {
                     type={DrawerPanelActions.Edit} 
                     userData={userData} 
                     handleFormChange={handleUserFormChange} 
+                    errors={errors}
                 />
-                {error && <Alert severity="error">{error}</Alert>}
             </DrawerPanel>
             <DrawerPanel 
                 open={isPetDrawerOpen} 
@@ -244,6 +246,7 @@ const Profile = () => {
                     togglePetDrawer();
                     setSelectedPet(null!);
                     setPetData(initialStatePet);
+                    setErrors({});
                 }} 
                 onSave={petDrawerType === DrawerPanelActions.Add ? handleAddPetSave : handlePetEditSave} 
                 showBtn={petDrawerType !== DrawerPanelActions.View}
@@ -258,6 +261,7 @@ const Profile = () => {
                     petData={petData}
                     handleFormChange={handlePetFormChange}
                     petVisits={petVisitsData}
+                    errors={errors}
                 />     
             </DrawerPanel>
             <ActionDialog

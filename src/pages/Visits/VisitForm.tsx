@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
-import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -11,6 +11,8 @@ import {getVisitTypes} from "../../api/visitTypes";
 import {AddEditVisitRequest} from "../../api/visits";
 import {getUserPetsByUsername} from "../../api/pets";
 import {Visit} from "../../models/visit";
+import {GenericErrorResponse} from "../../utils/errorHelper";
+import dayjs from "dayjs";
 
 export interface UserList {
     username: string;
@@ -23,9 +25,10 @@ type VisitFormProps = {
     selectedVisitData: Visit;
     userList: UserList[];
     handleFormChange: (key: keyof AddEditVisitRequest, value: any) => void;
+    errors: GenericErrorResponse;
 }
 
-const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData, userList, handleFormChange}) => {
+const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData, userList, handleFormChange, errors}) => {
     const [visitTypes, setVisitTypes] = useState<VisitType[]>([]);
     const [petNames, setPetNames] = useState<Pet[]>([]);
 
@@ -43,18 +46,19 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
         if (visitData?.owner) loadData();
     }, [visitData.owner]);
 
+    const hasError = (field: string) => field in errors;
+
     return (
         <React.Fragment>
             {type !== DrawerPanelActions.View &&
                 <React.Fragment>
-                    <FormControl size="small">
-                        <InputLabel id="owner">Owner*</InputLabel>
+                    <FormControl size="small" required error={hasError("owner")}>
+                        <InputLabel id="owner">Owner</InputLabel>
                         <Select 
                             labelId="owner" 
                             label="Owner" 
                             value={visitData.owner} 
                             onChange={(e) => handleFormChange("owner", e.target.value)}
-                            required
                             disabled={type === DrawerPanelActions.Edit}
                         >
                             {userList.map(user => 
@@ -66,15 +70,17 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                                 </MenuItem>
                             )}
                         </Select>
+                        <FormHelperText>
+                            {errors.owner}
+                        </FormHelperText>
                     </FormControl>
-                    <FormControl size="small">
-                        <InputLabel id="pet">Pet*</InputLabel>
+                    <FormControl size="small" required error={hasError("petId")}>
+                        <InputLabel id="pet">Pet</InputLabel>
                         <Select 
                             labelId="pet" 
                             label="Pet" 
                             value={visitData.petId} 
                             onChange={(e) => handleFormChange("petId", e.target.value)}
-                            required
                             disabled={type === DrawerPanelActions.Edit}
                         >
                             {petNames.map((pet, index) => 
@@ -86,8 +92,11 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                                 </MenuItem>
                             )}
                         </Select>
+                        <FormHelperText>
+                            {errors.petId}
+                        </FormHelperText>
                     </FormControl>
-                    <FormControl size="small">
+                    <FormControl size="small" required error={hasError("visitTypeId")}>
                         <InputLabel id="visitType">Visit Type</InputLabel>
                         <Select 
                             labelId="visitType" 
@@ -105,19 +114,32 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                                 </MenuItem>
                             )}
                         </Select>
+                        <FormHelperText>
+                            {errors.visitTypeId}
+                        </FormHelperText>
                     </FormControl>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Date"
                             value={visitData.date} 
                             onChange={(e) => handleFormChange("date", e)}
-                            slotProps={{textField: {size: "small"}}}
+                            minDate={dayjs()}
+                            slotProps={{
+                                textField: {
+                                    size: "small",
+                                    required: true,
+                                    error: hasError("date"),
+                                    helperText: errors?.date
+                                }
+                            }}
                         />
                     </LocalizationProvider>
                     <TextField 
                         label="Notes"
                         variant="outlined" 
                         value={visitData.notes} 
+                        error={hasError("notes")}
+                        helperText={errors.notes}
                         onChange={(e) => handleFormChange("notes", e.target.value)}
                         size="small" 
                         multiline

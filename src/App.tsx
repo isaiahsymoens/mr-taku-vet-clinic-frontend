@@ -5,6 +5,7 @@ import UsersPage, {loader as usersPageLoader} from "./pages/Users/UsersPage";
 import VisitsPage, {loader as visitPageLoader}  from "./pages/Visits/VisitsPage";
 import Profile, {loader as profilePageLoader} from "./pages/Profile/Profile";
 import AccountPage from "./pages/Account/AccountPage";
+import NotFoundPage from "./pages/NotFound/NotFoundPage";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
@@ -36,6 +37,10 @@ const App: React.FC = () => {
     {
       path: "testpage",
       element: <AccountPage />
+    },
+    {
+      path: "*",
+      element: <NotFoundPage />
     }
   ]);
   

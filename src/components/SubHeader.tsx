@@ -1,14 +1,46 @@
+import React, {useState} from "react";
 import {Box, Typography, Paper, InputBase, IconButton, Button} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 
 type SubHeaderProps = {
     text: string;
     showSearchbar?: boolean;
     btnText: string;
     toggleDrawer?: () => void;
+    onSearch?: (searchText: string) => void;
 }
 
-const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, toggleDrawer}) => {
+const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, toggleDrawer, onSearch}) => {
+    const [searchInput, setSearchInput] = useState("");
+    const [showSearchReset, setShowSearchReset] = useState(false);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchInput(e.target.value);
+        setShowSearchReset(false);
+        if (e.target.value === "") {
+            handleClearSearch();
+        }
+    }
+
+    const handleSearch = () => {
+        if (onSearch && searchInput !== "") {
+            onSearch(searchInput);
+            setShowSearchReset(true);
+        }
+    }
+
+    const handleClearSearch = () => {
+        if (onSearch) {
+            setSearchInput(() => {
+                onSearch("");
+                setSearchInput("");
+                return "";
+            });
+            setShowSearchReset(false);
+        }
+    }
+
     return (
         <Box sx={{ 
             background: "#F5F5F5",
@@ -30,12 +62,18 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                             height: 36.5
                         }}
                     >
-                        <InputBase
-                            sx={{ ml: 1, flex: 1, fontSize: "1rem" }}
-                            placeholder="Search.."/>
-                        <IconButton type="button">
-                            <SearchIcon />
+                        <IconButton 
+                            type="button" 
+                            onClick={showSearchReset ? handleClearSearch : handleSearch}
+                        >
+                            {showSearchReset ? <CloseIcon /> : <SearchIcon />}
                         </IconButton>
+                        <InputBase
+                            sx={{flex: 1, fontSize: "1rem", ml: 1}}
+                            placeholder="Search.."
+                            value={searchInput}
+                            onChange={handleInputChange}
+                        />
                     </Paper>
                 }
                 <Button 

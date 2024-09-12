@@ -228,10 +228,6 @@ const VisitsPage: React.FC = () => {
             >
                 <Alert
                     severity="success"
-                    sx={{
-                        background: "#28A745", 
-                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
-                    }}
                     onClose={() => setSnackbarMsg("")}
                 >
                     {snackbarMsg}

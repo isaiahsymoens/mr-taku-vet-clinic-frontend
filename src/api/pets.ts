@@ -1,4 +1,5 @@
 import {Pet} from "../models/pet";
+import {extractErrorMessages, GenericErrorResponse} from "../utils/errorHelper";
 import {JSONObject} from "../utils/json";
 
 export interface AddEditPetRequest extends Omit<Pet, "petType"> {
@@ -39,6 +40,6 @@ export const deletePet = async (petId: number) => {
     const response = await fetch(`https://localhost:5001/api/pets/${petId}`, {
         method: "DELETE"
     });
-    if (!response.ok)
-        console.log("error response :", await response.json());
+    if (!response.ok) 
+        throw extractErrorMessages((await response.json()).errors as GenericErrorResponse);
 }

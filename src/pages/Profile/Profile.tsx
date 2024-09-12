@@ -54,7 +54,7 @@ const Profile = () => {
     const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
-    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [snackbarMsg, setSnackbarMsg] = useState<{msg: string, severity: "success" | "error"}>({msg: "", severity: "success"});
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
     const dispatch = useDispatch();
@@ -116,10 +116,15 @@ const Profile = () => {
         try {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
-            setSnackbarMsg("Successfully deleted.");
-            setPetData(initialStatePet);
-            toggleActionDialog();
-        } catch(err) {}
+            setSnackbarMsg({msg: "Successfully deleted.", severity: "success"});
+        } catch(err) {
+            setSnackbarMsg({msg: (err as any).message, severity: "error"});
+        }
+        setTimeout(() => {
+            setSnackbarMsg({msg: "", severity: "success"});
+        }, 3000);
+        setPetData(initialStatePet);
+        toggleActionDialog();
     }
 
     const handlePetFormChange = (key: keyof AddEditPetRequest, value: any) => {
@@ -272,19 +277,15 @@ const Profile = () => {
                 onCancel={toggleActionDialog}
             />
             <Snackbar 
-                open={snackbarMsg !== ""} 
+                open={snackbarMsg.msg !== ""} 
                 autoHideDuration={3000} 
-                onClose={() => setSnackbarMsg("")}
+                onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
             >
                 <Alert
-                    severity="success"
-                    sx={{
-                        background: "#28A745", 
-                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
-                    }}
-                    onClose={() => setSnackbarMsg("")}
+                    severity={snackbarMsg.severity}
+                    onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
                 >
-                    {snackbarMsg}
+                    {snackbarMsg.msg}
                 </Alert>
             </Snackbar>
         </React.Fragment>

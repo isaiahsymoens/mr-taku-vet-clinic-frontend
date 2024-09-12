@@ -3,10 +3,14 @@ import {Visit} from "../../models/visit";
 
 type VisitState = {
     visits: Visit[];
+    closeFilter: boolean;
+    resetFilter: boolean;
 }
 
 const initialState: VisitState = {
-    visits: []
+    visits: [],
+    closeFilter: false,
+    resetFilter: false
 }
 
 const visitSlice = createSlice({
@@ -28,6 +32,12 @@ const visitSlice = createSlice({
             if (index !== -1) {
                 state.visits[index] = updateVisit;
             }
+        },
+        setCloseFilter: (state, action) => {
+            state.closeFilter = action.payload;
+        },
+        setResetFilter: (state, action) => {
+            state.resetFilter = action.payload;
         }
     }
 });

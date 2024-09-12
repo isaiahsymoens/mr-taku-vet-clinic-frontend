@@ -1,5 +1,5 @@
 import React from "react";
-import {Divider, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch, TextField} from "@mui/material";
+import {Divider, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch, TextField} from "@mui/material";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -96,7 +96,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, er
                 fullWidth 
                 required
             />
-            <FormControl variant="outlined" size="small">
+            <FormControl variant="outlined" size="small" error={hasError("password")}>
                 <InputLabel htmlFor="outlined-adornment-password">Password *</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"
@@ -120,6 +120,9 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, er
                     label="Password"
                     required={type !== DrawerPanelActions.Edit}
                 />
+                <FormHelperText>
+                    {errors.password}
+                </FormHelperText>
             </FormControl>
         </React.Fragment>
     );

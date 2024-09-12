@@ -7,7 +7,7 @@ import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
 import {User} from "../../models/user";
-import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit} from "../../api/visits";
+import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit, searchVisits} from "../../api/visits";
 import {fetchUsers} from "../../api/users";
 
 import {RootState} from "../../redux";
@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import VisitFilter, {VisitFilterModel} from "./VisitFilterForm";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -48,6 +49,10 @@ const VisitsPage: React.FC = () => {
     const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
+
+    useEffect(() => {
+        dispatch(visitActions.setResetFilter(false));
+    }, []);
 
     const dispatch = useDispatch();
     const visits = useSelector((state: RootState) => state.visit.visits);
@@ -141,10 +146,31 @@ const VisitsPage: React.FC = () => {
         toggleDrawer();
     }
     
+    const handleSearch = async (data: VisitFilterModel) => {
+        if (Object.keys(data).length > 0) {
+            const response = await searchVisits(data);
+            dispatch(visitActions.setVisits(response));
+            dispatch(visitActions.setResetFilter(true));
+        }
+        dispatch(visitActions.setCloseFilter(true));
+    }
+
+    const resetSearch = async () => {
+        const response = await fetchVisits();
+        dispatch(visitActions.setVisits(response));
+        dispatch(visitActions.setResetFilter(false));
+    } 
+
     return (
         <Box>
-            <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={handleAdd} />
-            <Box sx={{ flexGrow: 1, p: 3 }}>
+            <SubHeader 
+                text="Visits" 
+                btnText="Add Visit" 
+                toggleDrawer={handleAdd} 
+                filterMenuItems={<VisitFilter onSearch={handleSearch} />}
+                resetSearch={resetSearch}
+            />
+            <Box sx={{flexGrow: 1, p: 3}}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={visits}

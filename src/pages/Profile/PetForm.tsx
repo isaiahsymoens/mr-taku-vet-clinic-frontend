@@ -86,7 +86,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
                         required
                         fullWidth 
                     />
-                    <FormControl size="small" error={hasError("petTypeId")}>
+                    <FormControl size="small" required error={hasError("petTypeId")}>
                         <InputLabel id="petType">Pet Type</InputLabel>
                         <Select 
                             labelId="petType" 

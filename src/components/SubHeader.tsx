@@ -1,8 +1,9 @@
 import React, {useState} from "react";
-import {Box, Typography, Paper, InputBase, IconButton, Button, Menu, MenuItem} from "@mui/material";
+import {Box, Typography, Paper, InputBase, IconButton, Button, Menu} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import TuneIcon from '@mui/icons-material/Tune';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 type SubHeaderProps = {
     text: string;
@@ -10,7 +11,6 @@ type SubHeaderProps = {
     toggleDrawer?: () => void;
     showSearchbar?: boolean;
     onSearch?: (searchText: string) => void;
-    showFilter?: boolean;
     filterMenuItems?: React.ReactNode;
 }
 
@@ -20,7 +20,6 @@ const SubHeader: React.FC<SubHeaderProps> = ({
     btnText, 
     toggleDrawer, 
     onSearch,
-    showFilter,
     filterMenuItems
 }) => {
     const [searchInput, setSearchInput] = useState("");
@@ -66,7 +65,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({
         }}>
             <Typography variant="h6">{text}</Typography>
             <Box sx={{display: "flex", gap: "10px", height: 36.5}}>
-                {showFilter &&
+                {filterMenuItems &&
                     <React.Fragment>
                         <IconButton 
                             type="button" 
@@ -78,7 +77,13 @@ const SubHeader: React.FC<SubHeaderProps> = ({
                             anchorEl={anchorE1}
                             open={Boolean(anchorE1)}
                             onClose={() => setAchorE1(null)}
+                            sx={{mt: 1}}
                         >
+                            <IconButton 
+                                onClick={() => setAchorE1(null)}
+                                sx={{position: "absolute", top: 0, right: 0}}>
+                                <HighlightOffOutlinedIcon />
+                            </IconButton>
                             {filterMenuItems}
                         </Menu>
                     </React.Fragment>

@@ -7,7 +7,7 @@ import ActionDialog from "../../components/ActionDialog";
 
 import {Visit} from "../../models/visit";
 import {User} from "../../models/user";
-import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit} from "../../api/visits";
+import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit, searchVisits} from "../../api/visits";
 import {fetchUsers} from "../../api/users";
 
 import {RootState} from "../../redux";
@@ -142,8 +142,9 @@ const VisitsPage: React.FC = () => {
         toggleDrawer();
     }
     
-    const handleSearch = (data: VisitFilterModel) => {
-        console.log("data :", data);
+    const handleSearch = async (data: VisitFilterModel) => {
+        const response = await searchVisits(data);
+        dispatch(visitActions.setVisits(response));
     }
 
     return (
@@ -152,7 +153,6 @@ const VisitsPage: React.FC = () => {
                 text="Visits" 
                 btnText="Add Visit" 
                 toggleDrawer={handleAdd} 
-                showFilter={true}
                 filterMenuItems={<VisitFilter onSearch={handleSearch} />}
             />
             <Box sx={{flexGrow: 1, p: 3}}>

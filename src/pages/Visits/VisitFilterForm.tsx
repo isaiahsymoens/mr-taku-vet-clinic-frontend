@@ -2,22 +2,28 @@ import {Box, Button, InputBase, Typography} from "@mui/material";
 import React, {useState} from "react";
 
 export interface VisitFilterModel {
-    firstName?: string;
-    lastName?: string;
-    petName?: string;
-    petType?: string;
+    firstName: string;
+    lastName: string;
+    petName: string;
+    petType: string;
 }
 
 type VisitFilterProps = {
     onSearch: (data: VisitFilterModel) => void;
 }
 
+const initialState: VisitFilterModel = {firstName: "", lastName: "", petName: "", petType: ""}
+
 const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
-    const [visitForm, setVisitForm] = useState<VisitFilterModel>({});
+    const [visitForm, setVisitForm] = useState<VisitFilterModel>(initialState);
 
     const handleSearch = () => {
         onSearch(visitForm);
     } 
+
+    const handleClear = () => {
+        setVisitForm(initialState);
+    }
 
     const handleFormChange = (key: keyof VisitFilterModel, value: any) => {
         setVisitForm((prevData) => ({...prevData, [key]: value}));
@@ -25,7 +31,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
 
     return (
         <React.Fragment>
-            <Box sx={{width: "100%", minWidth: "400px", maxWidth: "400px", px: 3, py: 2}}>
+            <Box sx={{width: "100%", minWidth: "400px", maxWidth: "400px", px: 3, py: 2, mt: 2}}>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
                     <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
                         First Name:
@@ -98,6 +104,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             textTransform: "none", 
                             padding: "4px 8px"
                         }}
+                        onClick={handleClear}
                     >Clear</Button>
                     <Button 
                         variant="contained" 

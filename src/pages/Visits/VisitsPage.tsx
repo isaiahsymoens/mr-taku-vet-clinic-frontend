@@ -15,7 +15,7 @@ import {visitActions} from "../../redux/features/visit";
 import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
-import {Alert, Box, Button, Snackbar} from "@mui/material";
+import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 import VisitFilter, {VisitFilterModel} from "./VisitFilterForm";
 
@@ -143,9 +143,18 @@ const VisitsPage: React.FC = () => {
     }
     
     const handleSearch = async (data: VisitFilterModel) => {
-        const response = await searchVisits(data);
-        dispatch(visitActions.setVisits(response));
+        if (Object.keys(data).length > 0) {
+            const response = await searchVisits(data);
+            dispatch(visitActions.setVisits(response));
+            dispatch(visitActions.setResetFilter(true));
+        }
+        dispatch(visitActions.setCloseFilter(true));
     }
+
+    const resetSearch = async () => {
+        dispatch(visitActions.setVisits(loaderVisits));
+        dispatch(visitActions.setResetFilter(false));
+    } 
 
     return (
         <Box>
@@ -154,6 +163,7 @@ const VisitsPage: React.FC = () => {
                 btnText="Add Visit" 
                 toggleDrawer={handleAdd} 
                 filterMenuItems={<VisitFilter onSearch={handleSearch} />}
+                resetSearch={resetSearch}
             />
             <Box sx={{flexGrow: 1, p: 3}}>
                 <DataTable 

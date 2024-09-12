@@ -1,9 +1,14 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Typography, Paper, InputBase, IconButton, Button, Menu} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import TuneIcon from '@mui/icons-material/Tune';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+
+import {RootState} from "../redux";
+import {useDispatch, useSelector} from "react-redux";
+import {visitActions} from "../redux/features/visit";
 
 type SubHeaderProps = {
     text: string;
@@ -12,6 +17,7 @@ type SubHeaderProps = {
     showSearchbar?: boolean;
     onSearch?: (searchText: string) => void;
     filterMenuItems?: React.ReactNode;
+    resetSearch?: () => void;
 }
 
 const SubHeader: React.FC<SubHeaderProps> = ({
@@ -20,12 +26,25 @@ const SubHeader: React.FC<SubHeaderProps> = ({
     btnText, 
     toggleDrawer, 
     onSearch,
-    filterMenuItems
+    filterMenuItems,
+    resetSearch
 }) => {
     const [searchInput, setSearchInput] = useState("");
     const [showSearchReset, setShowSearchReset] = useState(false);
 
     const [anchorE1, setAchorE1] = useState<null | HTMLElement>(null);
+
+    const dispatch = useDispatch();
+    const closeFilter = useSelector((state: RootState) => state.visit.closeFilter);
+    const resetFilter = useSelector((state: RootState) => state.visit.resetFilter);
+
+    useEffect(() => {
+        if (closeFilter) {
+            setAchorE1(null);
+            dispatch(visitActions.setCloseFilter(false));
+
+        }
+    }, [closeFilter]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(e.target.value);
@@ -67,6 +86,14 @@ const SubHeader: React.FC<SubHeaderProps> = ({
             <Box sx={{display: "flex", gap: "10px", height: 36.5}}>
                 {filterMenuItems &&
                     <React.Fragment>
+                        {resetFilter && 
+                            <IconButton 
+                                type="button" 
+                                onClick={resetSearch}
+                            >
+                                <RestartAltIcon />
+                            </IconButton>
+                        }
                         <IconButton 
                             type="button" 
                             onClick={(e: React.MouseEvent<HTMLElement>) => setAchorE1(e.currentTarget)}

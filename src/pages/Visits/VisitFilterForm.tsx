@@ -1,11 +1,11 @@
+import React, {useEffect, useState} from "react";
 import {Box, Button, InputBase, Typography} from "@mui/material";
-import React, {useState} from "react";
 
 export interface VisitFilterModel {
-    firstName: string;
-    lastName: string;
-    petName: string;
-    petType: string;
+    firstName?: string;
+    lastName?: string;
+    petName?: string;
+    petType?: string;
 }
 
 type VisitFilterProps = {
@@ -16,9 +16,13 @@ const initialState: VisitFilterModel = {firstName: "", lastName: "", petName: ""
 
 const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
     const [visitForm, setVisitForm] = useState<VisitFilterModel>(initialState);
-
+    
     const handleSearch = () => {
-        onSearch(visitForm);
+        const data = Object.fromEntries(
+            Object.entries(visitForm)
+                .filter(([key, value]) => value !== "" && value != null)
+        );
+        onSearch(data);
     } 
 
     const handleClear = () => {
@@ -31,7 +35,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
 
     return (
         <React.Fragment>
-            <Box sx={{width: "100%", minWidth: "400px", maxWidth: "400px", px: 3, py: 2, mt: 2}}>
+            <Box sx={{width: "100%", minWidth: "350px", maxWidth: "350px", px: 3, py: 2, mt: 2}}>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
                     <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
                         First Name:

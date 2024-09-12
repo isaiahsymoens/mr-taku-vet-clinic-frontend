@@ -52,7 +52,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
             marginTop: "48px" 
         }}>
             <Typography variant="h6">{text}</Typography>
-            <Box sx={{ display: "flex", gap: "10px" }}>
+            <Box sx={{display: "flex", gap: "10px"}}>
                 {showSearchbar && 
                     <Paper component="form" 
                         sx={{  
@@ -79,7 +79,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
                 <Button 
                     variant="contained"
                     onClick={toggleDrawer} 
-                    sx={{ minWidth: "108px" }}>{btnText}</Button>
+                    sx={{minWidth: "108px"}}>{btnText}</Button>
             </Box>
         </Box>
     );

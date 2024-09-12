@@ -15,8 +15,9 @@ import {visitActions} from "../../redux/features/visit";
 import {useLoaderData} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
-import {Alert, Box, Snackbar} from "@mui/material";
+import {Alert, Box, Button, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import VisitFilter from "./VisitFilter";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -145,6 +146,9 @@ const VisitsPage: React.FC = () => {
         <Box>
             <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={handleAdd} />
             <Box sx={{ flexGrow: 1, p: 3 }}>
+                {/* <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end", mb: 3}}>
+                    <Button variant="contained" sx={{minWidth: "108px"}}>Filter</Button>
+                </Box> */}
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={visits}
@@ -164,6 +168,15 @@ const VisitsPage: React.FC = () => {
                     ]}
                 />
             </Box>
+            {/* <DrawerPanel
+                open={true}
+                onCancel={() => {}}
+                onSave={() => {}}
+                drawerHeader="Filter"
+                showBtn={true}
+            >
+                <VisitFilter />
+            </DrawerPanel> */}
             <DrawerPanel 
                 open={isDrawerOpen} 
                 onCancel={() => {

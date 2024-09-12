@@ -17,7 +17,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {Alert, Box, Button, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
-import VisitFilter from "./VisitFilter";
+import VisitFilter, {VisitFilterModel} from "./VisitFilterForm";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -142,6 +142,10 @@ const VisitsPage: React.FC = () => {
         toggleDrawer();
     }
     
+    const handleSearch = (data: VisitFilterModel) => {
+        console.log("data :", data);
+    }
+
     return (
         <Box>
             <SubHeader 
@@ -149,6 +153,7 @@ const VisitsPage: React.FC = () => {
                 btnText="Add Visit" 
                 toggleDrawer={handleAdd} 
                 showFilter={true}
+                filterMenuItems={<VisitFilter onSearch={handleSearch} />}
             />
             <Box sx={{flexGrow: 1, p: 3}}>
                 <DataTable 

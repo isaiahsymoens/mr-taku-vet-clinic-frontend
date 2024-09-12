@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Box, Typography, Paper, InputBase, IconButton, Button} from "@mui/material";
+import {Box, Typography, Paper, InputBase, IconButton, Button, Menu, MenuItem} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import TuneIcon from '@mui/icons-material/Tune';
@@ -11,7 +11,7 @@ type SubHeaderProps = {
     showSearchbar?: boolean;
     onSearch?: (searchText: string) => void;
     showFilter?: boolean;
-    onFilter?: () => void;
+    filterMenuItems?: React.ReactNode;
 }
 
 const SubHeader: React.FC<SubHeaderProps> = ({
@@ -21,10 +21,12 @@ const SubHeader: React.FC<SubHeaderProps> = ({
     toggleDrawer, 
     onSearch,
     showFilter,
-    onFilter
+    filterMenuItems
 }) => {
     const [searchInput, setSearchInput] = useState("");
     const [showSearchReset, setShowSearchReset] = useState(false);
+
+    const [anchorE1, setAchorE1] = useState<null | HTMLElement>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(e.target.value);
@@ -65,12 +67,21 @@ const SubHeader: React.FC<SubHeaderProps> = ({
             <Typography variant="h6">{text}</Typography>
             <Box sx={{display: "flex", gap: "10px", height: 36.5}}>
                 {showFilter &&
-                    <IconButton 
-                        type="button" 
-                        onClick={showSearchReset ? handleClearSearch : handleSearch}
-                    >
-                        {showSearchReset ? <CloseIcon /> : <TuneIcon />}
-                    </IconButton>
+                    <React.Fragment>
+                        <IconButton 
+                            type="button" 
+                            onClick={(e: React.MouseEvent<HTMLElement>) => setAchorE1(e.currentTarget)}
+                        >
+                            {showSearchReset ? <CloseIcon /> : <TuneIcon />}
+                        </IconButton>
+                        <Menu
+                            anchorEl={anchorE1}
+                            open={Boolean(anchorE1)}
+                            onClose={() => setAchorE1(null)}
+                        >
+                            {filterMenuItems}
+                        </Menu>
+                    </React.Fragment>
                 }
                 {showSearchbar && 
                     <Paper component="form" 

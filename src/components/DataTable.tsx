@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import dayjs from "dayjs";
 import DataTableRowMenu from "./DataTableRowMenu";
 import {
@@ -11,7 +11,8 @@ import {
     TableHead, 
     TableRow, 
     Typography, 
-    TablePagination
+    TablePagination,
+    TableSortLabel
 } from "@mui/material";
 import PetsIcon from '@mui/icons-material/Pets';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -28,6 +29,23 @@ export type DataTableProps = {
 }
 
 const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActions}) => {
+    const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>(null);
+
+    const sortTableData = (data: any[]) => {
+        if (!sortConfig) return data;
+        return [...data].sort((a, b) => {
+            const aValue = getNestedValue(a, sortConfig.field);
+            const bValue = getNestedValue(b, sortConfig.field);
+            if (aValue < bValue) {
+                return sortConfig.direction === "asc" ? -1 : 1;
+            }
+            if (aValue > bValue) {
+                return sortConfig.direction === "asc" ? 1 : -1;
+            }
+            return 0;
+        });
+    }
+
     const getNestedValue = (obj: any, path: string) => {
         return path.split(".").reduce((value, key) => value && value[key], obj);
     }
@@ -46,13 +64,26 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                     {tableHeaders &&
                         <TableHead>
                             <TableRow>
-                                {tableHeaders?.map((tblHeader, index) => <TableCell key={index} sx={{fontWeight: 600}}>{tblHeader.label}</TableCell>)}
+                                {tableHeaders?.map((tblHeader, index) => 
+                                    <TableCell key={index} sx={{fontWeight: 600}}>
+                                        <TableSortLabel
+                                            active={sortConfig?.field === tblHeader.field}
+                                            direction={sortConfig?.direction === "asc" ? "asc" : "desc"}
+                                            onClick={() => {
+                                              const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
+                                              setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});  
+                                            }}
+                                        >
+                                            {tblHeader.label}
+                                        </TableSortLabel>
+                                    </TableCell>
+                                )}
                                 {menuActions && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
                             </TableRow>
                         </TableHead>
                     }
                     <TableBody>
-                        {tableBody.map((tBody, rowIndex) => (
+                        {sortTableData(tableBody).map((tBody, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 {tableHeaders?.map((tHeader: any, colIndex) => {
                                     if (tHeader.field === "petName") {

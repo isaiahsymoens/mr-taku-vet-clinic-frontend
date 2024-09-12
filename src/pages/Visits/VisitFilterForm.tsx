@@ -5,14 +5,14 @@ export interface VisitFilterModel {
     firstName?: string;
     lastName?: string;
     petName?: string;
-    petType?: string;
+    typeName?: string;
 }
 
 type VisitFilterProps = {
     onSearch: (data: VisitFilterModel) => void;
 }
 
-const initialState: VisitFilterModel = {firstName: "", lastName: "", petName: "", petType: ""}
+const initialState: VisitFilterModel = {firstName: "", lastName: "", petName: "", typeName: ""}
 
 const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
     const [visitForm, setVisitForm] = useState<VisitFilterModel>(initialState);
@@ -96,8 +96,8 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             fontSize: ".9rem",
                             input: {padding: 0}
                         }}
-                        value={visitForm?.petType}
-                        onChange={(e) => handleFormChange("petType", e.target.value)}
+                        value={visitForm?.typeName}
+                        onChange={(e) => handleFormChange("typeName", e.target.value)}
                     />
                 </Box>
                 <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end", gap: 1, mt: 2}}>

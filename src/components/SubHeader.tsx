@@ -130,7 +130,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({
                             {showSearchReset ? <CloseIcon /> : <SearchIcon />}
                         </IconButton>
                         <InputBase
-                            sx={{flex: 1, fontSize: "1rem", ml: 1}}
+                            sx={{flex: 1, fontSize: "1rem", ml: 1, pr: 1.5}}
                             placeholder="Search.."
                             value={searchInput}
                             onChange={handleInputChange}

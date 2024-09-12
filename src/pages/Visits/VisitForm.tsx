@@ -153,16 +153,46 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
             {type === DrawerPanelActions.View &&
                 <React.Fragment>
                     <TextField 
+                        label="Owner"
+                        variant="outlined" 
+                        value={`${selectedVisitData.pet?.user?.firstName} ${selectedVisitData.pet?.user?.middleName || ""} ${selectedVisitData.pet?.user?.lastName}`} 
+                        size="small" 
+                        disabled
+                        fullWidth 
+                    />
+                    <TextField 
+                        label="Pet"
+                        variant="outlined" 
+                        value={selectedVisitData.pet?.petName} 
+                        size="small" 
+                        disabled
+                        fullWidth 
+                    />
+                    <TextField 
+                        label="Visit Type"
+                        variant="outlined" 
+                        value={selectedVisitData.visitType?.typeName} 
+                        size="small" 
+                        disabled
+                        fullWidth 
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Date"
+                            value={selectedVisitData.date} 
+                            slotProps={{textField: {size: "small"}}}
+                            disabled
+                        />
+                    </LocalizationProvider>
+                    <TextField 
                         label="Notes"
                         variant="outlined" 
                         value={selectedVisitData.notes} 
-                        onChange={(e) => handleFormChange("notes", e.target.value)}
                         size="small" 
                         multiline
                         rows={4}
-                        disabled={type === DrawerPanelActions.View}
+                        disabled
                         fullWidth 
-                        required
                     />
                 </React.Fragment>
             }

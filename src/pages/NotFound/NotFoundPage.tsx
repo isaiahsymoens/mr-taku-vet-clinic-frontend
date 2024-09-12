@@ -26,7 +26,7 @@ const NotFoundPage = () => {
                     alt="404 Not Found"
                     style={{
                         width: "100%",
-                        maxWidth: "860px",
+                        maxWidth: "560px",
                         marginTop: "-100px"
                     }}    
                 />

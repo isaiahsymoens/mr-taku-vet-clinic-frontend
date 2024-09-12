@@ -50,6 +50,10 @@ const VisitsPage: React.FC = () => {
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
+    useEffect(() => {
+        dispatch(visitActions.setResetFilter(false));
+    }, []);
+
     const dispatch = useDispatch();
     const visits = useSelector((state: RootState) => state.visit.visits);
 

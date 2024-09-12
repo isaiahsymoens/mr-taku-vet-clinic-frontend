@@ -152,7 +152,8 @@ const VisitsPage: React.FC = () => {
     }
 
     const resetSearch = async () => {
-        dispatch(visitActions.setVisits(loaderVisits));
+        const response = await fetchVisits();
+        dispatch(visitActions.setVisits(response));
         dispatch(visitActions.setResetFilter(false));
     } 
 

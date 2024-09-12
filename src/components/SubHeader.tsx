@@ -2,16 +2,27 @@ import React, {useState} from "react";
 import {Box, Typography, Paper, InputBase, IconButton, Button} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import TuneIcon from '@mui/icons-material/Tune';
 
 type SubHeaderProps = {
     text: string;
-    showSearchbar?: boolean;
     btnText: string;
     toggleDrawer?: () => void;
+    showSearchbar?: boolean;
     onSearch?: (searchText: string) => void;
+    showFilter?: boolean;
+    onFilter?: () => void;
 }
 
-const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText, toggleDrawer, onSearch}) => {
+const SubHeader: React.FC<SubHeaderProps> = ({
+    text, 
+    showSearchbar=false, 
+    btnText, 
+    toggleDrawer, 
+    onSearch,
+    showFilter,
+    onFilter
+}) => {
     const [searchInput, setSearchInput] = useState("");
     const [showSearchReset, setShowSearchReset] = useState(false);
 
@@ -52,14 +63,21 @@ const SubHeader: React.FC<SubHeaderProps> = ({text, showSearchbar=false, btnText
             marginTop: "48px" 
         }}>
             <Typography variant="h6">{text}</Typography>
-            <Box sx={{display: "flex", gap: "10px"}}>
+            <Box sx={{display: "flex", gap: "10px", height: 36.5}}>
+                {showFilter &&
+                    <IconButton 
+                        type="button" 
+                        onClick={showSearchReset ? handleClearSearch : handleSearch}
+                    >
+                        {showSearchReset ? <CloseIcon /> : <TuneIcon />}
+                    </IconButton>
+                }
                 {showSearchbar && 
                     <Paper component="form" 
                         sx={{  
                             display: "flex", 
                             alignItems: "center", 
-                            width: 300,
-                            height: 36.5
+                            width: 300
                         }}
                     >
                         <IconButton 

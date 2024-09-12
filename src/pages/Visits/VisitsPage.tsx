@@ -144,11 +144,13 @@ const VisitsPage: React.FC = () => {
     
     return (
         <Box>
-            <SubHeader text="Visits" btnText="Add Visit" toggleDrawer={handleAdd} />
-            <Box sx={{ flexGrow: 1, p: 3 }}>
-                {/* <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end", mb: 3}}>
-                    <Button variant="contained" sx={{minWidth: "108px"}}>Filter</Button>
-                </Box> */}
+            <SubHeader 
+                text="Visits" 
+                btnText="Add Visit" 
+                toggleDrawer={handleAdd} 
+                showFilter={true}
+            />
+            <Box sx={{flexGrow: 1, p: 3}}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={visits}
@@ -168,15 +170,6 @@ const VisitsPage: React.FC = () => {
                     ]}
                 />
             </Box>
-            {/* <DrawerPanel
-                open={true}
-                onCancel={() => {}}
-                onSave={() => {}}
-                drawerHeader="Filter"
-                showBtn={true}
-            >
-                <VisitFilter />
-            </DrawerPanel> */}
             <DrawerPanel 
                 open={isDrawerOpen} 
                 onCancel={() => {

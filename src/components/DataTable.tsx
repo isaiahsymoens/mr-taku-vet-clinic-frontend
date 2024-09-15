@@ -155,7 +155,8 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                 page={0}
                 onPageChange={() => {}}
                 rowsPerPage={0}
-                onRowsPerPageChange={() => {}}
+                rowsPerPageOptions={[]}
+                // onRowsPerPageChange={() => {}}
             />
         </React.Fragment>
     );

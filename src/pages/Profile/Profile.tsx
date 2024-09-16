@@ -153,6 +153,8 @@ const Profile = () => {
             });
             const response = await updateUser(orgUserData.username, changedData);
             dispatch(userActions.setUserProfile(response));
+            setOrgUserData(response);
+            setUserData(response);
             toggleUserDrawer();
         } catch(err) {
             setErrors(err as GenericErrorResponse);

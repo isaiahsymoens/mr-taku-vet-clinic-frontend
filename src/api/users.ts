@@ -1,21 +1,15 @@
+import {PaginatedResponse} from "../models/paginatedResponse";
 import {User} from "../models/user";
 import {extractErrorMessages, GenericErrorResponse} from "../utils/errorHelper";
 import {JSONObject} from "../utils/json";
 
 export type AddEditUserRequest = Omit<User, "petOwned">;
 
-export const fetchUsers = async() => {
-    const response = await fetch("https://localhost:5001/api/users", {
+export const fetchUsers = async(pageNumber?: number) => {
+    const response = await fetch(`https://localhost:5001/api/users/paginated?pageNumber=${pageNumber ?? 1}`, {
         method: "GET"
     });
-    return User.fromJSONArray((await response.json()).data as JSONObject[]);
-};
-
-export const fetchPaginatedUsers = async(pageNumber?: number) => {
-    const response = await fetch(`https://localhost:5001/api/users/paginated/${pageNumber ?? ""}`, {
-        method: "GET"
-    });
-    return User.fromJSONArray((await response.json()).data as JSONObject[]);
+    return PaginatedResponse.fromJSON((await response.json()).data, User.fromJSON);
 };
 
 export const getUserByUsername = async (username: string) => {

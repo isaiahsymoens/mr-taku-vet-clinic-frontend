@@ -35,8 +35,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
     const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>(null);
 
     const handlePageChange = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        console.log("newPage :", newPage);
-        onPageChange(newPage);
+        onPageChange(newPage + 1);
     }
     
     const sortTableData = (data: any[]) => {
@@ -160,7 +159,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
             <TablePagination 
                 component="div"
                 count={totalCount}
-                page={page}
+                page={page - 1}
                 onPageChange={handlePageChange}
                 rowsPerPage={10}
                 rowsPerPageOptions={[]}

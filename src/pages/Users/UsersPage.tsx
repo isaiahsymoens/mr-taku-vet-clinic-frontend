@@ -15,6 +15,7 @@ import {User} from "../../models/user";
 import {Alert, Box, Snackbar} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import {PaginatedResponse} from "../../models/paginatedResponse";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "name"},
@@ -44,10 +45,10 @@ const UsersPage: React.FC = () => {
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
 
-    const loaderData = useLoaderData() as User;
+    const loaderData = useLoaderData() as PaginatedResponse<User>;
     const users = useSelector((state: RootState) => state.user.users);
 
     const navigate = useNavigate();
@@ -55,7 +56,8 @@ const UsersPage: React.FC = () => {
 
     useEffect(() => {
         if (loaderData) {
-            dispatch(userActions.setUsers(loaderData));
+            dispatch(userActions.setUsers(loaderData.data));
+            setTotalCount(loaderData.totalItems);
         }
     }, [dispatch]);
 
@@ -152,8 +154,11 @@ const UsersPage: React.FC = () => {
         dispatch(userActions.setUsers(response));
     }
 
-    const handlePageChange = (newPage: number) => {
+    const handlePageChange = async (newPage: number) => {
         setPage(newPage);
+        const response = await fetchUsers(newPage);
+        dispatch(userActions.setUsers(response.data));
+        setTotalCount(response.totalItems);
     }
 
     return (
@@ -184,7 +189,7 @@ const UsersPage: React.FC = () => {
                         }
                     ]} 
                     page={page}
-                    totalCount={100}
+                    totalCount={totalCount}
                     onPageChange={handlePageChange}
                 />
             </Box>

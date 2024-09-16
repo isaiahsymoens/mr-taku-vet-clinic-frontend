@@ -13,11 +13,11 @@ const petSlice = createSlice({
     name: "pet",
     initialState,
     reducers: {
-        storePets: (state, action) => {
+        setPets: (state, action) => {
             state.pets = action.payload;
         },
         addPet: (state, action) => {
-            state.pets.push(action.payload);
+            state.pets = [action.payload, ...state.pets];
         },
         removePet: (state, action) => {
             state.pets = state.pets.filter(pet => pet.petId !== action.payload);

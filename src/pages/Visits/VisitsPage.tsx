@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 import VisitFilter, {VisitFilterModel} from "./VisitFilterForm";
+import {PaginatedResponse} from "../../models/paginatedResponse";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -35,7 +36,7 @@ const initialState: AddEditVisitRequest = {
 }
 
 type LoaderData = {
-    loaderUsers: User[];
+    loaderUsers: PaginatedResponse<User>;
     loaderVisits: Visit[];
 }
 
@@ -61,7 +62,7 @@ const VisitsPage: React.FC = () => {
 
     useEffect(() => {
         if (loaderUsers) {
-            setUserList(loaderUsers.filter(u => u.petOwned > 0).map(u => ({
+            setUserList(loaderUsers.data.filter(u => u.petOwned > 0).map(u => ({
                 username: u.username,
                 name: `${u.firstName} ${u.middleName} ${u.lastName}`,
             })));

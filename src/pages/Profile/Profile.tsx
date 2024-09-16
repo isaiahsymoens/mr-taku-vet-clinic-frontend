@@ -24,6 +24,7 @@ import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 
 import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import {PaginatedResponse} from "../../models/paginatedResponse";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -41,7 +42,7 @@ const initialStatePet: AddEditPetRequest = {
 
 type LoaderData = {
     loaderUser: User;
-    loaderUserPets: Pet[];
+    loaderUserPets: PaginatedResponse<Pet>;
 }
 
 const Profile = () => {
@@ -54,8 +55,11 @@ const Profile = () => {
     const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
-    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [snackbarMsg, setSnackbarMsg] = useState<{msg: string, severity: "success" | "error"}>({msg: "", severity: "success"});
     const [errors, setErrors] = useState<GenericErrorResponse>({});
+
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
@@ -69,7 +73,8 @@ const Profile = () => {
             dispatch(userActions.setUserProfile(loaderUser));
         }
         if (loaderUserPets) {
-            dispatch(petActions.storePets(loaderUserPets));
+            dispatch(petActions.setPets(loaderUserPets.data));
+            setTotalCount(loaderUserPets.totalItems);
         }
     }, [dispatch]);
 
@@ -116,10 +121,16 @@ const Profile = () => {
         try {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
-            setSnackbarMsg("Successfully deleted.");
-            setPetData(initialStatePet);
-            toggleActionDialog();
-        } catch(err) {}
+            setSnackbarMsg({msg: "Successfully deleted.", severity: "success"});
+            setTotalCount(totalCount - 1);
+        } catch(err) {
+            setSnackbarMsg({msg: (err as any).message, severity: "error"});
+        }
+        setTimeout(() => {
+            setSnackbarMsg({msg: "", severity: "success"});
+        }, 3000);
+        setPetData(initialStatePet);
+        toggleActionDialog();
     }
 
     const handlePetFormChange = (key: keyof AddEditPetRequest, value: any) => {
@@ -142,6 +153,8 @@ const Profile = () => {
             });
             const response = await updateUser(orgUserData.username, changedData);
             dispatch(userActions.setUserProfile(response));
+            setOrgUserData(response);
+            setUserData(response);
             toggleUserDrawer();
         } catch(err) {
             setErrors(err as GenericErrorResponse);
@@ -154,6 +167,7 @@ const Profile = () => {
         try {
             const response = await addPet({...petData, username: loaderUser.username});
             dispatch(petActions.addPet(response));
+            setTotalCount(totalCount + 1);
             setPetData(initialStatePet);
             togglePetDrawer();
         } catch (err) {
@@ -171,6 +185,13 @@ const Profile = () => {
         } catch(err) {
             setErrors(err as GenericErrorResponse);
         }
+    }
+
+    const handlePageChange = async (newPage: number) => {
+        setPage(newPage);
+        const response = await getUserPetsByUsername(loaderUser.username as string, newPage);
+        dispatch(petActions.setPets(response.data));
+        setTotalCount(response.totalItems);
     }
 
     return (
@@ -223,6 +244,9 @@ const Profile = () => {
                                     onClick: () => handleDelete(data),
                                 }
                             ]}
+                            page={page}
+                            totalCount={totalCount}
+                            onPageChange={handlePageChange}
                         />
                     </Box>
                 </Box>
@@ -272,19 +296,15 @@ const Profile = () => {
                 onCancel={toggleActionDialog}
             />
             <Snackbar 
-                open={snackbarMsg !== ""} 
+                open={snackbarMsg.msg !== ""} 
                 autoHideDuration={3000} 
-                onClose={() => setSnackbarMsg("")}
+                onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
             >
                 <Alert
-                    severity="success"
-                    sx={{
-                        background: "#28A745", 
-                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
-                    }}
-                    onClose={() => setSnackbarMsg("")}
+                    severity={snackbarMsg.severity}
+                    onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
                 >
-                    {snackbarMsg}
+                    {snackbarMsg.msg}
                 </Alert>
             </Snackbar>
         </React.Fragment>

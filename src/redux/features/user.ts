@@ -2,7 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {User} from "../../models/user";
 
 interface UserState {
-    userProfile: User;
+    userProfile: User | null;
     users: User[];
 }
 
@@ -22,7 +22,7 @@ const userSlice = createSlice({
             state.users = action.payload;
         },
         addUser: (state, action) => {
-            state.users.push(action.payload);
+            state.users = [action.payload, ...state.users];
         },
         removeUser: (state, action) => {
             state.users = state.users.filter(user => user.username !== action.payload);

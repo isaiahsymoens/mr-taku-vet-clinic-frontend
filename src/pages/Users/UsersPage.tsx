@@ -15,6 +15,7 @@ import {User} from "../../models/user";
 import {Alert, Box, Snackbar} from "@mui/material";
 import {useLoaderData, useNavigate} from "react-router-dom";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import {PaginatedResponse} from "../../models/paginatedResponse";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "name"},
@@ -44,7 +45,10 @@ const UsersPage: React.FC = () => {
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
-    const loaderData = useLoaderData() as User;
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+
+    const loaderData = useLoaderData() as PaginatedResponse<User>;
     const users = useSelector((state: RootState) => state.user.users);
 
     const navigate = useNavigate();
@@ -52,7 +56,8 @@ const UsersPage: React.FC = () => {
 
     useEffect(() => {
         if (loaderData) {
-            dispatch(userActions.setUsers(loaderData));
+            dispatch(userActions.setUsers(loaderData.data));
+            setTotalCount(loaderData.totalItems);
         }
     }, [dispatch]);
 
@@ -94,6 +99,7 @@ const UsersPage: React.FC = () => {
         try {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
+            setTotalCount(totalCount - 1);
             setSnackbarMsg("Successfully deleted.");
             setSelectedUser(null!);
             toggleActionDialog();
@@ -110,6 +116,7 @@ const UsersPage: React.FC = () => {
             setErrors({});
             const response = await addUser(userData);
             dispatch(userActions.addUser(response));
+            setTotalCount(totalCount + 1);
             setUserData(initialStateUserData);
             toggleDrawer();
             reset();
@@ -146,7 +153,15 @@ const UsersPage: React.FC = () => {
 
     const handleSearch = async (input: string) => {
         const response = await searchUsersByName(input);
-        dispatch(userActions.setUsers(response));
+        dispatch(userActions.setUsers(response.data));
+        setTotalCount(response.totalItems);
+    }
+
+    const handlePageChange = async (newPage: number) => {
+        setPage(newPage);
+        const response = await fetchUsers(newPage);
+        dispatch(userActions.setUsers(response.data));
+        setTotalCount(response.totalItems);
     }
 
     return (
@@ -158,7 +173,7 @@ const UsersPage: React.FC = () => {
                 toggleDrawer={handleAdd} 
                 onSearch={handleSearch} 
             />
-            <Box sx={{ flexGrow: 1, p: 3 }}>
+            <Box sx={{flexGrow: 1, p: 3}}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={users} 
@@ -176,6 +191,9 @@ const UsersPage: React.FC = () => {
                             onClick: () => handleDelete(user),
                         }
                     ]} 
+                    page={page}
+                    totalCount={totalCount}
+                    onPageChange={handlePageChange}
                 />
             </Box>
             <DrawerPanel 
@@ -208,10 +226,6 @@ const UsersPage: React.FC = () => {
             >
                 <Alert
                     severity="success"
-                    sx={{
-                        background: "#28A745", 
-                        color: "#FFF", "& .MuiAlert-icon": {color: "#FFF"}
-                    }}
                     onClose={() => setSnackbarMsg("")}
                 >
                     {snackbarMsg}

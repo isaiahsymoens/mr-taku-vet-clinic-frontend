@@ -26,11 +26,18 @@ export type DataTableProps = {
     tableHeaders?: DataTableHeaders[];
     tableBody: any[];
     menuActions: any;
+    page: number;
+    totalCount: number;
+    onPageChange: (newPage: number) => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActions}) => {
+const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActions, page, totalCount, onPageChange}) => {
     const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>(null);
 
+    const handlePageChange = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        onPageChange(newPage + 1);
+    }
+    
     const sortTableData = (data: any[]) => {
         if (!sortConfig) return data;
         return [...data].sort((a, b) => {
@@ -91,7 +98,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                         </TableHead>
                     }
                     <TableBody>
-                        {sortTableData(tableBody).map((tBody, rowIndex) => (
+                        {sortTableData(tableBody).slice(0, 10).map((tBody, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 {tableHeaders?.map((tHeader: any, colIndex) => {
                                     if (tHeader.field === "petName") {
@@ -151,11 +158,12 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
             </TableContainer>
             <TablePagination 
                 component="div"
-                count={tableBody.length}
-                page={0}
-                onPageChange={() => {}}
-                rowsPerPage={0}
-                onRowsPerPageChange={() => {}}
+                count={totalCount}
+                page={page - 1}
+                onPageChange={handlePageChange}
+                rowsPerPage={10}
+                rowsPerPageOptions={[]}
+                // onRowsPerPageChange={() => {}}
             />
         </React.Fragment>
     );

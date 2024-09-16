@@ -1,4 +1,6 @@
+import {PaginatedResponse} from "../models/paginatedResponse";
 import {Pet} from "../models/pet";
+import {extractErrorMessages, GenericErrorResponse} from "../utils/errorHelper";
 import {JSONObject} from "../utils/json";
 
 export interface AddEditPetRequest extends Omit<Pet, "petType"> {
@@ -6,11 +8,11 @@ export interface AddEditPetRequest extends Omit<Pet, "petType"> {
     petTypeId: number
 }
 
-export const getUserPetsByUsername = async (username: string) => {
-    const response = await fetch(`https://localhost:5001/api/pets/username/${username}`, {
+export const getUserPetsByUsername = async (username: string, pageNumber?: number) => {
+    const response = await fetch(`https://localhost:5001/api/pets/username/${username}?pageNumber=${pageNumber ?? 1}`, {
         method: "GET"
     });
-    return Pet.fromJSONArray((await response.json()).data as JSONObject[]);
+    return PaginatedResponse.fromJSON((await response.json()).data, Pet.fromJSON);
 }
 
 export const addPet = async (data: AddEditPetRequest) => {
@@ -39,6 +41,6 @@ export const deletePet = async (petId: number) => {
     const response = await fetch(`https://localhost:5001/api/pets/${petId}`, {
         method: "DELETE"
     });
-    if (!response.ok)
-        console.log("error response :", await response.json());
+    if (!response.ok) 
+        throw extractErrorMessages((await response.json()).errors as GenericErrorResponse);
 }

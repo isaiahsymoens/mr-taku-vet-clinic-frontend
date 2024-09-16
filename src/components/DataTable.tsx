@@ -98,7 +98,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                         </TableHead>
                     }
                     <TableBody>
-                        {sortTableData(tableBody).map((tBody, rowIndex) => (
+                        {sortTableData(tableBody).slice(0, 10).map((tBody, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 {tableHeaders?.map((tHeader: any, colIndex) => {
                                     if (tHeader.field === "petName") {

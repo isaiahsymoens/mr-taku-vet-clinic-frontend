@@ -34,7 +34,7 @@ export const searchUsersByName = async (name: string) => {
         },
         body: JSON.stringify({name: name})
     });
-    return User.fromJSONArray((await response.json()).data as JSONObject[]) || [];
+    return PaginatedResponse.fromJSON((await response.json()).data, User.fromJSON) || [];
 }
 
 export const addUser = async (data: AddEditUserRequest) => {

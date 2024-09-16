@@ -99,6 +99,7 @@ const UsersPage: React.FC = () => {
         try {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
+            setTotalCount(totalCount - 1);
             setSnackbarMsg("Successfully deleted.");
             setSelectedUser(null!);
             toggleActionDialog();
@@ -115,6 +116,7 @@ const UsersPage: React.FC = () => {
             setErrors({});
             const response = await addUser(userData);
             dispatch(userActions.addUser(response));
+            setTotalCount(totalCount + 1);
             setUserData(initialStateUserData);
             toggleDrawer();
             reset();
@@ -151,7 +153,8 @@ const UsersPage: React.FC = () => {
 
     const handleSearch = async (input: string) => {
         const response = await searchUsersByName(input);
-        dispatch(userActions.setUsers(response));
+        dispatch(userActions.setUsers(response.data));
+        setTotalCount(response.totalItems);
     }
 
     const handlePageChange = async (newPage: number) => {

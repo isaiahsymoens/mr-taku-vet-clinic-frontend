@@ -44,6 +44,9 @@ const UsersPage: React.FC = () => {
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
+    const [page, setPage] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+
     const loaderData = useLoaderData() as User;
     const users = useSelector((state: RootState) => state.user.users);
 
@@ -149,6 +152,10 @@ const UsersPage: React.FC = () => {
         dispatch(userActions.setUsers(response));
     }
 
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+    }
+
     return (
         <React.Fragment>
             <SubHeader 
@@ -158,7 +165,7 @@ const UsersPage: React.FC = () => {
                 toggleDrawer={handleAdd} 
                 onSearch={handleSearch} 
             />
-            <Box sx={{ flexGrow: 1, p: 3 }}>
+            <Box sx={{flexGrow: 1, p: 3}}>
                 <DataTable 
                     tableHeaders={tableHeaders} 
                     tableBody={users} 
@@ -176,6 +183,9 @@ const UsersPage: React.FC = () => {
                             onClick: () => handleDelete(user),
                         }
                     ]} 
+                    page={page}
+                    totalCount={100}
+                    onPageChange={handlePageChange}
                 />
             </Box>
             <DrawerPanel 

@@ -11,6 +11,13 @@ export const fetchUsers = async() => {
     return User.fromJSONArray((await response.json()).data as JSONObject[]);
 };
 
+export const fetchPaginatedUsers = async(pageNumber?: number) => {
+    const response = await fetch(`https://localhost:5001/api/users/paginated/${pageNumber ?? ""}`, {
+        method: "GET"
+    });
+    return User.fromJSONArray((await response.json()).data as JSONObject[]);
+};
+
 export const getUserByUsername = async (username: string) => {
     const response = await fetch(`https://localhost:5001/api/users/${username}`, {
         method: "GET"

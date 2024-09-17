@@ -12,7 +12,7 @@ import {Pet} from "../../models/pet";
 import {User} from "../../models/user";
 import {Visit} from "../../models/visit";
 
-import {AddEditPetRequest, addPet, deletePet, getUserPetsByUsername, updatePet} from "../../api/pets";
+import {AddEditPetRequest, addPet, deletePet, getPaginatedUserPetsByUsername, updatePet} from "../../api/pets";
 import {AddEditUserRequest, getUserByUsername, getUserPasswordByUsername, updateUser} from "../../api/users";
 import {getPetVisits} from "../../api/visits";
 
@@ -51,7 +51,7 @@ const Profile = () => {
     const [userData, setUserData] = useState<AddEditUserRequest>(null!);
     const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(null!);
     const [petData, setPetData] = useState<AddEditPetRequest>(initialStatePet);
-    const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
+    const [petId, setPetId] = useState<number>(0);
     const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
@@ -94,7 +94,7 @@ const Profile = () => {
     }
 
     const handleView = async (data: Pet) => {
-        setPetVisitsData(await getPetVisits(data.petId as number));
+        setPetId(data.petId as number);
         setPetDrawerType(DrawerPanelActions.View);
         togglePetDrawer();
     }
@@ -189,7 +189,7 @@ const Profile = () => {
 
     const handlePageChange = async (newPage: number) => {
         setPage(newPage);
-        const response = await getUserPetsByUsername(loaderUser.username as string, newPage);
+        const response = await getPaginatedUserPetsByUsername(loaderUser.username as string, newPage);
         dispatch(petActions.setPets(response.data));
         setTotalCount(response.totalItems);
     }
@@ -284,7 +284,7 @@ const Profile = () => {
                     type={petDrawerType}
                     petData={petData}
                     handleFormChange={handlePetFormChange}
-                    petVisits={petVisitsData}
+                    petId={petId}
                     errors={errors}
                 />     
             </DrawerPanel>
@@ -316,6 +316,6 @@ export default Profile;
 export const loader = async ({params}: LoaderFunctionArgs<{username: string}>) => {
     const {username} = params;
     const loaderUser = await getUserByUsername(username as string);
-    const loaderUserPets = await getUserPetsByUsername(username as string);
+    const loaderUserPets = await getPaginatedUserPetsByUsername(username as string);
     return {loaderUser, loaderUserPets};
 }

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Box, Button, InputBase, Typography} from "@mui/material";
 
 export interface VisitFilterModel {
@@ -9,30 +9,13 @@ export interface VisitFilterModel {
 }
 
 type VisitFilterProps = {
-    onSearch: (data: VisitFilterModel) => void;
+    onSearch: () => void;
+    visitForm: VisitFilterModel;
+    onFormChangeVisitFilter: (key: keyof VisitFilterModel, value: any) => void;
+    onClearVisitFilter: () => void;
 }
 
-const initialState: VisitFilterModel = {firstName: "", lastName: "", petName: "", typeName: ""}
-
-const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
-    const [visitForm, setVisitForm] = useState<VisitFilterModel>(initialState);
-    
-    const handleSearch = () => {
-        const data = Object.fromEntries(
-            Object.entries(visitForm)
-                .filter(([key, value]) => value !== "" && value != null)
-        );
-        onSearch(data);
-    } 
-
-    const handleClear = () => {
-        setVisitForm(initialState);
-    }
-
-    const handleFormChange = (key: keyof VisitFilterModel, value: any) => {
-        setVisitForm((prevData) => ({...prevData, [key]: value}));
-    }
-
+const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormChangeVisitFilter, onClearVisitFilter}) => {
     return (
         <React.Fragment>
             <Box sx={{width: "100%", minWidth: "350px", maxWidth: "350px", px: 3, py: 2, mt: 2}}>
@@ -49,7 +32,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             input: {padding: 0}
                         }}
                         value={visitForm?.firstName}
-                        onChange={(e) => handleFormChange("firstName", e.target.value)}
+                        onChange={(e) => onFormChangeVisitFilter("firstName", e.target.value)}
                     />
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
@@ -65,7 +48,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             input: {padding: 0}
                         }}
                         value={visitForm?.lastName}
-                        onChange={(e) => handleFormChange("lastName", e.target.value)}
+                        onChange={(e) => onFormChangeVisitFilter("lastName", e.target.value)}
                     />
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
@@ -81,7 +64,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             input: {padding: 0}
                         }}
                         value={visitForm?.petName}
-                        onChange={(e) => handleFormChange("petName", e.target.value)}
+                        onChange={(e) => onFormChangeVisitFilter("petName", e.target.value)}
                     />
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
@@ -97,7 +80,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             input: {padding: 0}
                         }}
                         value={visitForm?.typeName}
-                        onChange={(e) => handleFormChange("typeName", e.target.value)}
+                        onChange={(e) => onFormChangeVisitFilter("typeName", e.target.value)}
                     />
                 </Box>
                 <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end", gap: 1, mt: 2}}>
@@ -108,7 +91,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             textTransform: "none", 
                             padding: "4px 8px"
                         }}
-                        onClick={handleClear}
+                        onClick={onClearVisitFilter}
                     >Clear</Button>
                     <Button 
                         variant="contained" 
@@ -117,7 +100,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch}) => {
                             textTransform: "none", 
                             padding: "4px 8px"
                         }}
-                        onClick={handleSearch}
+                        onClick={onSearch}
                     >Search</Button>
                 </Box>
             </Box>

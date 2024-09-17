@@ -12,10 +12,15 @@ import {
     TableRow, 
     Typography, 
     TablePagination,
-    TableSortLabel
+    TableSortLabel,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    TextField
 } from "@mui/material";
 import PetsIcon from '@mui/icons-material/Pets';
 import CircleIcon from '@mui/icons-material/Circle';
+import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 
 export type DataTableHeaders = {
     label: string;
@@ -25,13 +30,15 @@ export type DataTableHeaders = {
 export type DataTableProps = {
     tableHeaders?: DataTableHeaders[];
     tableBody: any[];
-    menuActions: any;
+    noHeader?: boolean;
+    menuActions?: any;
     page: number;
     totalCount: number;
     onPageChange: (newPage: number) => void;
+    smallTable?: boolean;
 }
 
-const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActions, page, totalCount, onPageChange}) => {
+const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=false, menuActions, page, totalCount, onPageChange, smallTable=false}) => {
     const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>(null);
 
     const handlePageChange = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -74,9 +81,18 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
 
     return (
         <React.Fragment>
-            <TableContainer component={Paper} sx={{width: "100%", height: "100vh", maxHeight: "65vh", overflow: "auto"}}>
+            <TableContainer 
+                component={Paper} 
+                sx={{
+                    width: "100%", 
+                    height: smallTable ? "80%" : "100vh", 
+                    minHeight: smallTable ? "50vh" : "65vh", 
+                    maxHeight: smallTable ? "50vh" : "65vh", 
+                    overflow: "auto"
+                }}
+            >
                 <Table stickyHeader>
-                    {tableHeaders &&
+                    {(tableHeaders && !noHeader) &&
                         <TableHead>
                             <TableRow>
                                 {tableHeaders?.map((tblHeader, index) => 
@@ -127,6 +143,43 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                                                 </Box>
                                             </Box>
                                         </TableCell>
+                                    } else if (tHeader.field === "petForm") {
+                                        return <TableCell key={colIndex} sx={{p: 0}}>
+                                            <Accordion sx={{width: "100%", maxWidth: "350px"}}>
+                                                <AccordionSummary
+                                                    expandIcon={<TextSnippetOutlinedIcon />}
+                                                >
+                                                    <Typography>{renderCellValue(getNestedValue(tBody, "visitType.typeName"))}</Typography>
+                                                </AccordionSummary>
+                                                <AccordionDetails sx={{mt: -3}}>
+                                                    <Typography variant="body1" sx={{fontSize: ".9rem", fontWeight: "600"}}><span>Notes</span></Typography>
+                                                    <TextField
+                                                        variant="outlined" 
+                                                        value={renderCellValue(getNestedValue(tBody, "notes"))} 
+                                                        size="small" 
+                                                        multiline
+                                                        disabled
+                                                        fullWidth 
+                                                        // sx={{
+                                                        //     "& .MuiInputBase-root": {
+                                                        //         padding: 0,
+                                                        //         border: "none",
+                                                        //         fontSize: ".9rem"
+                                                        //     },
+                                                        //     "&. MuiInputBase-input": {
+                                                        //         padding: 0
+                                                        //     },
+                                                        //     "& .MuiInput-underline:before": {
+                                                        //         border: "none"
+                                                        //     },
+                                                        //     "& .MuiInput-underline:after": {
+                                                        //         border: "none"
+                                                        //     }
+                                                        // }}
+                                                    />
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        </TableCell>
                                     } else {
                                         return <TableCell key={colIndex}>
                                             {tHeader.field === "active" ? 
@@ -153,18 +206,27 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                                 }
                             </TableRow>
                         ))}
+                        {sortTableData(tableBody).length === 0 && 
+                            <TableRow>
+                                <TableCell colSpan={tableHeaders!.length+1 || 2} sx={{textAlign: "center"}}>
+                                    No records found.
+                                </TableCell>
+                            </TableRow>
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination 
-                component="div"
-                count={totalCount}
-                page={page - 1}
-                onPageChange={handlePageChange}
-                rowsPerPage={10}
-                rowsPerPageOptions={[]}
-                // onRowsPerPageChange={() => {}}
-            />
+            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                <Typography variant="body1" sx={{fontSize: ".9rem", px: 2}}>Total Rows: {totalCount}</Typography>
+                <TablePagination 
+                    component="div"
+                    count={totalCount}
+                    page={page - 1}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={10}
+                    rowsPerPageOptions={[]}
+                />
+            </Box>
         </React.Fragment>
     );
 }

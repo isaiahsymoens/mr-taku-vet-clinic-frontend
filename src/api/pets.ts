@@ -8,8 +8,15 @@ export interface AddEditPetRequest extends Omit<Pet, "petType"> {
     petTypeId: number
 }
 
-export const getUserPetsByUsername = async (username: string, pageNumber?: number) => {
-    const response = await fetch(`https://localhost:5001/api/pets/username/${username}?pageNumber=${pageNumber ?? 1}`, {
+export const getUserPetsByUsername = async (username: string) => {
+    const response = await fetch(`https://localhost:5001/api/pets/${username}`, {
+        method: "GET"
+    });
+    return Pet.fromJSONArray((await response.json()).data as JSONObject[]);
+}
+
+export const getPaginatedUserPetsByUsername = async (username: string, pageNumber?: number) => {
+    const response = await fetch(`https://localhost:5001/api/pets/paginated/${username}?pageNumber=${pageNumber ?? 1}`, {
         method: "GET"
     });
     return PaginatedResponse.fromJSON((await response.json()).data, Pet.fromJSON);

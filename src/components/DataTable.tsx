@@ -13,10 +13,10 @@ import {
     Typography, 
     TablePagination,
     TableSortLabel,
-    IconButton,
     Accordion,
     AccordionSummary,
-    AccordionDetails
+    AccordionDetails,
+    TextField
 } from "@mui/material";
 import PetsIcon from '@mui/icons-material/Pets';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -145,7 +145,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                         </TableCell>
                                     } else if (tHeader.field === "petForm") {
                                         return <TableCell key={colIndex} sx={{p: 0}}>
-                                            <Accordion sx={{width: "100%"}}>
+                                            <Accordion sx={{width: "100%", maxWidth: "350px"}}>
                                                 <AccordionSummary
                                                     expandIcon={<TextSnippetOutlinedIcon />}
                                                 >
@@ -153,9 +153,30 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                                 </AccordionSummary>
                                                 <AccordionDetails sx={{mt: -3}}>
                                                     <Typography variant="body1" sx={{fontSize: ".9rem", fontWeight: "600"}}><span>Notes</span></Typography>
-                                                    <Typography sx={{fontSize: ".9rem"}}>
-                                                        {renderCellValue(getNestedValue(tBody, "notes"))}
-                                                    </Typography>
+                                                    <TextField
+                                                        variant="outlined" 
+                                                        value={renderCellValue(getNestedValue(tBody, "notes"))} 
+                                                        size="small" 
+                                                        multiline
+                                                        disabled
+                                                        fullWidth 
+                                                        // sx={{
+                                                        //     "& .MuiInputBase-root": {
+                                                        //         padding: 0,
+                                                        //         border: "none",
+                                                        //         fontSize: ".9rem"
+                                                        //     },
+                                                        //     "&. MuiInputBase-input": {
+                                                        //         padding: 0
+                                                        //     },
+                                                        //     "& .MuiInput-underline:before": {
+                                                        //         border: "none"
+                                                        //     },
+                                                        //     "& .MuiInput-underline:after": {
+                                                        //         border: "none"
+                                                        //     }
+                                                        // }}
+                                                    />
                                                 </AccordionDetails>
                                             </Accordion>
                                         </TableCell>
@@ -185,11 +206,18 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                 }
                             </TableRow>
                         ))}
+                        {sortTableData(tableBody).length === 0 && 
+                            <TableRow>
+                                <TableCell colSpan={tableHeaders!.length+1 || 2} sx={{textAlign: "center"}}>
+                                    No records found.
+                                </TableCell>
+                            </TableRow>
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
             <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                <Typography variant="body1" sx={{fontSize: ".9rem", px: 2}}>Total Rows: {Math.ceil(totalCount / 10)}</Typography>
+                <Typography variant="body1" sx={{fontSize: ".9rem", px: 2}}>Total Rows: {totalCount}</Typography>
                 <TablePagination 
                     component="div"
                     count={totalCount}

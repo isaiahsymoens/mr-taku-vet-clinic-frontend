@@ -35,6 +35,13 @@ const initialState: AddEditVisitRequest = {
     notes: ""
 }
 
+const initialStateVisitFilter: VisitFilterModel = {
+    firstName: "", 
+    lastName: "", 
+    petName: "", 
+    typeName: ""
+}
+
 type LoaderData = {
     loaderUsers: PaginatedResponse<User>;
     loaderVisits: PaginatedResponse<Visit>;
@@ -50,6 +57,7 @@ const VisitsPage: React.FC = () => {
     const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
+    const [visitFormFilter, setVisitFormFilter] = useState<VisitFilterModel>(initialStateVisitFilter);
 
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
@@ -152,13 +160,32 @@ const VisitsPage: React.FC = () => {
         setVisitDrawerType(DrawerPanelActions.Add);
         toggleDrawer();
     }
+
+    const handleFormChangeVisitFilter = (key: keyof VisitFilterModel, value: any) => {
+        setVisitFormFilter((prevData) => ({...prevData, [key]: value}));
+    }
+
+    const handleClearVisitFilter = () => {
+        setVisitFormFilter(initialStateVisitFilter);
+    }
     
-    const handleSearch = async (data: VisitFilterModel) => {
+    const handleSearch = async () => {
+        const data = Object.fromEntries(
+            Object.entries(visitFormFilter)
+                .filter(([key, value]) => value !== "" && value != null)
+        );
         if (Object.keys(data).length > 0) {
             const response = await searchVisits(data);
             dispatch(visitActions.setVisits(response.data));
             dispatch(visitActions.setResetFilter(true));
             setTotalCount(response.totalItems);
+        } else if (Object.keys(data).length == 0 && Object.keys(visitFormFilter).length > 0)
+        {
+            const response = await fetchVisits();
+            dispatch(visitActions.setVisits(response.data));
+            setTotalCount(response.totalItems);
+            dispatch(visitActions.setResetFilter(false));
+            setVisitFormFilter(initialStateVisitFilter);
         }
         dispatch(visitActions.setCloseFilter(true));
     }
@@ -168,6 +195,7 @@ const VisitsPage: React.FC = () => {
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
         dispatch(visitActions.setResetFilter(false));
+        setVisitFormFilter(initialStateVisitFilter);
     }
 
     const handlePageChange = async (newPage: number) => {
@@ -183,7 +211,14 @@ const VisitsPage: React.FC = () => {
                 text="Visits" 
                 btnText="Add Visit" 
                 toggleDrawer={handleAdd} 
-                filterMenuItems={<VisitFilter onSearch={handleSearch} />}
+                filterMenuItems={
+                    <VisitFilter 
+                        onSearch={handleSearch} 
+                        visitForm={visitFormFilter}
+                        onFormChangeVisitFilter={handleFormChangeVisitFilter}
+                        onClearVisitFilter={handleClearVisitFilter}
+                    />
+                }
                 resetSearch={resetSearch}
             />
             <Box sx={{flexGrow: 1, p: 3}}>

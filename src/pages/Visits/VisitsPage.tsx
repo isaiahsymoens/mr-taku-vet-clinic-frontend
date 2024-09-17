@@ -37,7 +37,7 @@ const initialState: AddEditVisitRequest = {
 
 type LoaderData = {
     loaderUsers: PaginatedResponse<User>;
-    loaderVisits: Visit[];
+    loaderVisits: PaginatedResponse<Visit>;
 }
 
 const VisitsPage: React.FC = () => {
@@ -50,6 +50,9 @@ const VisitsPage: React.FC = () => {
     const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
     const [snackbarMsg, setSnackbarMsg] = useState<string>("");
     const [errors, setErrors] = useState<GenericErrorResponse>({});
+
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
         dispatch(visitActions.setResetFilter(false));
@@ -68,7 +71,8 @@ const VisitsPage: React.FC = () => {
             })));
         }
         if (loaderVisits) {
-            dispatch(visitActions.setVisits(loaderVisits));
+            dispatch(visitActions.setVisits(loaderVisits.data));
+            setTotalCount(loaderVisits.totalItems);
         }
     }, [dispatch]);
 
@@ -116,6 +120,7 @@ const VisitsPage: React.FC = () => {
         try {
             await deleteVisit(selectedVisit.visitId as number);
             dispatch(visitActions.removeVisit(selectedVisit.visitId));
+            setTotalCount(totalCount - 1);
             setSnackbarMsg("Successfully deleted.");
             setSelectedVisit(null!);
             toggleActionDialog();
@@ -127,6 +132,7 @@ const VisitsPage: React.FC = () => {
         try {
             const response = await addVisit(visitData as AddEditVisitRequest);
             dispatch(visitActions.addVisit(response));
+            setTotalCount(totalCount + 1);
             setVisitData(initialState);
             toggleDrawer();
         } catch(err) {}
@@ -160,7 +166,14 @@ const VisitsPage: React.FC = () => {
         const response = await fetchVisits();
         dispatch(visitActions.setVisits(response));
         dispatch(visitActions.setResetFilter(false));
-    } 
+    }
+
+    const handlePageChange = async (newPage: number) => {
+        setPage(newPage);
+        const response = await fetchVisits(newPage);
+        dispatch(visitActions.setVisits(response.data));
+        setTotalCount(response.totalItems);
+    }
 
     return (
         <Box>
@@ -189,6 +202,9 @@ const VisitsPage: React.FC = () => {
                             onClick: () => handleDelete(data),
                         }
                     ]}
+                    page={page}
+                    totalCount={totalCount}
+                    onPageChange={handlePageChange}
                 />
             </Box>
             <DrawerPanel 

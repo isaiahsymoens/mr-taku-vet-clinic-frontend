@@ -1,3 +1,4 @@
+import {PaginatedResponse} from "../models/paginatedResponse";
 import {Visit} from "../models/visit";
 import {VisitFilterModel} from "../pages/Visits/VisitFilterForm";
 import {JSONObject} from "../utils/json";
@@ -8,11 +9,11 @@ export interface AddEditVisitRequest extends Omit<Visit, "visitType"> {
     petId: number;
 }
 
-export const fetchVisits = async () => {
-    const response = await fetch(`https://localhost:5001/api/visits`, {
+export const fetchVisits = async (pageNumber?: number) => {
+    const response = await fetch(`https://localhost:5001/api/visits/paginated?pageNumber=${pageNumber ?? 1}`, {
         method: "GET"
     });
-    return Visit.fromJSONArray((await response.json()).data as JSONObject[]);
+    return PaginatedResponse.fromJSON((await response.json()).data, Visit.fromJSON);
 }
 
 export const getPetVisits = async (id: number) => {

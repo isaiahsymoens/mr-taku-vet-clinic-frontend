@@ -156,15 +156,17 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, menuActio
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination 
-                component="div"
-                count={totalCount}
-                page={page - 1}
-                onPageChange={handlePageChange}
-                rowsPerPage={10}
-                rowsPerPageOptions={[]}
-                // onRowsPerPageChange={() => {}}
-            />
+            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                <Typography variant="body1" sx={{fontSize: ".9rem", px: 2}}>Total Rows: {Math.ceil(totalCount / 10)}</Typography>
+                <TablePagination 
+                    component="div"
+                    count={totalCount}
+                    page={page - 1}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={10}
+                    rowsPerPageOptions={[]}
+                />
+            </Box>
         </React.Fragment>
     );
 }

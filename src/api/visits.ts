@@ -31,7 +31,7 @@ export const searchVisits = async (data: VisitFilterModel) => {
         },
         body: JSON.stringify(data)
     });
-    return Visit.fromJSONArray((await response.json()).data as JSONObject[]);
+    return PaginatedResponse.fromJSON((await response.json()).data, Visit.fromJSON);
 }
 
 export const addVisit = async (data: AddEditVisitRequest) => {

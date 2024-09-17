@@ -156,15 +156,17 @@ const VisitsPage: React.FC = () => {
     const handleSearch = async (data: VisitFilterModel) => {
         if (Object.keys(data).length > 0) {
             const response = await searchVisits(data);
-            dispatch(visitActions.setVisits(response));
+            dispatch(visitActions.setVisits(response.data));
             dispatch(visitActions.setResetFilter(true));
+            setTotalCount(response.totalItems);
         }
         dispatch(visitActions.setCloseFilter(true));
     }
 
     const resetSearch = async () => {
         const response = await fetchVisits();
-        dispatch(visitActions.setVisits(response));
+        dispatch(visitActions.setVisits(response.data));
+        setTotalCount(response.totalItems);
         dispatch(visitActions.setResetFilter(false));
     }
 

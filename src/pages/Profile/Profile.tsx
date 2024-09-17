@@ -51,7 +51,7 @@ const Profile = () => {
     const [userData, setUserData] = useState<AddEditUserRequest>(null!);
     const [orgUserData, setOrgUserData] = useState<AddEditUserRequest>(null!);
     const [petData, setPetData] = useState<AddEditPetRequest>(initialStatePet);
-    const [petVisitsData, setPetVisitsData] = useState<Visit[]>([]);
+    const [petId, setPetId] = useState<number>(0);
     const [selectedPet, setSelectedPet] = useState<Pet>(null!);
     const [petDrawerType, setPetDrawerType] = useState<DrawerPanelActions | string>("");
     const [isActionDialog, setIsActionDialog] = useState(false);
@@ -94,7 +94,7 @@ const Profile = () => {
     }
 
     const handleView = async (data: Pet) => {
-        setPetVisitsData(await getPetVisits(data.petId as number));
+        setPetId(data.petId as number);
         setPetDrawerType(DrawerPanelActions.View);
         togglePetDrawer();
     }
@@ -284,7 +284,7 @@ const Profile = () => {
                     type={petDrawerType}
                     petData={petData}
                     handleFormChange={handlePetFormChange}
-                    petVisits={petVisitsData}
+                    petId={petId}
                     errors={errors}
                 />     
             </DrawerPanel>

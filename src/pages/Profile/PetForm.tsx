@@ -1,21 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {
-    Accordion, 
-    AccordionDetails, 
-    AccordionSummary, 
-    FormControl, 
-    FormHelperText, 
-    InputLabel, 
-    MenuItem, 
-    Paper, 
-    Select, 
-    Table, 
-    TableBody, 
-    TableContainer, 
-    TextField, 
-    Typography
-} from "@mui/material";
-import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -26,17 +10,27 @@ import {getPetTypes} from "../../api/petTypes";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 import {AddEditPetRequest} from "../../api/pets";
 import {GenericErrorResponse} from "../../utils/errorHelper";
+import {PaginatedResponse} from "../../models/paginatedResponse";
+import {getPetVisits} from "../../api/visits";
+import DataTable, { DataTableHeaders } from "../../components/DataTable";
 
 type PetFormProps = {
     type: DrawerPanelActions | string;
     petData: AddEditPetRequest;
-    petVisits: Visit[];
+    petId: number;
     handleFormChange: (key: keyof AddEditPetRequest, value: any) => void;
     errors: GenericErrorResponse;
 }
 
-const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormChange, errors}) => {
+const tableHeaders: DataTableHeaders[] = [
+    {label: "", field: "petForm"}
+];
+
+const PetForm: React.FC<PetFormProps> = ({type, petData, petId, handleFormChange, errors}) => {
     const [petTypes, setPetTypes] = useState<PetType[]>([]);
+    const [petVisits, setPetVisits] = useState<PaginatedResponse<Visit>>(null!);
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
         const loadData = async () => {
@@ -45,33 +39,39 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petVisits, handleFormCh
         loadData();
     }, []);
 
+    useEffect(() => {
+        const loadData = async () => {
+            const response = await getPetVisits(petId);
+            setPetVisits(response);
+            setTotalCount(response.totalItems);
+        }
+        if (type === DrawerPanelActions.View) {
+            loadData();
+        }
+    }, [type === DrawerPanelActions.View]);
+
     const hasError = (field: string) => field in errors;
+
+    const handlePageChange = async (newPage: number) => {
+        setPage(newPage);
+        const response = await getPetVisits(petId, newPage);
+        setPetVisits(response);
+        setTotalCount(response.totalItems);
+    }
 
     return (
         <React.Fragment>
             {type === DrawerPanelActions.View ?
                 <React.Fragment>
-                    <TableContainer component={Paper} sx={{ width: "100%", height: "100%", overflow: "auto" }}>
-                        <Table>
-                            <TableBody>
-                                {petVisits.map((pVisit, index) =>
-                                    <Accordion key={index} sx={{width: "100%"}}>
-                                        <AccordionSummary
-                                            expandIcon={<TextSnippetOutlinedIcon />}
-                                        >
-                                            <Typography>{pVisit.visitType?.typeName}</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                        <Typography variant="body1" sx={{fontSize: "1rem", fontWeight: "600"}}>Notes</Typography>
-                                        <Typography>
-                                            {pVisit.notes}
-                                        </Typography>
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <DataTable 
+                        tableHeaders={tableHeaders} 
+                        tableBody={petVisits?.data || []}
+                        noHeader={true}
+                        smallTable={true}
+                        page={page}
+                        totalCount={totalCount}
+                        onPageChange={handlePageChange}
+                    />
                 </React.Fragment>
                 :
                 <React.Fragment>

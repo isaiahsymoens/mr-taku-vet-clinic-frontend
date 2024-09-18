@@ -39,7 +39,9 @@ const initialStateVisitFilter: VisitFilterModel = {
     firstName: "", 
     lastName: "", 
     petName: "", 
-    typeName: ""
+    typeName: "",
+    startDate: null,
+    endDate: null
 }
 
 type LoaderData = {

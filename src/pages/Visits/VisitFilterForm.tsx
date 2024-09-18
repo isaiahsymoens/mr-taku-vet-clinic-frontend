@@ -1,11 +1,16 @@
 import React from "react";
 import {Box, Button, InputBase, Typography} from "@mui/material";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {Dayjs} from "dayjs";
 
 export interface VisitFilterModel {
     firstName?: string;
     lastName?: string;
     petName?: string;
     typeName?: string;
+    startDate?: Dayjs | null;
+    endDate?: Dayjs | null;
 }
 
 type VisitFilterProps = {
@@ -18,7 +23,7 @@ type VisitFilterProps = {
 const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormChangeVisitFilter, onClearVisitFilter}) => {
     return (
         <React.Fragment>
-            <Box sx={{width: "100%", minWidth: "350px", maxWidth: "350px", px: 3, py: 2, mt: 2}}>
+            <Box sx={{width: "100%", minWidth: "350px", maxWidth: "370px", px: 3, py: 2, mt: 2}}>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
                     <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
                         First Name:
@@ -67,7 +72,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                         onChange={(e) => onFormChangeVisitFilter("petName", e.target.value)}
                     />
                 </Box>
-                <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
+                <Box sx={{display: "flex", alignItems: "center", mb: 1.5}}>
                     <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
                         Pet Type:
                     </Typography>
@@ -82,6 +87,31 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                         value={visitForm?.typeName}
                         onChange={(e) => onFormChangeVisitFilter("typeName", e.target.value)}
                     />
+                </Box>
+                <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
+                    <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
+                        Date Range:
+                    </Typography>
+                    <Box sx={{display: "flex", alignItems: "center", gap: 1, ml: .5}}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                label="Start Date" 
+                                value={visitForm?.startDate}
+                                slotProps={{textField: {size: "small"}}}
+                                onChange={(e) => onFormChangeVisitFilter("startDate", e)}
+                            />
+                        </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                label="End Date" 
+                                value={visitForm?.endDate}
+                                slotProps={{textField: {size: "small"}}}
+                                onChange={(e) => onFormChangeVisitFilter("endDate", e)}
+                                minDate={visitForm.startDate as Dayjs}
+                                disabled={visitForm.startDate === null}
+                            />
+                        </LocalizationProvider>
+                    </Box>
                 </Box>
                 <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end", gap: 1, mt: 2}}>
                     <Button 

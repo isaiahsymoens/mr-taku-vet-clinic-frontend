@@ -36,36 +36,16 @@ export type DataTableProps = {
     totalCount: number;
     onPageChange: (newPage: number) => void;
     smallTable?: boolean;
+    onSort: (currentPage: number, tableHeader: string, isAsc: boolean) => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=false, menuActions, page, totalCount, onPageChange, smallTable=false}) => {
+const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=false, menuActions, page, totalCount, onPageChange, smallTable=false, onSort}) => {
     const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const handlePageChange = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         onPageChange(newPage + 1);
-    }
-    
-    const sortTableData = (data: any[]) => {
-        if (!sortConfig) return data;
-        return [...data].sort((a, b) => {
-            const aValue = getNestedValue(a, sortConfig.field);
-            const bValue = getNestedValue(b, sortConfig.field);
-
-            if (typeof aValue === "string" && typeof bValue === "string") {
-                return sortConfig.direction === "asc"
-                    ? aValue.localeCompare(bValue, undefined, {sensitivity: "case"})
-                    : bValue.localeCompare(aValue, undefined, {sensitivity: "case"})
-            }
-
-            if (aValue < bValue) {
-                return sortConfig.direction === "asc" ? -1 : 1;
-            }
-            if (aValue > bValue) {
-                return sortConfig.direction === "asc" ? 1 : -1;
-            }
-            
-            return 0;
-        });
+        setCurrentPage(newPage + 1);
     }
 
     const getNestedValue = (obj: any, path: string) => {
@@ -101,8 +81,9 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                             active={sortConfig?.field === tblHeader.field}
                                             direction={sortConfig?.direction === "asc" ? "asc" : "desc"}
                                             onClick={() => {
-                                              const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
-                                              setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});  
+                                                const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
+                                                onSort(currentPage, tblHeader.field, isAsc);
+                                                setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});
                                             }}
                                         >
                                             {tblHeader.label}
@@ -114,7 +95,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                         </TableHead>
                     }
                     <TableBody>
-                        {sortTableData(tableBody).slice(0, 10).map((tBody, rowIndex) => (
+                        {tableBody.slice(0, 10).map((tBody, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 {tableHeaders?.map((tHeader: any, colIndex) => {
                                     if (tHeader.field === "petName") {
@@ -207,7 +188,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                 }
                             </TableRow>
                         ))}
-                        {sortTableData(tableBody).length === 0 && 
+                        {tableBody.length === 0 && 
                             <TableRow>
                                 <TableCell colSpan={tableHeaders!.length+1 || 2} sx={{textAlign: "center"}}>
                                     No records found.

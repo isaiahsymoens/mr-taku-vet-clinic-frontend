@@ -164,6 +164,12 @@ const UsersPage: React.FC = () => {
         setTotalCount(response.totalItems);
     }
 
+    const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        const response = await fetchUsers(currentPage, headerColumn, isAsc);
+        dispatch(userActions.setUsers(response.data));
+        setTotalCount(response.totalItems);
+    }
+
     return (
         <React.Fragment>
             <SubHeader 
@@ -191,6 +197,7 @@ const UsersPage: React.FC = () => {
                             onClick: () => handleDelete(user),
                         }
                     ]} 
+                    onSort={handleSort}
                     page={page}
                     totalCount={totalCount}
                     onPageChange={handlePageChange}

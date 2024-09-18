@@ -9,8 +9,8 @@ export interface VisitFilterModel {
     lastName?: string;
     petName?: string;
     typeName?: string;
-    startDate?: Dayjs | null;
-    endDate?: Dayjs | null;
+    visitDateFrom?: Dayjs | null;
+    visitDateTo?: Dayjs | null;
 }
 
 type VisitFilterProps = {
@@ -96,19 +96,19 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 label="Start Date" 
-                                value={visitForm?.startDate}
+                                value={visitForm?.visitDateFrom}
                                 slotProps={{textField: {size: "small"}}}
-                                onChange={(e) => onFormChangeVisitFilter("startDate", e)}
+                                onChange={(e) => onFormChangeVisitFilter("visitDateFrom", e)}
                             />
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 label="End Date" 
-                                value={visitForm?.endDate}
+                                value={visitForm?.visitDateTo}
                                 slotProps={{textField: {size: "small"}}}
-                                onChange={(e) => onFormChangeVisitFilter("endDate", e)}
-                                minDate={visitForm.startDate as Dayjs}
-                                disabled={visitForm.startDate === null}
+                                onChange={(e) => onFormChangeVisitFilter("visitDateTo", e)}
+                                minDate={visitForm.visitDateFrom as Dayjs}
+                                disabled={visitForm.visitDateFrom === null}
                             />
                         </LocalizationProvider>
                     </Box>

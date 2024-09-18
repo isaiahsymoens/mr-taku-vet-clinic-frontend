@@ -160,6 +160,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                                         multiline
                                                         disabled
                                                         fullWidth 
+                                                        maxRows={4}
                                                         // sx={{
                                                         //     "& .MuiInputBase-root": {
                                                         //         padding: 0,

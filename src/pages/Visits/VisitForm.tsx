@@ -118,7 +118,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                             {errors.visitTypeId}
                         </FormHelperText>
                     </FormControl>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                         <DatePicker
                             label="Date"
                             value={visitData.date} 
@@ -176,7 +176,7 @@ const VisitForm: React.FC<VisitFormProps> = ({type, visitData, selectedVisitData
                         disabled
                         fullWidth 
                     />
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
                         <DatePicker
                             label="Date"
                             value={selectedVisitData.date} 

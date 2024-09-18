@@ -5,10 +5,11 @@ import {JSONObject} from "../utils/json";
 
 export type AddEditUserRequest = Omit<User, "petOwned">;
 
-export const fetchUsers = async(pageNumber?: number) => {
-    const response = await fetch(`https://localhost:5001/api/users/paginated?pageNumber=${pageNumber ?? 1}`, {
-        method: "GET"
-    });
+export const fetchUsers = async(pageNumber?: number, sortBy?: string, isAscending?: boolean) => {
+    const response = await fetch(
+        `https://localhost:5001/api/users/paginated?pageNumber=${pageNumber ?? 1}${sortBy ? `&sortBy=${sortBy}` : ""}${sortBy ? `&ascending=${isAscending}` : ""}`
+        , {method: "GET"}
+    );
     return PaginatedResponse.fromJSON((await response.json()).data, User.fromJSON);
 };
 

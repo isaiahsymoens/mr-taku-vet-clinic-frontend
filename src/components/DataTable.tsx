@@ -142,25 +142,26 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                                         disabled
                                                         fullWidth 
                                                         maxRows={4}
-                                                        // sx={{
-                                                        //     "& .MuiInputBase-root": {
-                                                        //         padding: 0,
-                                                        //         border: "none",
-                                                        //         fontSize: ".9rem"
-                                                        //     },
-                                                        //     "&. MuiInputBase-input": {
-                                                        //         padding: 0
-                                                        //     },
-                                                        //     "& .MuiInput-underline:before": {
-                                                        //         border: "none"
-                                                        //     },
-                                                        //     "& .MuiInput-underline:after": {
-                                                        //         border: "none"
-                                                        //     }
-                                                        // }}
                                                     />
                                                 </AccordionDetails>
                                             </Accordion>
+                                        </TableCell>
+                                    } else if (tHeader.field === "pet.petName") {
+                                        return <TableCell key={colIndex} sx={{display: "flex", alignItems: "center"}}>
+                                            <Box sx={{display: "flex", flexDirection: "column"}}>
+                                                {renderCellValue(getNestedValue(tBody, tHeader.field))}
+                                                <Box sx={{display: "flex"}}>
+                                                    <Typography sx={{fontSize: ".8rem"}}>
+                                                        {renderCellValue(getNestedValue(tBody, "pet.petType.typeName"))} 
+                                                    </Typography>
+                                                    {tBody.pet.breed !== "" && 
+                                                        <Typography sx={{fontSize: ".8rem"}}>
+                                                            <span style={{padding: "0px 5px"}}>•</span>
+                                                            {`${renderCellValue(getNestedValue(tBody, "pet.breed"))}`}
+                                                        </Typography>
+                                                    }
+                                                </Box>
+                                            </Box>
                                         </TableCell>
                                     } else {
                                         return <TableCell key={colIndex}>

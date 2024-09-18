@@ -25,6 +25,7 @@ import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 import {PaginatedResponse} from "../../models/paginatedResponse";
+import dayjs from "dayjs";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -134,7 +135,15 @@ const Profile = () => {
     }
 
     const handlePetFormChange = (key: keyof AddEditPetRequest, value: any) => {
-        setPetData((prevData) => ({...prevData, [key]: value}));
+        if (key === "birthDate") {
+            const date = value.set("hour", dayjs().hour())
+                              .set("minute", dayjs().minute())
+                              .set("second", dayjs().second())
+                              .set("millisecond", dayjs().millisecond());
+            setPetData((prevData) => ({...prevData, birthDate: date}));
+        } else {
+            setPetData((prevData) => ({...prevData, [key]: value}));
+        }
     }
 
     const handleUserFormChange = (key: keyof AddEditUserRequest, value: any) => {

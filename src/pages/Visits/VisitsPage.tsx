@@ -19,6 +19,7 @@ import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 import VisitFilter, {VisitFilterModel} from "./VisitFilterForm";
 import {PaginatedResponse} from "../../models/paginatedResponse";
+import dayjs from "dayjs";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Owner", field: "pet.user.name"},
@@ -110,7 +111,15 @@ const VisitsPage: React.FC = () => {
     }
 
     const handleFormChange = (key: keyof AddEditVisitRequest, value: any) => {
-        setVisitData((prevData) => ({...prevData, [key]: value}));
+        if (key === "date") {
+            const date = value.set("hour", dayjs().hour())
+                              .set("minute", dayjs().minute())
+                              .set("second", dayjs().second())
+                              .set("millisecond", dayjs().millisecond());
+            setVisitData((prevData) => ({...prevData, [key]: date}));
+        } else {
+            setVisitData((prevData) => ({...prevData, [key]: value}));
+        }
     }
 
     const toggleDrawer = () => {
@@ -164,7 +173,15 @@ const VisitsPage: React.FC = () => {
     }
 
     const handleFormChangeVisitFilter = (key: keyof VisitFilterModel, value: any) => {
-        setVisitFormFilter((prevData) => ({...prevData, [key]: value}));
+        if (key === "visitDateFrom" || key === "visitDateTo") {
+            const date = value.set("hour", dayjs().hour())
+                              .set("minute", dayjs().minute())
+                              .set("second", dayjs().second())
+                              .set("millisecond", dayjs().millisecond());
+            setVisitFormFilter((prevData) => ({...prevData, [key]: date}));
+        } else {
+            setVisitFormFilter((prevData) => ({...prevData, [key]: value}));
+        }
     }
 
     const handleClearVisitFilter = () => {
@@ -176,13 +193,14 @@ const VisitsPage: React.FC = () => {
             Object.entries(visitFormFilter)
                 .filter(([key, value]) => value !== "" && value != null)
         );
+        // data = (!data?.visitDateFrom && !data?.visitDateTo) ?? {...data, visitDateTo: data.visitDateFrom}
+        // console.log("data :", data);
         if (Object.keys(data).length > 0) {
             const response = await searchVisits(data);
             dispatch(visitActions.setVisits(response.data));
             dispatch(visitActions.setResetFilter(true));
             setTotalCount(response.totalItems);
-        } else if (Object.keys(data).length == 0 && Object.keys(visitFormFilter).length > 0)
-        {
+        } else if (Object.keys(data).length == 0 && Object.keys(visitFormFilter).length > 0) {
             const response = await fetchVisits();
             dispatch(visitActions.setVisits(response.data));
             setTotalCount(response.totalItems);

@@ -48,6 +48,8 @@ const UsersPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
 
+    const [searchInput, setSearchInput] = useState("");
+
     const loaderData = useLoaderData() as PaginatedResponse<User>;
     const users = useSelector((state: RootState) => state.user.users);
 
@@ -155,6 +157,7 @@ const UsersPage: React.FC = () => {
         const response = await searchUsersByName(input);
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
+        setSearchInput(input);
     }
 
     const handlePageChange = async (newPage: number) => {
@@ -165,7 +168,12 @@ const UsersPage: React.FC = () => {
     }
 
     const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
-        const response = await fetchUsers(currentPage, headerColumn, isAsc);
+        let response;
+        if (searchInput !== "") {
+            response = await searchUsersByName(searchInput, headerColumn, isAsc);
+        } else {
+            response = await fetchUsers(currentPage, headerColumn, isAsc);
+        }
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
     }

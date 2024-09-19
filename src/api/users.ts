@@ -27,8 +27,9 @@ export const getUserPasswordByUsername = async (username: string) => {
     return (await response.json()).data.password || "";
 };
 
-export const searchUsersByName = async (name: string) => {
-    const response = await fetch("https://localhost:5001/api/users/search", {
+export const searchUsersByName = async (name: string, sortBy?: string, isAscending?: boolean) => {
+    const response = await fetch(
+        `https://localhost:5001/api/users/search?${sortBy ? `sortBy=${sortBy}` : ""}${sortBy ? `&ascending=${isAscending}` : ""}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

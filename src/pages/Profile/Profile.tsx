@@ -203,6 +203,12 @@ const Profile = () => {
         setTotalCount(response.totalItems);
     }
 
+    const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        const response = await getPaginatedUserPetsByUsername(userData.username, currentPage, headerColumn, isAsc);
+        dispatch(petActions.setPets(response.data));
+        setTotalCount(response.totalItems);
+    }
+
     return (
         <React.Fragment>
             <Box sx={{flexGrow: 1, marginTop: "48px", p: 3}}>
@@ -253,6 +259,7 @@ const Profile = () => {
                                     onClick: () => handleDelete(data),
                                 }
                             ]}
+                            onSort={handleSort}
                             page={page}
                             totalCount={totalCount}
                             onPageChange={handlePageChange}

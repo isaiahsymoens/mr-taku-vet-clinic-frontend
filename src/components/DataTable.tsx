@@ -40,7 +40,10 @@ export type DataTableProps = {
 }
 
 const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=false, menuActions, page, totalCount, onPageChange, smallTable=false, onSort}) => {
-    const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>(null);
+    const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>({
+        field: tableHeaders ? tableHeaders[0].field : "",
+        direction: "asc"
+    });
     const [currentPage, setCurrentPage] = useState(1);
 
     const handlePageChange = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -82,7 +85,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                             direction={sortConfig?.direction === "asc" ? "asc" : "desc"}
                                             onClick={() => {
                                                 const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
-                                                onSort(currentPage, tblHeader.field, isAsc);
+                                                onSort(currentPage, tblHeader.field, !isAsc);
                                                 setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});
                                             }}
                                         >

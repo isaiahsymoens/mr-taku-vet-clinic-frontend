@@ -25,6 +25,7 @@ import {LoaderFunctionArgs, useLoaderData} from "react-router-dom";
 import {Alert, Box, Snackbar} from "@mui/material";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 import {PaginatedResponse} from "../../models/paginatedResponse";
+import dayjs from "dayjs";
 
 const tableHeaders: DataTableHeaders[] = [
     {label: "Name", field: "petName"},
@@ -134,7 +135,15 @@ const Profile = () => {
     }
 
     const handlePetFormChange = (key: keyof AddEditPetRequest, value: any) => {
-        setPetData((prevData) => ({...prevData, [key]: value}));
+        if (key === "birthDate") {
+            const date = value.set("hour", dayjs().hour())
+                              .set("minute", dayjs().minute())
+                              .set("second", dayjs().second())
+                              .set("millisecond", dayjs().millisecond());
+            setPetData((prevData) => ({...prevData, birthDate: date}));
+        } else {
+            setPetData((prevData) => ({...prevData, [key]: value}));
+        }
     }
 
     const handleUserFormChange = (key: keyof AddEditUserRequest, value: any) => {
@@ -194,6 +203,12 @@ const Profile = () => {
         setTotalCount(response.totalItems);
     }
 
+    const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        const response = await getPaginatedUserPetsByUsername(userData.username, currentPage, headerColumn, isAsc);
+        dispatch(petActions.setPets(response.data));
+        setTotalCount(response.totalItems);
+    }
+
     return (
         <React.Fragment>
             <Box sx={{flexGrow: 1, marginTop: "48px", p: 3}}>
@@ -244,6 +259,7 @@ const Profile = () => {
                                     onClick: () => handleDelete(data),
                                 }
                             ]}
+                            onSort={handleSort}
                             page={page}
                             totalCount={totalCount}
                             onPageChange={handlePageChange}

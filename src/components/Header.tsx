@@ -7,9 +7,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import {useNavigate} from "react-router-dom";
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -59,9 +61,9 @@ const Header: React.FC = () => {
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                sx={{mt: 3}}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={() => navigate("login")}>Logout</MenuItem>
               </Menu>
             </div>
         </Toolbar>

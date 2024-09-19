@@ -1,5 +1,6 @@
 import {PaginatedResponse} from "../models/paginatedResponse";
 import {User} from "../models/user";
+import {LoginDetails} from "../pages/Login/LoginPage";
 import {extractErrorMessages, GenericErrorResponse} from "../utils/errorHelper";
 import {JSONObject} from "../utils/json";
 
@@ -27,8 +28,9 @@ export const getUserPasswordByUsername = async (username: string) => {
     return (await response.json()).data.password || "";
 };
 
-export const searchUsersByName = async (name: string) => {
-    const response = await fetch("https://localhost:5001/api/users/search", {
+export const searchUsersByName = async (name: string, sortBy?: string, isAscending?: boolean) => {
+    const response = await fetch(
+        `https://localhost:5001/api/users/search?${sortBy ? `sortBy=${sortBy}` : ""}${sortBy ? `&ascending=${isAscending}` : ""}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -40,6 +42,21 @@ export const searchUsersByName = async (name: string) => {
 
 export const addUser = async (data: AddEditUserRequest) => {
     const response = await fetch(`https://localhost:5001/api/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    const json = await response.json();
+    if (!response.ok) {
+        throw extractErrorMessages(json.errors as GenericErrorResponse);
+    }
+    return User.fromJSON(json.data as JSONObject);
+}
+
+export const loginUser = async (data: LoginDetails) => {
+    const response = await fetch(`https://localhost:5001/api/users/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

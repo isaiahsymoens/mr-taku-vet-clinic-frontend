@@ -15,8 +15,8 @@ export const getUserPetsByUsername = async (username: string) => {
     return Pet.fromJSONArray((await response.json()).data as JSONObject[]);
 }
 
-export const getPaginatedUserPetsByUsername = async (username: string, pageNumber?: number) => {
-    const response = await fetch(`https://localhost:5001/api/pets/paginated/${username}?pageNumber=${pageNumber ?? 1}`, {
+export const getPaginatedUserPetsByUsername = async (username: string, pageNumber?: number, sortBy?: string, isAscending?: boolean) => {
+    const response = await fetch(`https://localhost:5001/api/pets/paginated/${username}?pageNumber=${pageNumber ?? 1}${sortBy ? `&sortBy=${sortBy}` : ""}${sortBy ? `&ascending=${isAscending}` : ""}`, {
         method: "GET"
     });
     return PaginatedResponse.fromJSON((await response.json()).data, Pet.fromJSON);

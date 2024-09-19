@@ -226,7 +226,16 @@ const VisitsPage: React.FC = () => {
     }
 
     const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
-        const response = await fetchVisits(currentPage, headerColumn, isAsc);
+        let response;
+        const data = Object.fromEntries(
+            Object.entries(visitFormFilter)
+                .filter(([key, value]) => value !== "" && value != null)
+        );
+        if (Object.keys(data).length > 0) {
+            response = await searchVisits(data, headerColumn, isAsc);
+        } else {
+            response = await fetchVisits(currentPage, headerColumn, isAsc);
+        }
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
     }

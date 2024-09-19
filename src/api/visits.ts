@@ -23,8 +23,8 @@ export const getPetVisits = async (id: number, pageNumber?: number) => {
     return PaginatedResponse.fromJSON((await response.json()).data, Visit.fromJSON);
 }
 
-export const searchVisits = async (data: VisitFilterModel) => {
-    const response = await fetch(`https://localhost:5001/api/visits/search`, {
+export const searchVisits = async (data: VisitFilterModel, sortBy?: string, isAscending?: boolean) => {
+    const response = await fetch(`https://localhost:5001/api/visits/search?${sortBy ? `sortBy=${sortBy}` : ""}${sortBy ? `&ascending=${isAscending}` : ""}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

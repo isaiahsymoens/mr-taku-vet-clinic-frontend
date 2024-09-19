@@ -193,8 +193,6 @@ const VisitsPage: React.FC = () => {
             Object.entries(visitFormFilter)
                 .filter(([key, value]) => value !== "" && value != null)
         );
-        // data = (!data?.visitDateFrom && !data?.visitDateTo) ?? {...data, visitDateTo: data.visitDateFrom}
-        // console.log("data :", data);
         if (Object.keys(data).length > 0) {
             const response = await searchVisits(data);
             dispatch(visitActions.setVisits(response.data));

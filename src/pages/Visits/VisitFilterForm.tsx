@@ -72,7 +72,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                         onChange={(e) => onFormChangeVisitFilter("petName", e.target.value)}
                     />
                 </Box>
-                <Box sx={{display: "flex", alignItems: "center", mb: 1.5}}>
+                <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
                     <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
                         Pet Type:
                     </Typography>
@@ -95,17 +95,59 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                     <Box sx={{display: "flex", alignItems: "center", gap: 1, ml: .5}}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                                label="Start Date" 
                                 value={visitForm?.visitDateFrom}
-                                slotProps={{textField: {size: "small"}}}
+                                slotProps={{
+                                    textField: {
+                                        placeholder: "Start Date",
+                                        size: "small",
+                                        sx: {
+                                            fontSize: ".3rem",
+                                            "& .MuiInputBase-input": {
+                                                fontSize: ".9rem",
+                                                height: "30px",
+                                                p: 0,
+                                                pl: 1,
+                                            },
+                                            "& .MuiInputAdornment-root svg": {
+                                                fontSize: "1.3rem"
+                                            },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {border: "none"},
+                                                borderBottom: "1px solid #000",
+                                                borderRadius: "0px",    
+                                            }
+                                        }
+                                    }
+                                }}
                                 onChange={(e) => onFormChangeVisitFilter("visitDateFrom", e)}
                             />
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                label="End Date" 
+                            <DatePicker 
                                 value={visitForm?.visitDateTo}
-                                slotProps={{textField: {size: "small"}}}
+                                slotProps={{
+                                    textField: {
+                                        placeholder: "End Date",
+                                        size: "small",
+                                        sx: {
+                                            fontSize: ".3rem",
+                                            "& .MuiInputBase-input": {
+                                                fontSize: ".9rem",
+                                                height: "30px",
+                                                p: 0,
+                                                pl: 1,
+                                            },
+                                            "& .MuiInputAdornment-root svg": {
+                                                fontSize: "1.3rem"
+                                            },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {border: "none"},
+                                                borderBottom: "1px solid #000",
+                                                borderRadius: "0px",    
+                                            }
+                                        }
+                                    }
+                                }}
                                 onChange={(e) => onFormChangeVisitFilter("visitDateTo", e)}
                                 minDate={visitForm.visitDateFrom as Dayjs}
                                 disabled={visitForm.visitDateFrom === null}

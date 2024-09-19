@@ -24,9 +24,9 @@ export const getPetVisits = async (id: number, pageNumber?: number) => {
 }
 
 export const searchVisits = async (data: VisitFilterModel, sortBy?: string, isAscending?: boolean) => {
-    // if (data.hasOwnProperty("visitDateFrom") && !data.hasOwnProperty("visitDateTo")) {
-    //     data = {...data, visitDateTo: data.visitDateFrom}
-    // }
+    if (data.hasOwnProperty("visitDateFrom") && !data.hasOwnProperty("visitDateTo")) {
+        data = {...data, visitDateTo: data.visitDateFrom}
+    }
     const response = await fetch(`https://localhost:5001/api/visits/search?${sortBy ? `sortBy=${sortBy}` : ""}${sortBy ? `&ascending=${isAscending}` : ""}`, {
         method: "POST",
         headers: {

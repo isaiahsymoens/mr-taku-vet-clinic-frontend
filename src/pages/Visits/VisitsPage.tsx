@@ -225,6 +225,12 @@ const VisitsPage: React.FC = () => {
         setTotalCount(response.totalItems);
     }
 
+    const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        const response = await fetchVisits(currentPage, headerColumn, isAsc);
+        dispatch(visitActions.setVisits(response.data));
+        setTotalCount(response.totalItems);
+    }
+
     return (
         <Box>
             <SubHeader 
@@ -259,6 +265,7 @@ const VisitsPage: React.FC = () => {
                             onClick: () => handleDelete(data),
                         }
                     ]}
+                    onSort={handleSort}
                     page={page}
                     totalCount={totalCount}
                     onPageChange={handlePageChange}

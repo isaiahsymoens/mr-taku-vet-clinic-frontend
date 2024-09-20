@@ -40,7 +40,8 @@ const initialStateVisitFilter: VisitFilterModel = {
     firstName: "", 
     lastName: "", 
     petName: "", 
-    typeName: "",
+    petType: "",
+    visitType: "",
     visitDateFrom: null,
     visitDateTo: null
 }

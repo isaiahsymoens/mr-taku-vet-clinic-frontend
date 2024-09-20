@@ -8,7 +8,8 @@ export interface VisitFilterModel {
     firstName?: string;
     lastName?: string;
     petName?: string;
-    typeName?: string;
+    petType?: string;
+    visitType?: string;
     visitDateFrom?: Dayjs | null;
     visitDateTo?: Dayjs | null;
 }
@@ -84,8 +85,24 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                             fontSize: ".9rem",
                             input: {padding: 0}
                         }}
-                        value={visitForm?.typeName}
-                        onChange={(e) => onFormChangeVisitFilter("typeName", e.target.value)}
+                        value={visitForm?.petType}
+                        onChange={(e) => onFormChangeVisitFilter("petType", e.target.value)}
+                    />
+                </Box>
+                <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
+                    <Typography variant="subtitle2" sx={{width: "110px", whiteSpace: "nowrap", color: "#5F6368", fontSize: "14px", fontWeight: 100}}>
+                        Visit Type:
+                    </Typography>
+                    <InputBase
+                        id="visitType"
+                        sx={{
+                            borderBottom: "0.5px solid #5F6368",
+                            width: "100%",
+                            fontSize: ".9rem",
+                            input: {padding: 0}
+                        }}
+                        value={visitForm?.visitType}
+                        onChange={(e) => onFormChangeVisitFilter("visitType", e.target.value)}
                     />
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", mb: 1}}>

@@ -10,11 +10,9 @@ import ActionDialog from "../../components/ActionDialog";
 
 import {Pet} from "../../models/pet";
 import {User} from "../../models/user";
-import {Visit} from "../../models/visit";
 
 import {AddEditPetRequest, addPet, deletePet, getPaginatedUserPetsByUsername, updatePet} from "../../api/pets";
 import {AddEditUserRequest, getUserByUsername, getUserPasswordByUsername, updateUser} from "../../api/users";
-import {getPetVisits} from "../../api/visits";
 
 import {RootState} from "../../redux";
 import {petActions} from "../../redux/features/pet";

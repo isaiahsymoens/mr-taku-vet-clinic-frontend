@@ -47,6 +47,7 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
     const [currentPage, setCurrentPage] = useState(1);
 
     const handlePageChange = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        e?.preventDefault();
         onPageChange(newPage + 1);
         setCurrentPage(newPage + 1);
     }

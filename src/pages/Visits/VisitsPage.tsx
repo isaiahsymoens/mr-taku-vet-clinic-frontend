@@ -156,7 +156,9 @@ const VisitsPage: React.FC = () => {
             setTotalCount(totalCount + 1);
             setVisitData(initialState);
             toggleDrawer();
-        } catch(err) {}
+        } catch(err) {
+            setErrors(err as GenericErrorResponse);
+        }
     }
 
     const handleEditSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -166,7 +168,9 @@ const VisitsPage: React.FC = () => {
             dispatch(visitActions.updateVisit(response));
             setVisitData(initialState);
             toggleDrawer();
-        } catch(err) {}
+        } catch(err) {
+            setErrors(err as GenericErrorResponse);
+        }
     }
 
     const handleAdd = () => {
@@ -193,7 +197,7 @@ const VisitsPage: React.FC = () => {
     const handleSearch = async () => {
         const data = Object.fromEntries(
             Object.entries(visitFormFilter)
-                .filter(([key, value]) => value !== "" && value != null)
+                .filter(([_key, value]) => value !== "" && value != null)
         );
         if (Object.keys(data).length > 0) {
             const response = await searchVisits(data);
@@ -229,7 +233,7 @@ const VisitsPage: React.FC = () => {
         let response;
         const data = Object.fromEntries(
             Object.entries(visitFormFilter)
-                .filter(([key, value]) => value !== "" && value != null)
+                .filter(([_key, value]) => value !== "" && value != null)
         );
         if (Object.keys(data).length > 0) {
             response = await searchVisits(data, headerColumn, isAsc);

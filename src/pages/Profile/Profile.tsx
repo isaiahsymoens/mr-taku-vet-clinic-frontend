@@ -123,7 +123,9 @@ const Profile = () => {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
             setSnackbarMsg({msg: "Successfully deleted.", severity: "success"});
-            setTotalCount(totalCount - 1);
+            const response = await getPaginatedUserPetsByUsername(loaderUser.username as string, page);
+            dispatch(petActions.setPets(response.data));
+            setTotalCount(response.totalItems);
         } catch(err) {
             setSnackbarMsg({msg: (err as any).message, severity: "error"});
         }

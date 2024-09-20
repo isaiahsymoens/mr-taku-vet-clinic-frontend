@@ -139,8 +139,10 @@ const VisitsPage: React.FC = () => {
         try {
             await deleteVisit(selectedVisit.visitId as number);
             dispatch(visitActions.removeVisit(selectedVisit.visitId));
-            setTotalCount(totalCount - 1);
             setSnackbarMsg("Successfully deleted.");
+            const response = await fetchVisits(page);
+            dispatch(visitActions.setVisits(response.data));
+            setTotalCount(response.totalItems);
             setSelectedVisit(null!);
             toggleActionDialog();
         } catch(err) {}

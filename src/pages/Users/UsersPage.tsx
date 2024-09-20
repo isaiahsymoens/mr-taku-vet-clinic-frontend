@@ -101,8 +101,10 @@ const UsersPage: React.FC = () => {
         try {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
-            setTotalCount(totalCount - 1);
             setSnackbarMsg("Successfully deleted.");
+            const response = await fetchUsers(page);
+            dispatch(userActions.setUsers(response.data));
+            setTotalCount(response.totalItems);
             setSelectedUser(null!);
             toggleActionDialog();
         } catch (err) {}

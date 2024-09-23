@@ -243,11 +243,12 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                 </Box>
                 <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end", gap: 1, mt: 2}}>
                     <Button 
-                        variant="outlined" 
                         sx={{
                             fontSize: ".8rem", 
                             textTransform: "none", 
-                            padding: "4px 8px"
+                            padding: "4px 8px",
+                            color: "#000",
+                            border: "none"
                         }}
                         onClick={onClearVisitFilter}
                     >Clear</Button>
@@ -256,7 +257,9 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                         sx={{
                             fontSize: ".8rem", 
                             textTransform: "none", 
-                            padding: "4px 8px"
+                            padding: "4px 8px",
+                            outline: "none",
+                            border: "none"
                         }}
                         onClick={onSearch}
                     >Search</Button>

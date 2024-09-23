@@ -106,16 +106,16 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                             "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
                                 border: 0,
                                 borderBottom: "1px solid #000",
-                                borderRadius: "0px",   
+                                borderRadius: "0px"
                             },
                             "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                 border: 0,
                                 borderBottom: "1px solid #000",
-                                borderRadius: "0px",   
+                                borderRadius: "0px"
                             },
                             "& .MuiSelect-select": {
                                 p: 0,
-                                fontSize: ".9rem",
+                                fontSize: ".9rem"
                             }
                           }}
                         value={visitForm?.petType}
@@ -150,16 +150,16 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                             "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
                                 border: 0,
                                 borderBottom: "1px solid #000",
-                                borderRadius: "0px",   
+                                borderRadius: "0px"
                             },
                             "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                 border: 0,
                                 borderBottom: "1px solid #000",
-                                borderRadius: "0px",   
+                                borderRadius: "0px"
                             },
                             "& .MuiSelect-select": {
                                 p: 0,
-                                fontSize: ".9rem",
+                                fontSize: ".9rem"
                             }
                           }}
                         value={visitForm?.visitType}
@@ -192,9 +192,8 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                                             fontSize: ".3rem",
                                             "& .MuiInputBase-input": {
                                                 fontSize: ".9rem",
-                                                height: "30px",
-                                                p: 0,
-                                                pl: 1,
+                                                height: "22.5px",
+                                                p: 0
                                             },
                                             "& .MuiInputAdornment-root svg": {
                                                 fontSize: "1.3rem"
@@ -202,7 +201,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                                             "& .MuiOutlinedInput-root": {
                                                 "& fieldset": {border: "none"},
                                                 borderBottom: "1px solid #000",
-                                                borderRadius: "0px",    
+                                                borderRadius: "0px"
                                             }
                                         }
                                     }
@@ -221,9 +220,8 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                                             fontSize: ".3rem",
                                             "& .MuiInputBase-input": {
                                                 fontSize: ".9rem",
-                                                height: "30px",
-                                                p: 0,
-                                                pl: 1,
+                                                height: "22.5px",
+                                                p: 0
                                             },
                                             "& .MuiInputAdornment-root svg": {
                                                 fontSize: "1.3rem"
@@ -231,7 +229,7 @@ const VisitFilter: React.FC<VisitFilterProps> = ({onSearch, visitForm, onFormCha
                                             "& .MuiOutlinedInput-root": {
                                                 "& fieldset": {border: "none"},
                                                 borderBottom: "1px solid #000",
-                                                borderRadius: "0px",    
+                                                borderRadius: "0px"
                                             }
                                         }
                                     }

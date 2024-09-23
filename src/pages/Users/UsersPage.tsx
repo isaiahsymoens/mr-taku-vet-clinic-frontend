@@ -42,7 +42,7 @@ const UsersPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
     const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
-    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [snackbarMsg, setSnackbarMsg] = useState<{msg: string, severity: "success" | "error"}>({msg: "", severity: "success"});
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
     const [page, setPage] = useState(1);
@@ -101,8 +101,10 @@ const UsersPage: React.FC = () => {
         try {
             await deleteUser(selectedUser.username as string);
             dispatch(userActions.removeUser(selectedUser.username as string));
-            setTotalCount(totalCount - 1);
-            setSnackbarMsg("Successfully deleted.");
+            setSnackbarMsg({msg: "Successfully deleted.", severity: "success"});
+            const response = await fetchUsers(page);
+            dispatch(userActions.setUsers(response.data));
+            setTotalCount(response.totalItems);
             setSelectedUser(null!);
             toggleActionDialog();
         } catch (err) {}
@@ -118,6 +120,7 @@ const UsersPage: React.FC = () => {
             setErrors({});
             const response = await addUser(userData);
             dispatch(userActions.addUser(response));
+            setSnackbarMsg({msg: "Successfully added.", severity: "success"});
             setTotalCount(totalCount + 1);
             setUserData(initialStateUserData);
             toggleDrawer();
@@ -235,15 +238,15 @@ const UsersPage: React.FC = () => {
                 onCancel={toggleActionDialog}
             />
             <Snackbar 
-                open={snackbarMsg !== ""} 
+                open={snackbarMsg.msg !== ""} 
                 autoHideDuration={3000} 
-                onClose={() => setSnackbarMsg("")}
+                onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
             >
                 <Alert
                     severity="success"
-                    onClose={() => setSnackbarMsg("")}
+                    onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
                 >
-                    {snackbarMsg}
+                    {snackbarMsg.msg}
                 </Alert>
             </Snackbar>
         </React.Fragment>

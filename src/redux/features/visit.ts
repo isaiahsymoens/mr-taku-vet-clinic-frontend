@@ -21,7 +21,7 @@ const visitSlice = createSlice({
             state.visits = action.payload;
         },
         addVisit: (state, action) => {
-            state.visits.push(action.payload);
+            state.visits = [action.payload, ...state.visits];
         },
         removeVisit: (state, action) => {
             state.visits = state.visits.filter(visit => visit.visitId !== action.payload);

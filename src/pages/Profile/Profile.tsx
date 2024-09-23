@@ -10,11 +10,9 @@ import ActionDialog from "../../components/ActionDialog";
 
 import {Pet} from "../../models/pet";
 import {User} from "../../models/user";
-import {Visit} from "../../models/visit";
 
 import {AddEditPetRequest, addPet, deletePet, getPaginatedUserPetsByUsername, updatePet} from "../../api/pets";
 import {AddEditUserRequest, getUserByUsername, getUserPasswordByUsername, updateUser} from "../../api/users";
-import {getPetVisits} from "../../api/visits";
 
 import {RootState} from "../../redux";
 import {petActions} from "../../redux/features/pet";
@@ -123,7 +121,9 @@ const Profile = () => {
             await deletePet(selectedPet!.petId as number);
             dispatch(petActions.removePet(selectedPet!.petId as number));
             setSnackbarMsg({msg: "Successfully deleted.", severity: "success"});
-            setTotalCount(totalCount - 1);
+            const response = await getPaginatedUserPetsByUsername(loaderUser.username as string, page);
+            dispatch(petActions.setPets(response.data));
+            setTotalCount(response.totalItems);
         } catch(err) {
             setSnackbarMsg({msg: (err as any).message, severity: "error"});
         }
@@ -176,6 +176,7 @@ const Profile = () => {
         try {
             const response = await addPet({...petData, username: loaderUser.username});
             dispatch(petActions.addPet(response));
+            setSnackbarMsg({msg: "Successfully added.", severity: "success"});
             setTotalCount(totalCount + 1);
             setPetData(initialStatePet);
             togglePetDrawer();

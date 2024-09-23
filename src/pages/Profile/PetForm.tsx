@@ -71,6 +71,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petId, handleFormChange
                         page={page}
                         totalCount={totalCount}
                         onPageChange={handlePageChange}
+                        onSort={() => {}}
                     />
                 </React.Fragment>
                 :

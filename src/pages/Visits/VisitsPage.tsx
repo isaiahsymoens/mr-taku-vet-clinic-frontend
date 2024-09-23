@@ -59,7 +59,7 @@ const VisitsPage: React.FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isActionDialog, setIsActionDialog] = useState(false);
     const [visitDrawerType, setVisitDrawerType] = useState<DrawerPanelActions | string>("");
-    const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+    const [snackbarMsg, setSnackbarMsg] = useState<{msg: string, severity: "success" | "error"}>({msg: "", severity: "success"});
     const [errors, setErrors] = useState<GenericErrorResponse>({});
     const [visitFormFilter, setVisitFormFilter] = useState<VisitFilterModel>(initialStateVisitFilter);
 
@@ -140,7 +140,7 @@ const VisitsPage: React.FC = () => {
         try {
             await deleteVisit(selectedVisit.visitId as number);
             dispatch(visitActions.removeVisit(selectedVisit.visitId));
-            setSnackbarMsg("Successfully deleted.");
+            setSnackbarMsg({msg: "Successfully deleted.", severity: "success"});
             const response = await fetchVisits(page);
             dispatch(visitActions.setVisits(response.data));
             setTotalCount(response.totalItems);
@@ -154,6 +154,7 @@ const VisitsPage: React.FC = () => {
         try {
             const response = await addVisit(visitData as AddEditVisitRequest);
             dispatch(visitActions.addVisit(response));
+            setSnackbarMsg({msg: "Successfully added.", severity: "success"});
             setTotalCount(totalCount + 1);
             setVisitData(initialState);
             toggleDrawer();
@@ -310,22 +311,22 @@ const VisitsPage: React.FC = () => {
                 />
             </DrawerPanel>
             <ActionDialog
-                title="Are you sure you want to delete this user record?"
+                title="Are you sure you want to delete this visit record?"
                 description="This will delete permanently, You cannot undo this action."
                 isOpen={isActionDialog}
                 onSave={handleSaveConfirmDlg}
                 onCancel={toggleActionDialog}
             />
             <Snackbar 
-                open={snackbarMsg !== ""} 
+                open={snackbarMsg.msg !== ""} 
                 autoHideDuration={3000} 
-                onClose={() => setSnackbarMsg("")}
+                onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
             >
                 <Alert
                     severity="success"
-                    onClose={() => setSnackbarMsg("")}
+                    onClose={() => setSnackbarMsg({msg: "", severity: "success"})}
                 >
-                    {snackbarMsg}
+                    {snackbarMsg.msg}
                 </Alert>
             </Snackbar>
         </Box>

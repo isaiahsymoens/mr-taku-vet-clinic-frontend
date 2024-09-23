@@ -176,6 +176,7 @@ const Profile = () => {
         try {
             const response = await addPet({...petData, username: loaderUser.username});
             dispatch(petActions.addPet(response));
+            setSnackbarMsg({msg: "Successfully added.", severity: "success"});
             setTotalCount(totalCount + 1);
             setPetData(initialStatePet);
             togglePetDrawer();

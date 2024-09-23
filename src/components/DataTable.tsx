@@ -173,13 +173,12 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                                 <CircleIcon 
                                                     sx={{
                                                         fontSize: "1em", 
-                                                        color: renderCellValue(getNestedValue(tBody, tHeader.field)) ? "#28A745" : "#D3D3D3"
+                                                        color: renderCellValue(getNestedValue(tBody, tHeader.field)) ? "#28A745" : "#D32F2F"
                                                     }} 
                                                 />
                                                 :
                                                 renderCellValue(getNestedValue(tBody, tHeader.field))
                                             }
-                                            
                                         </TableCell>
                                     }
                                 })}

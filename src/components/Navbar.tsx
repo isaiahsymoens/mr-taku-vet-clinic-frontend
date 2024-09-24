@@ -23,10 +23,10 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isUserPage = location.pathname.includes("/users"); 
+    const isVisitsPage = location.pathname.includes("/visits"); 
 
     useEffect(() => {
-        setSelectedNavItem(isUserPage ? 0 : 1);
+        setSelectedNavItem(isVisitsPage ? 1 : 0);
     }, []);
 
     return (

@@ -1,4 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit";
+import auth from "./features/auth";
 import petReducer from "./features/pet";
 import userReducer from "./features/user";
 import visitReducer from "./features/visit";
@@ -9,6 +10,7 @@ const store = configureStore({
           serializableCheck: false,
     }),
     reducer: {
+        auth: auth,
         pet: petReducer,
         user: userReducer,
         visit: visitReducer,

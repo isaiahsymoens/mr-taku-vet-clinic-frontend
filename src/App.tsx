@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const router = createBrowserRouter([
     {
       path: "login",
-      element: <ProtectedRoute element={<LoginPage />} />
+      element: <LoginPage />
     },
     {
       path: "",

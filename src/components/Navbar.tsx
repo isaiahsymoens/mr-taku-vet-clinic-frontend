@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,6 +21,13 @@ const navLinks = [
 const Navbar: React.FC = () => {
     const [selectedNavItem, setSelectedNavItem] = useState<number>(0);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const isUserPage = location.pathname.includes("/users"); 
+
+    useEffect(() => {
+        setSelectedNavItem(isUserPage ? 0 : 1);
+    }, []);
 
     return (
         <Drawer

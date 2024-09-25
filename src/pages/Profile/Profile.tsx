@@ -197,17 +197,18 @@ const Profile = () => {
         }
     }
 
-    const handlePageChange = async (newPage: number) => {
+    const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
         setPage(newPage);
-        const response = await getPaginatedUserPetsByUsername(loaderUser.username as string, newPage);
+        const response = await getPaginatedUserPetsByUsername(loaderUser.username as string, newPage, headerColumn, isAsc);
         dispatch(petActions.setPets(response.data));
         setTotalCount(response.totalItems);
     }
 
     const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
-        const response = await getPaginatedUserPetsByUsername(userData.username, currentPage, headerColumn, isAsc);
+        const response = await getPaginatedUserPetsByUsername(userData.username, 1, headerColumn, isAsc);
         dispatch(petActions.setPets(response.data));
         setTotalCount(response.totalItems);
+        setPage(1);
     }
 
     return (

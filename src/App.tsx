@@ -16,6 +16,7 @@ const App: React.FC = () => {
     {
       path: "",
       element: <MainLayout />,
+      errorElement: <NotFoundPage />,
       children: [
         {
           path: "users",

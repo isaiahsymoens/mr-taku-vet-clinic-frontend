@@ -50,6 +50,10 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
         e?.preventDefault();
         onPageChange(newPage + 1);
         setCurrentPage(newPage + 1);
+        setSortConfig((prevConfig) => ({
+            field: prevConfig?.field || (tableHeaders ? tableHeaders[0].field : ""),
+            direction: "asc"
+        }));
     }
 
     const getNestedValue = (obj: any, path: string) => {
@@ -82,19 +86,20 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                                 {tableHeaders?.map((tblHeader, index) => 
                                     <TableCell key={index} sx={{fontWeight: 600}}>
                                         <TableSortLabel
-                                            active={sortConfig?.field === tblHeader.field}
+                                            active={tableBody.length > 1 && sortConfig?.field === tblHeader.field}
                                             direction={sortConfig?.direction === "asc" ? "asc" : "desc"}
                                             onClick={() => {
                                                 const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
                                                 onSort(currentPage, tblHeader.field, !isAsc);
                                                 setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});
                                             }}
+                                            disabled={tableBody.length === 1}
                                         >
                                             {tblHeader.label}
                                         </TableSortLabel>
                                     </TableCell>
                                 )}
-                                {menuActions && <TableCell sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px" }} />}
+                                {menuActions && <TableCell sx={{borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px"}} />}
                             </TableRow>
                         </TableHead>
                     }

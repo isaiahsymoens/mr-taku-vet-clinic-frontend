@@ -161,6 +161,7 @@ const UsersPage: React.FC = () => {
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
         setSearchInput(input);
+        setPage(1);
     }
 
     const handlePageChange = async (newPage: number) => {

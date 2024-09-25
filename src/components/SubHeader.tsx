@@ -116,15 +116,20 @@ const SubHeader: React.FC<SubHeaderProps> = ({
                     </React.Fragment>
                 }
                 {showSearchbar && 
-                    <Paper component="form" 
+                    <Paper 
+                        component="form" 
                         sx={{  
                             display: "flex", 
                             alignItems: "center", 
                             width: 300
                         }}
+                        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                            e.preventDefault();
+                            handleSearch();
+                        }}
                     >
                         <IconButton 
-                            type="button" 
+                            type="submit" 
                             onClick={showSearchReset ? handleClearSearch : handleSearch}
                         >
                             {showSearchReset ? <CloseIcon /> : <SearchIcon />}

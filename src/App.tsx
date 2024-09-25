@@ -5,6 +5,7 @@ import UsersPage, {loader as usersPageLoader} from "./pages/Users/UsersPage";
 import VisitsPage, {loader as visitPageLoader}  from "./pages/Visits/VisitsPage";
 import Profile, {loader as profilePageLoader} from "./pages/Profile/Profile";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
@@ -15,20 +16,21 @@ const App: React.FC = () => {
     {
       path: "",
       element: <MainLayout />,
+      errorElement: <NotFoundPage />,
       children: [
         {
           path: "users",
-          element: <UsersPage />,
+          element: <ProtectedRoute element={<UsersPage />} />,
           loader: usersPageLoader,
         },
         {
           path: "visits",
-          element: <VisitsPage />,
+          element: <ProtectedRoute element={<VisitsPage />} />,
           loader: visitPageLoader,
         },
         {
           path: ":username",
-          element: <Profile />,
+          element: <ProtectedRoute element={<Profile />} />,
           loader: profilePageLoader,
         },
       ],

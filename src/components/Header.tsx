@@ -8,6 +8,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import {useNavigate} from "react-router-dom";
+import {logout} from "../utils/auth";
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -63,7 +64,10 @@ const Header: React.FC = () => {
                 onClose={handleClose}
                 sx={{mt: 3}}
               >
-                <MenuItem onClick={() => navigate("login")}>Logout</MenuItem>
+                <MenuItem onClick={() => {
+                  logout();
+                  navigate("login");
+                }}>Logout</MenuItem>
               </Menu>
             </div>
         </Toolbar>

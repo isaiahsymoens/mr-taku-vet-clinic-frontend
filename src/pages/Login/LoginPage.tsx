@@ -1,9 +1,10 @@
 import {useState} from "react";
 import {Box, Typography, TextField, Button, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, FormHelperText} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {loginUser} from "../../api/users";
+import {isAuthenticated} from "../../utils/auth";
 
 export interface LoginDetails {
     username: string;
@@ -18,7 +19,6 @@ const LoginPage: React.FC = () => {
     const [errors, setErrors] = useState<GenericErrorResponse>({});
 
     const navigate = useNavigate();
-
     
     const handleFormChange = (key: keyof LoginDetails, value: any) => {
         setLoginDetails((prevData) => ({...prevData, [key]: value}));
@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await loginUser(loginDetails);
+            sessionStorage.setItem("user", JSON.stringify(await loginUser(loginDetails)));
             navigate("/users");
         } catch (err) {
             setErrors(err as GenericErrorResponse);
@@ -42,6 +42,10 @@ const LoginPage: React.FC = () => {
     const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
+
+    if (isAuthenticated()) {
+        return <Navigate to="/users" />
+    }
 
     return <Box sx={{width: "100vw", height: "100vh", background: "#ebebeb"}}>
         <Box sx={{

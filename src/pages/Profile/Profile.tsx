@@ -331,8 +331,12 @@ const Profile = () => {
 export default Profile;
 
 export const loader = async ({params}: LoaderFunctionArgs<{username: string}>) => {
-    const {username} = params;
-    const loaderUser = await getUserByUsername(username as string);
-    const loaderUserPets = await getPaginatedUserPetsByUsername(username as string);
-    return {loaderUser, loaderUserPets};
+    try {
+        const {username} = params;
+        const loaderUser = await getUserByUsername(username as string);
+        const loaderUserPets = await getPaginatedUserPetsByUsername(username as string);
+        return {loaderUser, loaderUserPets};
+    } catch (err) {
+        throw new Response("Not Found", {status: 404});
+    }
 }

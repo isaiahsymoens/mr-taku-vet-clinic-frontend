@@ -66,6 +66,8 @@ const VisitsPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
 
+    const [sortConfig, setSortConfig] = useState<{field: string, isAsc: boolean}>({field: tableHeaders[0].field, isAsc: true});
+
     useEffect(() => {
         dispatch(visitActions.setResetFilter(false));
     }, []);
@@ -202,13 +204,13 @@ const VisitsPage: React.FC = () => {
                 .filter(([_key, value]) => value !== "" && value != null)
         );
         if (Object.keys(data).length > 0) {
-            const response = await searchVisits(data);
+            const response = await searchVisits(data, sortConfig.field, sortConfig.isAsc);
             dispatch(visitActions.setVisits(response.data));
             dispatch(visitActions.setResetFilter(true));
             setTotalCount(response.totalItems);
             setPage(1);
         } else if (Object.keys(data).length == 0 && Object.keys(visitFormFilter).length > 0) {
-            const response = await fetchVisits();
+            const response = await fetchVisits(1, sortConfig.field, sortConfig.isAsc);
             dispatch(visitActions.setVisits(response.data));
             setTotalCount(response.totalItems);
             dispatch(visitActions.setResetFilter(false));
@@ -219,7 +221,7 @@ const VisitsPage: React.FC = () => {
     }
 
     const resetSearch = async () => {
-        const response = await fetchVisits();
+        const response = await fetchVisits(1, sortConfig.field, sortConfig.isAsc);
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
         dispatch(visitActions.setResetFilter(false));
@@ -227,9 +229,10 @@ const VisitsPage: React.FC = () => {
         setPage(1);
     }
 
-    const handlePageChange = async (newPage: number) => {
+    const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
         setPage(newPage);
-        const response = await fetchVisits(newPage);
+        setSortConfig({field: headerColumn, isAsc: isAsc});
+        const response = await fetchVisits(newPage, headerColumn, isAsc);
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
     }
@@ -243,10 +246,12 @@ const VisitsPage: React.FC = () => {
         if (Object.keys(data).length > 0) {
             response = await searchVisits(data, headerColumn, isAsc);
         } else {
-            response = await fetchVisits(currentPage, headerColumn, isAsc);
+            response = await fetchVisits(1, headerColumn, isAsc);
         }
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
+        setPage(1);
+        setSortConfig({field: headerColumn, isAsc: isAsc});
     }
 
     return (

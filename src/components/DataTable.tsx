@@ -78,43 +78,44 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                 }}
             >
                 <Table stickyHeader>
-                    {(tableHeaders && !noHeader) &&
-                        <TableHead>
-                            <TableRow>
-                                {tableHeaders?.map((tblHeader, index) => 
-                                    <TableCell key={index} sx={{fontWeight: 600}}>
-                                        <TableSortLabel
-                                            active={sortConfig?.field === tblHeader.field}
-                                            direction={sortConfig?.direction === "asc" ? "asc" : "desc"}
-                                            onClick={() => {
-                                                const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
-                                                onSort(currentPage, tblHeader.field, !isAsc);                   
-                                                setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});
-                                            }}
-                                        >
-                                            {tblHeader.label}
-                                        </TableSortLabel>
-                                    </TableCell>
-                                )}
-                                {menuActions && <TableCell sx={{borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px"}} />}
-                            </TableRow>
-                        </TableHead>
-                    }
-                    {loading ? 
+                    {loading ?
+                    <React.Fragment>
+                        
                         <Box 
                             sx={{
-                                position: "absolute",
-                                top: 300,
-                                left: 700,
                                 display: "flex", 
                                 alignItems: "center", 
-                                justifyContent: "center"
+                                justifyContent: "center",
+                                minHeight: "50vh",
                             }}
                         >
                             <CircularProgress />
                         </Box>
+                    </React.Fragment>
                     :
                     <React.Fragment>
+                        {(tableHeaders && !noHeader) &&
+                            <TableHead>
+                                <TableRow>
+                                    {tableHeaders?.map((tblHeader, index) => 
+                                        <TableCell key={index} sx={{fontWeight: 600}}>
+                                            <TableSortLabel
+                                                active={sortConfig?.field === tblHeader.field}
+                                                direction={sortConfig?.direction === "asc" ? "asc" : "desc"}
+                                                onClick={() => {
+                                                    const isAsc = sortConfig?.field === tblHeader.field && sortConfig?.direction === "asc";
+                                                    onSort(currentPage, tblHeader.field, !isAsc);                   
+                                                    setSortConfig({field: tblHeader.field, direction: isAsc ? "desc" : "asc"});
+                                                }}
+                                            >
+                                                {tblHeader.label}
+                                            </TableSortLabel>
+                                        </TableCell>
+                                    )}
+                                    {menuActions && <TableCell sx={{borderBottom: "1px solid rgba(224, 224, 224, 1)", width: "50px"}} />}
+                                </TableRow>
+                            </TableHead>
+                        }
                         <TableBody>
                             {tableBody.slice(0, 10).map((tBody, rowIndex) => (
                                 <TableRow key={rowIndex}>

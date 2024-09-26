@@ -13,6 +13,7 @@ import {GenericErrorResponse} from "../../utils/errorHelper";
 import {PaginatedResponse} from "../../models/paginatedResponse";
 import {getPetVisits} from "../../api/visits";
 import DataTable, { DataTableHeaders } from "../../components/DataTable";
+import dayjs from "dayjs";
 
 type PetFormProps = {
     type: DrawerPanelActions | string;
@@ -124,6 +125,7 @@ const PetForm: React.FC<PetFormProps> = ({type, petData, petId, handleFormChange
                                     helperText: errors?.birthDate
                                 }
                             }}
+                            maxDate={dayjs()}
                         />
                     </LocalizationProvider>
                 </React.Fragment>

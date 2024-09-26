@@ -97,7 +97,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, er
                 required
             />
             <FormControl variant="outlined" size="small" error={hasError("password")}>
-                <InputLabel htmlFor="outlined-adornment-password">Password *</InputLabel>
+                <InputLabel htmlFor="outlined-adornment-password">{type === DrawerPanelActions.Edit ? "New Password" : "Password *"}</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"
                     type={showPassword ? "text" : "password"}
@@ -117,7 +117,7 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, er
                             </IconButton>
                         </InputAdornment>
                     }
-                    label="Password"
+                    label={type === DrawerPanelActions.Edit ? "New Password" : "Password"}
                     required={type !== DrawerPanelActions.Edit}
                 />
                 <FormHelperText>

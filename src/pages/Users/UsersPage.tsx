@@ -65,8 +65,8 @@ const UsersPage: React.FC = () => {
     }, [dispatch]);
 
     const handleEdit = async (data: User) => {
-        const response = await getUserPasswordByUsername(data.username);
-        const dataWithPassword: any = {...data, password: response};
+        // const response = await getUserPasswordByUsername(data.username);
+        const dataWithPassword: any = {...data, password: ""};
         setOrgUserData(dataWithPassword);
         setUserData(dataWithPassword);
         setUserDrawerType(DrawerPanelActions.Edit);

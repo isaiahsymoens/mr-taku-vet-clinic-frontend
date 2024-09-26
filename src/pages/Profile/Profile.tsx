@@ -226,8 +226,8 @@ const Profile = () => {
                     <ProfileCard 
                         user={user} 
                         toggleUserDrawer={async () => {
-                            const response = await getUserPasswordByUsername(orgUserData.username);
-                            const dataWithPassword: any = {...orgUserData, password: response};
+                            // const response = await getUserPasswordByUsername(orgUserData.username);
+                            const dataWithPassword: any = {...orgUserData, password: ""};
                             setOrgUserData(dataWithPassword);
                             setUserData(dataWithPassword);
                             toggleUserDrawer();

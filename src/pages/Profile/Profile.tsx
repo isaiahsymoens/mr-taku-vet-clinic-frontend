@@ -60,6 +60,8 @@ const Profile = () => {
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
 
+    const [loading, setLoading] = useState(false);
+
     const dispatch = useDispatch();
     const {loaderUser, loaderUserPets} = useLoaderData() as LoaderData;
     const pets = useSelector((state: RootState) => state.pet.pets);
@@ -198,17 +200,21 @@ const Profile = () => {
     }
 
     const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
+        setLoading(true);
         setPage(newPage);
         const response = await getPaginatedUserPetsByUsername(loaderUser.username as string, newPage, headerColumn, isAsc);
         dispatch(petActions.setPets(response.data));
         setTotalCount(response.totalItems);
+        setLoading(false);
     }
 
     const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        setLoading(true);
         const response = await getPaginatedUserPetsByUsername(userData.username, 1, headerColumn, isAsc);
         dispatch(petActions.setPets(response.data));
         setTotalCount(response.totalItems);
         setPage(1);
+        setLoading(false);
     }
 
     return (
@@ -265,6 +271,7 @@ const Profile = () => {
                             page={page}
                             totalCount={totalCount}
                             onPageChange={handlePageChange}
+                            loading={loading}
                         />
                     </Box>
                 </Box>

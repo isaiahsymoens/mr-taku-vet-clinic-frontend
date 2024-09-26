@@ -51,6 +51,8 @@ const UsersPage: React.FC = () => {
     const [searchInput, setSearchInput] = useState("");
     const [sortConfig, setSortConfig] = useState<{field: string, isAsc: boolean}>({field: tableHeaders[0].field, isAsc: true});
 
+    const [loading, setLoading] = useState(false);
+
     const loaderData = useLoaderData() as PaginatedResponse<User>;
     const users = useSelector((state: RootState) => state.user.users);
 
@@ -158,22 +160,27 @@ const UsersPage: React.FC = () => {
     }
 
     const handleSearch = async (input: string) => {
+        setLoading(true);
         const response = await searchUsersByName(input, sortConfig.field, sortConfig.isAsc);
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
         setSearchInput(input);
         setPage(1);
+        setLoading(false);
     }
 
     const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
+        setLoading(true);
         setPage(newPage);
         setSortConfig({field: headerColumn, isAsc: isAsc});
         const response = await fetchUsers(newPage, headerColumn, isAsc);
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
+        setLoading(false);
     }
 
     const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        setLoading(true);
         let response;
         if (searchInput !== "") {
             response = await searchUsersByName(searchInput, headerColumn, isAsc);
@@ -184,6 +191,7 @@ const UsersPage: React.FC = () => {
         setTotalCount(response.totalItems);
         setPage(1);
         setSortConfig({field: headerColumn, isAsc: isAsc});
+        setLoading(false);
     }
 
     return (
@@ -217,6 +225,7 @@ const UsersPage: React.FC = () => {
                     page={page}
                     totalCount={totalCount}
                     onPageChange={handlePageChange}
+                    loading={loading}
                 />
             </Box>
             <DrawerPanel 

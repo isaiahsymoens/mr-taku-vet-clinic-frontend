@@ -16,7 +16,8 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    TextField
+    TextField,
+    CircularProgress
 } from "@mui/material";
 import PetsIcon from '@mui/icons-material/Pets';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -37,9 +38,10 @@ export type DataTableProps = {
     onPageChange: (newPage: number, tableHeader: string, isAsc: boolean) => void;
     smallTable?: boolean;
     onSort: (currentPage: number, tableHeader: string, isAsc: boolean) => void;
+    loading: boolean;
 }
 
-const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=false, menuActions, page, totalCount, onPageChange, smallTable=false, onSort}) => {
+const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=false, menuActions, page, totalCount, onPageChange, smallTable=false, onSort, loading}) => {
     const [sortConfig, setSortConfig] = useState<{field: string, direction: "asc"|"desc"} | null>({
         field: tableHeaders ? tableHeaders[0].field : "",
         direction: "asc"
@@ -98,108 +100,125 @@ const DataTable: React.FC<DataTableProps> = ({tableHeaders, tableBody, noHeader=
                             </TableRow>
                         </TableHead>
                     }
-                    <TableBody>
-                        {tableBody.slice(0, 10).map((tBody, rowIndex) => (
-                            <TableRow key={rowIndex}>
-                                {tableHeaders?.map((tHeader: any, colIndex) => {
-                                    if (tHeader.field === "petName") {
-                                        return <TableCell key={colIndex} sx={{display: "flex", alignItems: "center"}}>
-                                            <PetsIcon 
-                                                sx={{ 
-                                                    color: "#FFF",
-                                                    background: "#AAA",
-                                                    borderRadius: "5em",
-                                                    p: .5, 
-                                                    mr: 1
-                                                }}
-                                            />
-                                            <Box sx={{display: "flex", flexDirection: "column"}}>
-                                                {renderCellValue(getNestedValue(tBody, tHeader.field))}
-                                                <Box sx={{display: "flex"}}>
-                                                    <Typography sx={{color: "gray", fontSize: ".8rem"}}>
-                                                        {renderCellValue(getNestedValue(tBody, "petType.typeName"))} 
-                                                    </Typography>
-                                                    {tBody.breed !== "" && 
-                                                        <Typography sx={{color: "gray", fontSize: ".8rem"}}>
-                                                            <span style={{padding: "0px 5px"}}>•</span>
-                                                            {`${renderCellValue(getNestedValue(tBody, "breed"))}`}
-                                                        </Typography>
-                                                    }
-                                                </Box>
-                                            </Box>
-                                        </TableCell>
-                                    } else if (tHeader.field === "petForm") {
-                                        return <TableCell key={colIndex} sx={{p: 0}}>
-                                            <Accordion sx={{width: "100%", maxWidth: "350px"}}>
-                                                <AccordionSummary
-                                                    expandIcon={<TextSnippetOutlinedIcon />}
-                                                >
-                                                    <Typography>{renderCellValue(getNestedValue(tBody, "visitType.typeName"))}</Typography>
-                                                </AccordionSummary>
-                                                <AccordionDetails sx={{mt: -3}}>
-                                                    <Typography variant="body1" sx={{fontSize: ".9rem", fontWeight: "600"}}><span>Notes</span></Typography>
-                                                    <TextField
-                                                        variant="outlined" 
-                                                        value={renderCellValue(getNestedValue(tBody, "notes"))} 
-                                                        size="small" 
-                                                        multiline
-                                                        disabled
-                                                        fullWidth 
-                                                        maxRows={4}
-                                                    />
-                                                </AccordionDetails>
-                                            </Accordion>
-                                        </TableCell>
-                                    } else if (tHeader.field === "pet.petName") {
-                                        return <TableCell key={colIndex} sx={{display: "flex", alignItems: "center"}}>
-                                            <Box sx={{display: "flex", flexDirection: "column"}}>
-                                                {renderCellValue(getNestedValue(tBody, tHeader.field))}
-                                                <Box sx={{display: "flex"}}>
-                                                    <Typography sx={{fontSize: ".8rem"}}>
-                                                        {renderCellValue(getNestedValue(tBody, "pet.petType.typeName"))} 
-                                                    </Typography>
-                                                    {tBody.pet.breed !== "" && 
-                                                        <Typography sx={{fontSize: ".8rem"}}>
-                                                            <span style={{padding: "0px 5px"}}>•</span>
-                                                            {`${renderCellValue(getNestedValue(tBody, "pet.breed"))}`}
-                                                        </Typography>
-                                                    }
-                                                </Box>
-                                            </Box>
-                                        </TableCell>
-                                    } else {
-                                        return <TableCell key={colIndex}>
-                                            {tHeader.field === "active" ? 
-                                                <CircleIcon 
-                                                    sx={{
-                                                        fontSize: "1em", 
-                                                        color: renderCellValue(getNestedValue(tBody, tHeader.field)) ? "#28A745" : "#D32F2F"
-                                                    }} 
+                    {loading ? 
+                        <Box 
+                            sx={{
+                                position: "absolute",
+                                top: 300,
+                                left: 700,
+                                display: "flex", 
+                                alignItems: "center", 
+                                justifyContent: "center"
+                            }}
+                        >
+                            <CircularProgress />
+                        </Box>
+                    :
+                    <React.Fragment>
+                        <TableBody>
+                            {tableBody.slice(0, 10).map((tBody, rowIndex) => (
+                                <TableRow key={rowIndex}>
+                                    {tableHeaders?.map((tHeader: any, colIndex) => {
+                                        if (tHeader.field === "petName") {
+                                            return <TableCell key={colIndex} sx={{display: "flex", alignItems: "center"}}>
+                                                <PetsIcon 
+                                                    sx={{ 
+                                                        color: "#FFF",
+                                                        background: "#AAA",
+                                                        borderRadius: "5em",
+                                                        p: .5, 
+                                                        mr: 1
+                                                    }}
                                                 />
-                                                :
-                                                renderCellValue(getNestedValue(tBody, tHeader.field))
-                                            }
+                                                <Box sx={{display: "flex", flexDirection: "column"}}>
+                                                    {renderCellValue(getNestedValue(tBody, tHeader.field))}
+                                                    <Box sx={{display: "flex"}}>
+                                                        <Typography sx={{color: "gray", fontSize: ".8rem"}}>
+                                                            {renderCellValue(getNestedValue(tBody, "petType.typeName"))} 
+                                                        </Typography>
+                                                        {tBody.breed !== "" && 
+                                                            <Typography sx={{color: "gray", fontSize: ".8rem"}}>
+                                                                <span style={{padding: "0px 5px"}}>•</span>
+                                                                {`${renderCellValue(getNestedValue(tBody, "breed"))}`}
+                                                            </Typography>
+                                                        }
+                                                    </Box>
+                                                </Box>
+                                            </TableCell>
+                                        } else if (tHeader.field === "petForm") {
+                                            return <TableCell key={colIndex} sx={{p: 0}}>
+                                                <Accordion sx={{width: "100%", maxWidth: "350px"}}>
+                                                    <AccordionSummary
+                                                        expandIcon={<TextSnippetOutlinedIcon />}
+                                                    >
+                                                        <Typography>{renderCellValue(getNestedValue(tBody, "visitType.typeName"))}</Typography>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails sx={{mt: -3}}>
+                                                        <Typography variant="body1" sx={{fontSize: ".9rem", fontWeight: "600"}}><span>Notes</span></Typography>
+                                                        <TextField
+                                                            variant="outlined" 
+                                                            value={renderCellValue(getNestedValue(tBody, "notes"))} 
+                                                            size="small" 
+                                                            multiline
+                                                            disabled
+                                                            fullWidth 
+                                                            maxRows={4}
+                                                        />
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                            </TableCell>
+                                        } else if (tHeader.field === "pet.petName") {
+                                            return <TableCell key={colIndex} sx={{display: "flex", alignItems: "center"}}>
+                                                <Box sx={{display: "flex", flexDirection: "column"}}>
+                                                    {renderCellValue(getNestedValue(tBody, tHeader.field))}
+                                                    <Box sx={{display: "flex"}}>
+                                                        <Typography sx={{fontSize: ".8rem"}}>
+                                                            {renderCellValue(getNestedValue(tBody, "pet.petType.typeName"))} 
+                                                        </Typography>
+                                                        {tBody.pet.breed !== "" && 
+                                                            <Typography sx={{fontSize: ".8rem"}}>
+                                                                <span style={{padding: "0px 5px"}}>•</span>
+                                                                {`${renderCellValue(getNestedValue(tBody, "pet.breed"))}`}
+                                                            </Typography>
+                                                        }
+                                                    </Box>
+                                                </Box>
+                                            </TableCell>
+                                        } else {
+                                            return <TableCell key={colIndex}>
+                                                {tHeader.field === "active" ? 
+                                                    <CircleIcon 
+                                                        sx={{
+                                                            fontSize: "1em", 
+                                                            color: renderCellValue(getNestedValue(tBody, tHeader.field)) ? "#28A745" : "#D32F2F"
+                                                        }} 
+                                                    />
+                                                    :
+                                                    renderCellValue(getNestedValue(tBody, tHeader.field))
+                                                }
+                                            </TableCell>
+                                        }
+                                    })}
+                                    {menuActions && 
+                                        <TableCell>
+                                            <DataTableRowMenu 
+                                                menu={menuActions}
+                                                data={tBody}
+                                            />
                                         </TableCell>
                                     }
-                                })}
-                                {menuActions && 
-                                    <TableCell>
-                                        <DataTableRowMenu 
-                                            menu={menuActions}
-                                            data={tBody}
-                                        />
+                                </TableRow>
+                            ))}
+                            {tableBody.length === 0 && 
+                                <TableRow>
+                                    <TableCell colSpan={tableHeaders!.length+1 || 2} sx={{textAlign: "center"}}>
+                                        No records found.
                                     </TableCell>
-                                }
-                            </TableRow>
-                        ))}
-                        {tableBody.length === 0 && 
-                            <TableRow>
-                                <TableCell colSpan={tableHeaders!.length+1 || 2} sx={{textAlign: "center"}}>
-                                    No records found.
-                                </TableCell>
-                            </TableRow>
-                        }
-                    </TableBody>
+                                </TableRow>
+                            }
+                        </TableBody>
+                    </React.Fragment>
+                }
                 </Table>
             </TableContainer>
             <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>

@@ -68,14 +68,16 @@ const VisitsPage: React.FC = () => {
 
     const [sortConfig, setSortConfig] = useState<{field: string, isAsc: boolean}>({field: tableHeaders[0].field, isAsc: true});
 
-    useEffect(() => {
-        dispatch(visitActions.setResetFilter(false));
-    }, []);
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
     const visits = useSelector((state: RootState) => state.visit.visits);
 
     const {loaderUsers, loaderVisits} = useLoaderData() as LoaderData;
+
+    useEffect(() => {
+        dispatch(visitActions.setResetFilter(false));
+    }, []);
 
     useEffect(() => {
         if (loaderUsers) {
@@ -199,6 +201,7 @@ const VisitsPage: React.FC = () => {
     }
     
     const handleSearch = async () => {
+        setLoading(true);
         const data = Object.fromEntries(
             Object.entries(visitFormFilter)
                 .filter(([_key, value]) => value !== "" && value != null)
@@ -218,26 +221,32 @@ const VisitsPage: React.FC = () => {
             setPage(1);
         }
         dispatch(visitActions.setCloseFilter(true));
+        setLoading(false);
     }
 
     const resetSearch = async () => {
+        setLoading(true);
         const response = await fetchVisits(1, sortConfig.field, sortConfig.isAsc);
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
         dispatch(visitActions.setResetFilter(false));
         setVisitFormFilter(initialStateVisitFilter);
         setPage(1);
+        setLoading(false);
     }
 
     const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
+        setLoading(true);
         setPage(newPage);
         setSortConfig({field: headerColumn, isAsc: isAsc});
         const response = await fetchVisits(newPage, headerColumn, isAsc);
         dispatch(visitActions.setVisits(response.data));
         setTotalCount(response.totalItems);
+        setLoading(false);
     }
 
     const handleSort = async (currentPage: number, headerColumn: string, isAsc: boolean) => {
+        setLoading(true);
         let response;
         const data = Object.fromEntries(
             Object.entries(visitFormFilter)
@@ -252,6 +261,7 @@ const VisitsPage: React.FC = () => {
         setTotalCount(response.totalItems);
         setPage(1);
         setSortConfig({field: headerColumn, isAsc: isAsc});
+        setLoading(false);
     }
 
     return (
@@ -292,6 +302,7 @@ const VisitsPage: React.FC = () => {
                     page={page}
                     totalCount={totalCount}
                     onPageChange={handlePageChange}
+                    loading={loading}
                 />
             </Box>
             <DrawerPanel 

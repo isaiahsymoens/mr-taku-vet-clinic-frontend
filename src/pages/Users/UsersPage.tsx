@@ -164,9 +164,9 @@ const UsersPage: React.FC = () => {
         setPage(1);
     }
 
-    const handlePageChange = async (newPage: number) => {
+    const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
         setPage(newPage);
-        const response = await fetchUsers(newPage);
+        const response = await fetchUsers(newPage, headerColumn, isAsc);
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
     }
@@ -176,10 +176,11 @@ const UsersPage: React.FC = () => {
         if (searchInput !== "") {
             response = await searchUsersByName(searchInput, headerColumn, isAsc);
         } else {
-            response = await fetchUsers(currentPage, headerColumn, isAsc);
+            response = await fetchUsers(1, headerColumn, isAsc);
         }
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
+        setPage(1);
     }
 
     return (

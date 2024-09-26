@@ -49,6 +49,7 @@ const UsersPage: React.FC = () => {
     const [totalCount, setTotalCount] = useState(0);
 
     const [searchInput, setSearchInput] = useState("");
+    const [sortConfig, setSortConfig] = useState<{field: string, isAsc: boolean}>({field: tableHeaders[0].field, isAsc: true});
 
     const loaderData = useLoaderData() as PaginatedResponse<User>;
     const users = useSelector((state: RootState) => state.user.users);
@@ -157,7 +158,7 @@ const UsersPage: React.FC = () => {
     }
 
     const handleSearch = async (input: string) => {
-        const response = await searchUsersByName(input);
+        const response = await searchUsersByName(input, sortConfig.field, sortConfig.isAsc);
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
         setSearchInput(input);
@@ -166,6 +167,7 @@ const UsersPage: React.FC = () => {
 
     const handlePageChange = async (newPage: number, headerColumn: string, isAsc: boolean) => {
         setPage(newPage);
+        setSortConfig({field: headerColumn, isAsc: isAsc});
         const response = await fetchUsers(newPage, headerColumn, isAsc);
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
@@ -181,6 +183,7 @@ const UsersPage: React.FC = () => {
         dispatch(userActions.setUsers(response.data));
         setTotalCount(response.totalItems);
         setPage(1);
+        setSortConfig({field: headerColumn, isAsc: isAsc});
     }
 
     return (

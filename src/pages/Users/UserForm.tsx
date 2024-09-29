@@ -133,8 +133,8 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, on
                 <React.Fragment>
                     {!showNewPassword && <Button variant="outlined" onClick={() => onShowNewPassword(true)}>Change Password</Button>}
                     {showNewPassword &&
-                        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-                            <IconButton sx={{color: "#1976D2", mt: -.5}} onClick={() => onShowNewPassword(false)}><HideSourceIcon /></IconButton>
+                        <Box sx={{display: "flex", alignItems: "flex-start", gap: 1}}>
+                            <IconButton sx={{color: "#1976D2"}} onClick={() => onShowNewPassword(false)}><HideSourceIcon /></IconButton>
                             <FormControl variant="outlined" size="small" sx={{width: "100%"}} error={hasError("password")}>
                                 <InputLabel htmlFor="outlined-adornment-password">New Password *</InputLabel>
                                 <OutlinedInput

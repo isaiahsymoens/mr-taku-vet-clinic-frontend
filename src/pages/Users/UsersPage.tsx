@@ -44,6 +44,7 @@ const UsersPage: React.FC = () => {
     const [userDrawerType, setUserDrawerType] = useState<DrawerPanelActions | string>("");
     const [snackbarMsg, setSnackbarMsg] = useState<{msg: string, severity: "success" | "error"}>({msg: "", severity: "success"});
     const [errors, setErrors] = useState<GenericErrorResponse>({});
+    const [showNewPassword, setShowNewPassword] = useState(false);
 
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
@@ -137,6 +138,9 @@ const UsersPage: React.FC = () => {
         e.preventDefault();
         try {
             setErrors({});
+            if ("password" in userData && !showNewPassword) {
+                delete userData.password;
+            } 
             let changedData: any = {};
             (Object.keys(userData) as (keyof AddEditUserRequest)[]).forEach(key => {
                 if (orgUserData[key] !== userData[key]) {
@@ -156,6 +160,7 @@ const UsersPage: React.FC = () => {
         setUserDrawerType("");
         setUserData(initialStateUserData);
         setSelectedUser(null!);
+        setShowNewPassword(false);
         setErrors({});
     }
 
@@ -241,6 +246,8 @@ const UsersPage: React.FC = () => {
                     type={userDrawerType} 
                     userData={userData} 
                     handleFormChange={handleFormChange}
+                    onShowNewPassword={(e: boolean) => setShowNewPassword(e)}
+                    showNewPassword={showNewPassword}
                     errors={errors}
                 />
             </DrawerPanel>

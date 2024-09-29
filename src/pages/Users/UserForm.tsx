@@ -1,8 +1,9 @@
-import React from "react";
-import {Divider, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch, TextField} from "@mui/material";
+import React, {useState} from "react";
+import {Box, Button, Divider, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch, TextField} from "@mui/material";
 import {DrawerPanelActions} from "../../components/DrawerPanel";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import HideSourceIcon from "@mui/icons-material/HideSource";
 import {AddEditUserRequest} from "../../api/users";
 import {GenericErrorResponse} from "../../utils/errorHelper";
 
@@ -10,11 +11,13 @@ type UserFormProps = {
     type: DrawerPanelActions | string;
     userData: AddEditUserRequest;
     handleFormChange: (key: keyof AddEditUserRequest, value: any) => void;
+    onShowNewPassword: (e: boolean) => void;
+    showNewPassword: boolean;
     errors: GenericErrorResponse;
 }
 
-const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, errors}) => {
-    const [showPassword, setShowPassword] = React.useState(false);
+const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, onShowNewPassword, showNewPassword, errors}) => {
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const hasError = (field: string) => field in errors;
@@ -96,34 +99,75 @@ const UserForm: React.FC<UserFormProps> = ({type, userData, handleFormChange, er
                 fullWidth 
                 required
             />
-            <FormControl variant="outlined" size="small" error={hasError("password")}>
-                <InputLabel htmlFor="outlined-adornment-password">{type === DrawerPanelActions.Edit ? "New Password" : "Password *"}</InputLabel>
-                <OutlinedInput
-                    id="outlined-adornment-password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={userData.password} 
-                    onChange={(e) => handleFormChange("password", e.target.value)}  
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                onMouseUp={handleMouseUpPassword}
-                                edge="end"
-                            >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
+            {type === DrawerPanelActions.Add &&
+                <FormControl variant="outlined" size="small" error={hasError("password")}>
+                    <InputLabel htmlFor="outlined-adornment-password">Password *</InputLabel>
+                    <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={userData.password} 
+                        onChange={(e) => handleFormChange("password", e.target.value)}  
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    onMouseUp={handleMouseUpPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label={"Password"}
+                        required
+                    />
+                    <FormHelperText>
+                        {errors.password}
+                    </FormHelperText>
+                </FormControl>
+            }
+            {type === DrawerPanelActions.Edit &&
+                <React.Fragment>
+                    {!showNewPassword && <Button variant="outlined" onClick={() => onShowNewPassword(true)}>Change Password</Button>}
+                    {showNewPassword &&
+                        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                            <IconButton sx={{color: "#1976D2", mt: -.5}} onClick={() => onShowNewPassword(false)}><HideSourceIcon /></IconButton>
+                            <FormControl variant="outlined" size="small" sx={{width: "100%"}} error={hasError("password")}>
+                                <InputLabel htmlFor="outlined-adornment-password">New Password *</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-password"
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    value={userData.password} 
+                                    onChange={(e) => handleFormChange("password", e.target.value)}  
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                onMouseUp={handleMouseUpPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label={"New Password"}
+                                    required
+                                />
+                                <FormHelperText>
+                                    {errors.password}
+                                </FormHelperText>
+                            </FormControl>
+                        </Box>
                     }
-                    label={type === DrawerPanelActions.Edit ? "New Password" : "Password"}
-                    required={type !== DrawerPanelActions.Edit}
-                />
-                <FormHelperText>
-                    {errors.password}
-                </FormHelperText>
-            </FormControl>
+                    
+                </React.Fragment>
+            }
         </React.Fragment>
     );
 }

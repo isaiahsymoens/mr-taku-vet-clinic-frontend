@@ -14,6 +14,14 @@ export const fetchUsers = async(pageNumber?: number, sortBy?: string, isAscendin
     return PaginatedResponse.fromJSON((await response.json()).data, User.fromJSON);
 };
 
+export const fetchAllUsers = async() => {
+    const response = await fetch(
+        "https://localhost:5001/api/users"
+        , {method: "GET"}
+    );
+    return User.fromJSONArray((await response.json()).data as JSONObject[]);
+};
+
 export const getUserByUsername = async (username: string) => {
     const response = await fetch(`https://localhost:5001/api/users/${username}`, {
         method: "GET"

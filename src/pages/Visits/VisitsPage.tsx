@@ -8,7 +8,7 @@ import ActionDialog from "../../components/ActionDialog";
 import {Visit} from "../../models/visit";
 import {User} from "../../models/user";
 import {addVisit, AddEditVisitRequest, deleteVisit, fetchVisits, updateVisit, searchVisits} from "../../api/visits";
-import {fetchUsers} from "../../api/users";
+import {fetchAllUsers} from "../../api/users";
 
 import {RootState} from "../../redux";
 import {visitActions} from "../../redux/features/visit";
@@ -47,7 +47,7 @@ const initialStateVisitFilter: VisitFilterModel = {
 }
 
 type LoaderData = {
-    loaderUsers: PaginatedResponse<User>;
+    loaderUsers: User[];
     loaderVisits: PaginatedResponse<Visit>;
 }
 
@@ -81,7 +81,7 @@ const VisitsPage: React.FC = () => {
 
     useEffect(() => {
         if (loaderUsers) {
-            setUserList(loaderUsers.data.filter(u => u.petOwned > 0).map(u => ({
+            setUserList(loaderUsers.filter(u => u.petOwned > 0).map(u => ({
                 username: u.username,
                 name: `${u.firstName} ${u.middleName} ${u.lastName}`,
             })));
@@ -355,7 +355,7 @@ const VisitsPage: React.FC = () => {
 export default VisitsPage;
 
 export const loader = async () => {
-    const loaderUsers = await fetchUsers();
+    const loaderUsers = await fetchAllUsers();
     const loaderVisits = await fetchVisits();
     return {loaderUsers, loaderVisits};
 }
